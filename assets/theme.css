@@ -215,3 +215,22 @@
   padding-top: 0;
   padding-bottom: 0;
 }
+
+/* Contact enquiry form — the reference build had no form, so these are the only
+   rules it needs; everything else reuses the newsletter popup's input styling. */
+.contact-form_wrap {
+  margin-top: 2.5rem;
+  width: 100%;
+}
+
+.contact-form_wrap .signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contact-textarea {
+  resize: vertical;
+  min-height: 7rem;
+  font: inherit;
+}

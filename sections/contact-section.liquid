@@ -38,6 +38,72 @@
           {%- endif -%}
         </div>
       </div>
+      {%- if section.settings.show_form -%}
+        {%- comment -%}
+          A real Shopify contact form — {% form 'contact' %} delivers to the store's
+          sender email. Built from the design's own popup/signup classes so it reads
+          as part of the site rather than a bolted-on block.
+        {%- endcomment -%}
+        <div class="contact-form_wrap">
+          {% form 'contact', class: 'signup-form' %}
+            {%- if form.posted_successfully? -%}
+              <div class="popup-success">
+                <div class="popup-success_wrap u-text-align-center">
+                  <div class="popup-success_icon">{% render 'icon-logo-icon' %}</div>
+                  <div class="body-upper">{{ section.settings.form_success }}</div>
+                </div>
+              </div>
+            {%- else -%}
+              {%- if form.errors -%}
+                <p class="body-upper form-error">{{ form.errors | default_errors }}</p>
+              {%- endif -%}
+
+              <label class="u-visually-hidden" for="ContactName">{{ section.settings.form_name_label }}</label>
+              <input
+                id="ContactName"
+                type="text"
+                name="contact[name]"
+                class="signup-input body-upper is-first"
+                value="{{ form.name }}"
+                placeholder="{{ section.settings.form_name_label | escape }}"
+                autocomplete="name"
+                required>
+
+              <label class="u-visually-hidden" for="ContactEmail">{{ section.settings.form_email_label }}</label>
+              <input
+                id="ContactEmail"
+                type="email"
+                name="contact[email]"
+                class="signup-input body-upper"
+                value="{{ form.email }}"
+                placeholder="{{ section.settings.form_email_label | escape }}"
+                autocomplete="email"
+                autocorrect="off"
+                autocapitalize="off"
+                required>
+
+              <label class="u-visually-hidden" for="ContactMessage">{{ section.settings.form_message_label }}</label>
+              <textarea
+                id="ContactMessage"
+                name="contact[body]"
+                rows="4"
+                class="signup-input body-upper is-last contact-textarea"
+                placeholder="{{ section.settings.form_message_label | escape }}"
+                required>{{ form.body }}</textarea>
+
+              <div class="popup-submit">
+                <button type="submit" class="popup-btn_wrap" aria-label="{{ section.settings.form_button | escape }}">
+                  <div class="signup-submit body-upper">{{ section.settings.form_button }}</div>
+                  <div class="signup-btn_icon">
+                    {% render 'icon-link-arrow', class: 'signup-btn_icon-svg' %}
+                    {% render 'icon-link-arrow', class: 'signup-btn_icon-svg is-2' %}
+                  </div>
+                </button>
+              </div>
+            {%- endif -%}
+          {% endform %}
+        </div>
+      {%- endif -%}
     </div>
     <div class="contact-footer_el">
       <div class="body-upper f-5">{{ section.settings.footnote }}</div>
@@ -118,6 +184,47 @@
       "default": 0,
       "unit": "px",
       "info": "0 keeps the design default."
+    },
+    {
+      "type": "header",
+      "content": "Enquiry form"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_form",
+      "label": "Show contact form",
+      "default": true,
+      "info": "Messages are delivered to the sender email in Settings → Notifications."
+    },
+    {
+      "type": "text",
+      "id": "form_name_label",
+      "label": "Name field label",
+      "default": "Name"
+    },
+    {
+      "type": "text",
+      "id": "form_email_label",
+      "label": "Email field label",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "form_message_label",
+      "label": "Message field label",
+      "default": "Message"
+    },
+    {
+      "type": "text",
+      "id": "form_button",
+      "label": "Submit button",
+      "default": "Send"
+    },
+    {
+      "type": "text",
+      "id": "form_success",
+      "label": "Success message",
+      "default": "Thanks — we'll be in touch."
     }
   ],
   "blocks": [
