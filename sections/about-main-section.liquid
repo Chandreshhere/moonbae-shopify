@@ -103,9 +103,9 @@
 
   <div class="about-footer_contain u-container">
     {%- if section.settings.pillars != blank -%}
-      <img src="{{ section.settings.pillars | image_url: width: 1400 }}" alt="" sizes="(max-width: 1400px) 100vw, 1400px" class="orgc-logo">
+      <img src="{{ section.settings.pillars | image_url: width: 1400 }}" alt="" sizes="(max-width: 1400px) 100vw, 1400px" class="orgc-logo" width="{{ section.settings.pillars.width }}" height="{{ section.settings.pillars.height }}">
     {%- else -%}
-      <img src="{{ 'or-about-pillars.png' | asset_url }}" alt="" class="orgc-logo">
+      <img src="{{ 'or-about-pillars.png' | asset_url }}" alt="" class="orgc-logo" width="2000" height="708">
     {%- endif -%}
   </div>
 </div>

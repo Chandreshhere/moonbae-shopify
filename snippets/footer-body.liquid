@@ -26,7 +26,7 @@
     <div class="split-col u-column-6 m-bot_15">
       <div easter-trigger="" class="footer-logo_wrap">
         {%- if settings.logo_footer != blank -%}
-          <img src="{{ settings.logo_footer | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark">
+          <img src="{{ settings.logo_footer | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ settings.logo_footer.width }}" height="{{ settings.logo_footer.height }}">
         {%- else -%}
           {% render 'icon-logo-footer' %}
         {%- endif -%}

@@ -1,9 +1,9 @@
 {% render 'section-class', classes: 'img-section', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
 
 {%- if section.settings.image != blank -%}
-  <img src="{{ section.settings.image | image_url: width: 2400 }}" alt="" h-fadeout="" class="img-fill">
+  <img src="{{ section.settings.image | image_url: width: 2400 }}" alt="" h-fadeout="" class="img-fill" width="{{ section.settings.image.width }}" height="{{ section.settings.image.height }}">
 {%- else -%}
-  <img src="{{ 'or-about-hero.jpg' | asset_url }}" alt="" h-fadeout="" class="img-fill">
+  <img src="{{ 'or-about-hero.jpg' | asset_url }}" alt="" h-fadeout="" class="img-fill" width="2000" height="1022">
 {%- endif -%}
 <div h-fadeout="" class="img-section_eyebrow">
   <div class="eyebrow-side">

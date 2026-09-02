@@ -5,7 +5,7 @@
   <div class="easter-contain">
     <div class="easter-layout u-grid-desktop">
       <div class="easter-col u-column-6">
-        <div class="easter-icon_el">{%- if settings.logo_easter != blank -%}<img src="{{ settings.logo_easter | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark">{%- else -%}{% render 'icon-easter-icon' %}{%- endif -%}</div>
+        <div class="easter-icon_el">{%- if settings.logo_easter != blank -%}<img src="{{ settings.logo_easter | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ settings.logo_easter.width }}" height="{{ settings.logo_easter.height }}">{%- else -%}{% render 'icon-easter-icon' %}{%- endif -%}</div>
         <div class="easter-text_wrap">
           <div class="body-upper p-contents">{{ section.settings.text }}</div>
         </div>

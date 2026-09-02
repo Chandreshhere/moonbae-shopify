@@ -5,7 +5,7 @@
 <div class="community-contain u-container" nav-dark="">
   <div class="section-intro_wrap">
     <div class="split-grid u-grid-desktop">
-      <div class="split-col u-column-6">{%- if settings.logo_community != blank -%}<img src="{{ settings.logo_community | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark">{%- else -%}{% render 'icon-community-heading' %}{%- endif -%}</div>
+      <div class="split-col u-column-6">{%- if settings.logo_community != blank -%}<img src="{{ settings.logo_community | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ settings.logo_community.width }}" height="{{ settings.logo_community.height }}">{%- else -%}{% render 'icon-community-heading' %}{%- endif -%}</div>
     </div>
   </div>
 

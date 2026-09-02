@@ -14,13 +14,13 @@
              class="product-img"
              data-commerce-type="variation-image"
              srcset="{{ product.featured_media | image_url: width: 500 }} 500w, {{ product.featured_media | image_url: width: 800 }} 800w, {{ product.featured_media | image_url: width: 1200 }} 1200w"
-             sizes="(max-width: 767px) 50vw, 32vw">
+             sizes="(max-width: 767px) 50vw, 32vw" width="{{ product.featured_media.width }}" height="{{ product.featured_media.height }}">
       {%- else -%}
-        <img src="{{ 'or-product-the-caddie-jacket-navy.jpg' | asset_url }}" alt="{{ product.title | escape }}" class="product-img" data-commerce-type="variation-image">
+        <img src="{{ 'or-product-the-caddie-jacket-navy.jpg' | asset_url }}" alt="{{ product.title | escape }}" class="product-img" data-commerce-type="variation-image" width="1920" height="2400">
       {%- endif -%}
       {%- assign hover_media = product.media[1] -%}
       {%- if hover_media -%}
-        <img src="{{ hover_media | image_url: width: 1200 }}" alt="" class="product-hover_img">
+        <img src="{{ hover_media | image_url: width: 1200 }}" alt="" class="product-hover_img" width="{{ hover_media.width }}" height="{{ hover_media.height }}">
       {%- endif -%}
       <div overlay="el" class="product-overlay"></div>
       <div cta-cursor_el="" class="cta-hover_el is-desktop">

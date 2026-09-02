@@ -13,16 +13,16 @@
           sizes="(max-width: 767px) 60vw, 25vw"
           alt="{{ product.featured_media.alt | default: product.title | escape }}"
           class="img-contain {{ wrap_class }}"
-          data-commerce-type="variation-image">
+          data-commerce-type="variation-image" width="{{ product.featured_media.width }}" height="{{ product.featured_media.height }}">
       {%- else -%}
-        <img src="{{ 'or-product-the-caddie-jacket-navy.jpg' | asset_url }}" alt="{{ product.title | escape }}" class="img-contain {{ wrap_class }}" data-commerce-type="variation-image">
+        <img src="{{ 'or-product-the-caddie-jacket-navy.jpg' | asset_url }}" alt="{{ product.title | escape }}" class="img-contain {{ wrap_class }}" data-commerce-type="variation-image" width="1920" height="2400">
       {%- endif -%}
 
       {%- assign hover_media = product.media[1] -%}
       {%- if hover_media -%}
-        <img src="{{ hover_media | image_url: width: 1200 }}" alt="" class="product-hover_img" loading="auto">
+        <img src="{{ hover_media | image_url: width: 1200 }}" alt="" class="product-hover_img" loading="auto" width="{{ hover_media.width }}" height="{{ hover_media.height }}">
       {%- else -%}
-        <img src="{{ 'or-product-hover-1.jpg' | asset_url }}" alt="" class="product-hover_img" loading="auto">
+        <img src="{{ 'or-product-hover-1.jpg' | asset_url }}" alt="" class="product-hover_img" loading="auto" width="2667" height="4000">
       {%- endif -%}
 
       <a arrow-trigger="" href="{{ product.url }}" class="slider-link w-inline-block">

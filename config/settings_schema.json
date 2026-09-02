@@ -68,7 +68,7 @@
         "type": "font_picker",
         "id": "font_primary",
         "label": "Primary (UI, body, headings)",
-        "default": "helvetica_n4"
+        "default": "assistant_n4"
       },
       {
         "type": "font_picker",

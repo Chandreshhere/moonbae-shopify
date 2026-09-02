@@ -17,7 +17,7 @@
       <div class="body-upper f-5"><p>{{ section.settings.right_label }}</p></div>
     </div>
   </div>
-  <div class="logo-icon_wrap">{%- if settings.logo_or_icon != blank -%}<img src="{{ settings.logo_or_icon | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark">{%- else -%}{% render 'icon-logo-icon' %}{%- endif -%}</div>
+  <div class="logo-icon_wrap">{%- if settings.logo_or_icon != blank -%}<img src="{{ settings.logo_or_icon | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ settings.logo_or_icon.width }}" height="{{ settings.logo_or_icon.height }}">{%- else -%}{% render 'icon-logo-icon' %}{%- endif -%}</div>
 </div>
 
 {% schema %}

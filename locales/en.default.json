@@ -28,7 +28,8 @@
       "update": "Update",
       "checkout": "Checkout",
       "empty": "Your cart is empty",
-      "error": "Something went wrong when adding this item to the cart."
+      "error": "Something went wrong when adding this item to the cart.",
+      "quantity": "Quantity"
     }
   },
   "collections": {

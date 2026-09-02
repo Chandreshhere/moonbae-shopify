@@ -13,9 +13,9 @@
             class="img-contain"
             data-commerce-type="variation-image"
             srcset="{{ product.featured_media | image_url: width: 500 }} 500w, {{ product.featured_media | image_url: width: 800 }} 800w, {{ product.featured_media | image_url: width: 1200 }} 1200w, {{ product.featured_media | image_url: width: 1600 }} 1600w, {{ product.featured_media | image_url: width: 1920 }} 1920w"
-            sizes="(max-width: 991px) 100vw, 58vw">
+            sizes="(max-width: 991px) 100vw, 58vw" width="{{ product.featured_media.width }}" height="{{ product.featured_media.height }}">
         {%- else -%}
-          <img alt="{{ product.title | escape }}" src="{{ 'or-product-the-caddie-jacket-navy.jpg' | asset_url }}" class="img-contain" data-commerce-type="variation-image">
+          <img alt="{{ product.title | escape }}" src="{{ 'or-product-the-caddie-jacket-navy.jpg' | asset_url }}" class="img-contain" data-commerce-type="variation-image" width="1920" height="2400">
         {%- endif -%}
       </div>
 
@@ -27,7 +27,7 @@
                 <div class="product-img_wrap">
                   <img alt="{{ media.alt | escape }}" src="{{ media | image_url: width: 1200 }}" class="img-contain"
                        srcset="{{ media | image_url: width: 500 }} 500w, {{ media | image_url: width: 800 }} 800w, {{ media | image_url: width: 1200 }} 1200w"
-                       sizes="(max-width: 991px) 50vw, 29vw">
+                       sizes="(max-width: 991px) 50vw, 29vw" width="{{ media.width }}" height="{{ media.height }}">
                 </div>
               </div>
             {%- endfor -%}

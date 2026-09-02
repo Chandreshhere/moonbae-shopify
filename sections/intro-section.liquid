@@ -2,7 +2,7 @@
 <div class="split-grid u-grid-desktop m-vflex">
 
 <div class="split-col u-column-6">
-  <div class="full-logo_wrap">{%- if settings.logo_intro_crest != blank -%}<img src="{{ settings.logo_intro_crest | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark">{%- else -%}{% render 'icon-logo-crest-lg' %}{%- endif -%}</div>
+  <div class="full-logo_wrap">{%- if settings.logo_intro_crest != blank -%}<img src="{{ settings.logo_intro_crest | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ settings.logo_intro_crest.width }}" height="{{ settings.logo_intro_crest.height }}">{%- else -%}{% render 'icon-logo-crest-lg' %}{%- endif -%}</div>
 </div>
 <div class="split-col u-column-6 m-top_10">
   <div class="u-text-style-h3">

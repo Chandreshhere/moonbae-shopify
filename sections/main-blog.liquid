@@ -24,7 +24,7 @@
             <a count-items="item" overlay="trigger" href="{{ article.url }}" class="cta-block w-inline-block">
               {%- if article.image -%}
                 <div cta-cursor_wrap="" class="product-img_wrap">
-                  <img src="{{ article.image | image_url: width: 1200 }}" alt="{{ article.title | escape }}" class="product-img">
+                  <img src="{{ article.image | image_url: width: 1200 }}" alt="{{ article.title | escape }}" class="product-img" width="{{ article.image.width }}" height="{{ article.image.height }}">
                   <div overlay="el" class="product-overlay"></div>
                 </div>
               {%- endif -%}

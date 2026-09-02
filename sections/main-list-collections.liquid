@@ -23,9 +23,9 @@
             <a count-items="item" overlay="trigger" href="{{ collection.url }}" class="cta-block w-inline-block">
               <div cta-cursor_wrap="" class="product-img_wrap">
                 {%- if collection.featured_image -%}
-                  <img src="{{ collection.featured_image | image_url: width: 1200 }}" alt="{{ collection.title | escape }}" class="product-img">
+                  <img src="{{ collection.featured_image | image_url: width: 1200 }}" alt="{{ collection.title | escape }}" class="product-img" width="{{ collection.featured_image.width }}" height="{{ collection.featured_image.height }}">
                 {%- else -%}
-                  <img src="{{ 'or-gallery-1.jpg' | asset_url }}" alt="{{ collection.title | escape }}" class="product-img">
+                  <img src="{{ 'or-gallery-1.jpg' | asset_url }}" alt="{{ collection.title | escape }}" class="product-img" width="2000" height="1133">
                 {%- endif -%}
                 <div overlay="el" class="product-overlay"></div>
                 <div cta-cursor_el="" class="cta-hover_el is-desktop">

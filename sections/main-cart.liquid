@@ -27,7 +27,7 @@
             <div class="u-column-2">
               <a href="{{ item.url }}" class="checkout-img_wrap w-inline-block">
                 {%- if item.image -%}
-                  <img src="{{ item.image | image_url: width: 400 }}" alt="{{ item.title | escape }}" class="checkout-img">
+                  <img src="{{ item.image | image_url: width: 400 }}" alt="{{ item.title | escape }}" class="checkout-img" width="{{ item.image.width }}" height="{{ item.image.height }}">
                 {%- endif -%}
               </a>
             </div>

@@ -5,7 +5,7 @@
     <div class="split-col u-column-3">
       <div h-fadeout="" class="about-hero-logo_wrap">
         {%- if section.settings.logo != blank -%}
-          <img src="{{ section.settings.logo | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark">
+          <img src="{{ section.settings.logo | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ section.settings.logo.width }}" height="{{ section.settings.logo.height }}">
         {%- else -%}
           {% render 'icon-about-logo' %}
         {%- endif -%}

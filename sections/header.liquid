@@ -22,7 +22,7 @@
             <div class="bg-panel_contain u-container">
               <div class="menu-bottom_layout u-grid-desktop m-centered">
                 <div data-menu-fade="" class="menu-footer_col u-column-6">
-                  <div class="menu-extras_logo">{%- if settings.logo_menu_crest != blank -%}<img src="{{ settings.logo_menu_crest | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark">{%- else -%}{% render 'icon-logo-crest-sm' %}{%- endif -%}</div>
+                  <div class="menu-extras_logo">{%- if settings.logo_menu_crest != blank -%}<img src="{{ settings.logo_menu_crest | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ settings.logo_menu_crest.width }}" height="{{ settings.logo_menu_crest.height }}">{%- else -%}{% render 'icon-logo-crest-sm' %}{%- endif -%}</div>
                 </div>
                 <div data-menu-fade="" class="menu-footer_col u-column-4">
                   <div class="menu-bot_wrap">
@@ -140,7 +140,7 @@
 
       <div class="nav-col">
         <a href="{{ routes.root_url }}"{% if request.page_type == 'index' %} aria-current="page"{% endif %} class="nav-logo_link w-inline-block{% if request.page_type == 'index' %} w--current{% endif %}" aria-label="{{ shop.name | escape }}">
-          {%- if settings.logo_nav != blank -%}<img src="{{ settings.logo_nav | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark">{%- else -%}{% render 'icon-logo-nav' %}{%- endif -%}
+          {%- if settings.logo_nav != blank -%}<img src="{{ settings.logo_nav | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ settings.logo_nav.width }}" height="{{ settings.logo_nav.height }}">{%- else -%}{% render 'icon-logo-nav' %}{%- endif -%}
         </a>
       </div>
 
