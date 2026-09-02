@@ -8,7 +8,7 @@
           "settings": {
             "title": "<p>Explore our First Collection</p>",
             "link_label": "Shop Now",
-            "link_url": "/collections/all"
+            "link_url": "/collections"
           }
         },
         "slide-2": {
@@ -44,7 +44,7 @@
     "featured-products": {
       "type": "featured-products",
       "settings": {
-        "link_url": "/collections/all",
+        "link_url": "/collections",
         "padding_top": 160
       }
     },
@@ -60,7 +60,7 @@
             "eyebrow": "Our Products",
             "hover_title": "COLLECTION 01 & 02",
             "hover_link_label": "Shop now",
-            "link_url": "/collections/all",
+            "link_url": "/collections",
             "width": "6",
             "full_height": true
           }
@@ -200,7 +200,7 @@
             "heading": "Site Index",
             "hover_images": true,
             "link_1_label": "Shop now",
-            "link_1_url": "/collections/all",
+            "link_1_url": "/collections",
             "link_2_label": "Home",
             "link_2_url": "/",
             "link_3_label": "About us",

@@ -23,7 +23,7 @@
             {%- endfor -%}
           {%- else -%}
             {%- assign labels = 'Shop now,Home,About us,Contact us' | split: ',' -%}
-            {%- assign urls = '/collections/all,/,/pages/about,/pages/contact-us' | split: ',' -%}
+            {%- assign urls = '/collections,/,/pages/about,/pages/contact-us' | split: ',' -%}
             {%- for label in labels -%}
               <a text-btn="" href="{{ urls[forloop.index0] }}" class="footer-link is-menu w-inline-block">
                 <div class="footer-link_layout body-upper">
@@ -218,7 +218,7 @@
       "name": "About footer",
       "category": "About",
       "settings": {
-        "cta_url": "/collections/all"
+        "cta_url": "/collections"
       }
     }
   ]

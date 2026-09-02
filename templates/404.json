@@ -3,7 +3,7 @@
     "main": {
       "type": "main-404",
       "settings": {
-        "link_url": "/collections/all"
+        "link_url": "/collections"
       }
     },
     "footer": {
@@ -15,7 +15,7 @@
             "heading": "Site Index",
             "hover_images": true,
             "link_1_label": "Shop now",
-            "link_1_url": "/collections/all",
+            "link_1_url": "/collections",
             "link_2_label": "Home",
             "link_2_url": "/",
             "link_3_label": "About us",

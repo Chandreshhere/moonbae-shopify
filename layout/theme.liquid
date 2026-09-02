@@ -95,14 +95,6 @@ families: ["Instrument Serif:regular,italic"]
   {%- endcomment -%}
   {%- assign body_theme = '' -%}
   {%- if template.name == 'product' -%}{%- assign body_theme = 'u-theme-light ' -%}{%- endif -%}
-  {%- comment -%}
-    Templates whose first screen sits on a light ground need the nav's dark treatment
-    from the server. The [nav-dark] / [nav-light] attributes only drive ScrollTrigger
-    once the visitor scrolls, so without this the nav is white-on-white on load.
-  {%- endcomment -%}
-  {%- assign light_ground_templates = 'product,collection,list-collections,search,blog,cart' | split: ',' -%}
-  {%- assign nav_dark = false -%}
-  {%- if light_ground_templates contains template.name -%}{%- assign nav_dark = true -%}{%- endif -%}
   <body data-barba="wrapper" class="{{ body_theme }}{% if settings.show_preloader %}show-preloader {% endif %}template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
     <div class="page_wrap">
       <div class="page_code_wrap">
@@ -113,14 +105,6 @@ families: ["Instrument Serif:regular,italic"]
       <div data-barba="container" class="page-main">
         {% render 'preloader' %}
         {% section 'header' %}
-        {%- if nav_dark -%}
-          {%- comment -%}
-            .nav-component.dark .orgc-nav is the only rule that darkens the nav, and
-            ScrollTrigger only adds that class once the visitor scrolls. Set it here
-            so the nav is legible on first paint; the scroll triggers take over after.
-          {%- endcomment -%}
-          <script>document.querySelector('.nav-component')?.classList.add('dark');</script>
-        {%- endif -%}
 
         {%- comment -%}
           Each template renders its own footer, because the reference uses the light

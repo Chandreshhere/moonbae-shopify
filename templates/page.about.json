@@ -79,7 +79,7 @@
     "about-footer": {
       "type": "about-footer",
       "settings": {
-        "cta_url": "/collections/all"
+        "cta_url": "/collections"
       }
     }
   },
