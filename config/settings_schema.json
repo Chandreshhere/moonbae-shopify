@@ -1,15 +1,22 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Odd Ritual",
+    "theme_name": "moonbae",
     "theme_version": "1.0.0",
-    "theme_author": "Odd Ritual",
+    "theme_author": "moonbae",
     "theme_documentation_url": "https://shopify.dev/docs/themes",
     "theme_support_url": "https://shopify.dev/docs/themes"
   },
   {
     "name": "Branding",
     "settings": [
+      {
+        "type": "text",
+        "id": "brand_name",
+        "label": "Brand name",
+        "default": "moonbae",
+        "info": "Shown as the wordmark wherever no logo image is uploaded below."
+      },
       {
         "type": "image_picker",
         "id": "favicon",
@@ -172,7 +179,7 @@
     "settings": [
       {
         "type": "paragraph",
-        "content": "Each mark falls back to the built-in Odd Ritual artwork when left empty. Upload SVG or PNG to replace one."
+        "content": "Each mark falls back to the built-in moonbae artwork when left empty. Upload SVG or PNG to replace one."
       },
       {
         "type": "image_picker",
@@ -302,7 +309,7 @@
         "type": "richtext",
         "id": "newsletter_terms",
         "label": "Fine print",
-        "default": "<p>By signing up you agree to receive email from Odd Ritual. Unsubscribe any time.</p>"
+        "default": "<p>By signing up you agree to receive email from moonbae. Unsubscribe any time.</p>"
       },
       {
         "type": "text",

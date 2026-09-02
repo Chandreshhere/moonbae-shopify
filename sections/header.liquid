@@ -140,7 +140,7 @@
 
       <div class="nav-col">
         <a href="{{ routes.root_url }}"{% if request.page_type == 'index' %} aria-current="page"{% endif %} class="nav-logo_link w-inline-block{% if request.page_type == 'index' %} w--current{% endif %}" aria-label="{{ shop.name | escape }}">
-          {%- if settings.logo_nav != blank -%}<img src="{{ settings.logo_nav | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ settings.logo_nav.width }}" height="{{ settings.logo_nav.height }}">{%- else -%}{% render 'icon-logo-nav' %}{%- endif -%}
+          {%- if settings.logo_nav != blank -%}<img src="{{ settings.logo_nav | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ settings.logo_nav.width }}" height="{{ settings.logo_nav.height }}">{%- else -%}{% render 'brand-wordmark', class: 'is-nav' %}{%- endif -%}
         </a>
       </div>
 
@@ -228,7 +228,7 @@
       "type": "text",
       "id": "menu_tagline",
       "label": "Tagline",
-      "default": "Swing easy, Odd Ritual, ©2025"
+      "default": "Swing easy, moonbae, ©2025"
     },
     {
       "type": "text",

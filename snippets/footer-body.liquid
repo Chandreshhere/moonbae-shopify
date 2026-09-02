@@ -28,7 +28,7 @@
         {%- if settings.logo_footer != blank -%}
           <img src="{{ settings.logo_footer | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ settings.logo_footer.width }}" height="{{ settings.logo_footer.height }}">
         {%- else -%}
-          {% render 'icon-logo-footer' %}
+          {% render 'brand-wordmark', class: 'is-footer' %}
         {%- endif -%}
       </div>
     </div>

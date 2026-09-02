@@ -63,8 +63,12 @@
   margin-top: 1.5em;
 }
 
-.checkout-button {
+.checkout-button,
+.cart-button {
   cursor: pointer;
+  /* The base rule in styles.css sets a dark background but never a colour, so
+     the label inherited the page's black text and vanished into the button. */
+  color: var(--swatch--light, #fff);
 }
 .checkout-button[disabled] {
   opacity: 0.4;
@@ -260,3 +264,19 @@ body:not(.show-preloader) .preloader_wrap {
   clip-path: none !important;
   pointer-events: none;
 }
+
+/* Brand wordmark — the text stand-in used until a logo image is uploaded. */
+.brand-wordmark {
+  display: inline-block;
+  font-family: var(--_typography---font--primary-family, inherit);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-transform: lowercase;
+  white-space: nowrap;
+  color: currentColor;
+}
+
+.brand-wordmark.is-nav       { font-size: 1.75rem; }
+.brand-wordmark.is-preloader { font-size: 2.5rem; }
+.brand-wordmark.is-footer    { font-size: clamp(2.5rem, 9vw, 7rem); }

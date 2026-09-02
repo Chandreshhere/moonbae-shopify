@@ -1459,6 +1459,20 @@ barba.init({
   preventRunning: true,
   cacheFirstPage: true,
   timeout: 10000,
+  // Barba intercepts every same-origin link click to run its own page
+  // transition. Shopify's checkout, account and order pages are not Barba
+  // containers, so those clicks were swallowed and nothing happened. Hand
+  // them back to the browser so they navigate for real.
+  prevent: function (data) {
+    var el = data && data.el;
+    if (!el) return false;
+    if (el.hasAttribute("data-barba-prevent")) return true;
+    if (el.hasAttribute("download")) return true;
+    if (el.getAttribute("target") === "_blank") return true;
+    var href = data.href || el.getAttribute("href") || "";
+    if (/^(mailto:|tel:|#)/.test(href)) return true;
+    return /\/(checkout|account|orders|tools|challenge|services|apps|policies)(\/|$|\?)/.test(href);
+  },
   transitions: [
     {
       sync: true,
