@@ -234,3 +234,29 @@
   min-height: 7rem;
   font: inherit;
 }
+
+/* --- The black ground must never be able to show through ------------------
+   body is #000 so the preloader has something to sit on, and .page-main is
+   the white ground painted over it. Anything that leaves a gap in that cover
+   — a section that does not fill the viewport, or an overlay stuck part-way
+   through its reveal — shows as a black band. These rules close both holes.
+
+   .preloader_wrap is z-index 20 against the nav's 10, so when it is stuck it
+   covers the header too, which is why the header disappears on some pages. */
+.page-main {
+  min-height: 100svh;
+  background-color: #fff;
+}
+
+.preloader_wrap {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body:not(.show-preloader) .preloader_wrap {
+  display: none !important;
+  clip-path: none !important;
+  pointer-events: none;
+}
