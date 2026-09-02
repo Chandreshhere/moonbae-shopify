@@ -33,6 +33,7 @@ families: ["Instrument Serif:regular,italic"]
     <link rel="stylesheet" href="{{ 'styles.css' | asset_url }}">
     <link rel="stylesheet" href="{{ 'styles-2026.css' | asset_url }}">
     <link rel="stylesheet" href="{{ 'theme.css' | asset_url }}">
+    <noscript><style>.show-preloader .preloader_wrap{display:none !important}</style></noscript>
 
     {%- comment -%}
       Theme settings override the design tokens the stylesheets are built on, so
@@ -152,6 +153,18 @@ families: ["Instrument Serif:regular,italic"]
     <script src="{{ 'vendor-lenis.js' | asset_url }}"></script>
     <script>window.UdeslyCartScript = {{ 'vendor-udesly-shopify.js' | asset_url | json }};</script>
     <script src="{{ 'scripts-2026.js' | asset_url }}"></script>
+    <script>
+      // Fail-safe. The preloader overlay is display:flex while <body> carries
+      // show-preloader, and scripts-2026.js only drops that class when its GSAP
+      // timeline completes. If any vendor script fails to load or throws, the
+      // overlay would otherwise cover the storefront permanently. Nothing here
+      // runs when the normal path works, because the class is already gone.
+      (function () {
+        var lift = function () { document.body.classList.remove('show-preloader'); };
+        window.addEventListener('load', function () { setTimeout(lift, 4000); });
+        setTimeout(lift, 10000);
+      })();
+    </script>
     <script src="https://cdn.shopify.com/storefront/standard-actions.js" defer></script>
     <script>
       window.Theme = {

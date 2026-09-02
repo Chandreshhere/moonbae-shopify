@@ -26,10 +26,13 @@
           {%- endfor -%}
         {%- else -%}
           {%- comment -%}
-            Nothing picked yet: fall back to the reference build's own line-up so a
-            brand-new store still renders the design exactly.
+            Nothing picked yet: fall back to the store's own products so the marquee
+            stays populated. It must never invent products — the previous fallback
+            rendered the reference build's line-up, whose links 404 on a real store.
           {%- endcomment -%}
-          {% render 'product-cards-reference' %}
+          {%- for product in collections.all.products limit: section.settings.products_limit -%}
+            {% render 'product-card', product: product %}
+          {%- endfor -%}
         {%- endif -%}
       </div>
     </div>
