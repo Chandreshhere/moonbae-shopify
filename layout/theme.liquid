@@ -40,15 +40,23 @@ families: ["Instrument Serif:regular,italic"]
       colour, type and grid are editable without touching CSS. Emitted after the
       stylesheets so :root here wins.
     {%- endcomment -%}
-    {%- if settings.font_primary != blank -%}
-      {{ settings.font_primary | font_face: font_display: 'swap' }}
-      {{ settings.font_primary | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
-    {%- endif -%}
-    {%- if settings.font_secondary != blank -%}
-      {{ settings.font_secondary | font_face: font_display: 'swap' }}
-      {{ settings.font_secondary | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
-    {%- endif -%}
     <style>
+      {%- comment -%}
+        font_face emits raw @font-face CSS, so it has to live inside this tag.
+        Outside it the parser cannot keep the text in <head> and relocates it
+        into <body>, where it renders as visible text across the top of every
+        page. System fonts emit nothing, which is why that stayed hidden until
+        a Shopify-hosted font was selected.
+      {%- endcomment -%}
+      {%- if settings.font_primary != blank -%}
+        {{ settings.font_primary | font_face: font_display: 'swap' }}
+        {{ settings.font_primary | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+      {%- endif -%}
+      {%- if settings.font_secondary != blank -%}
+        {{ settings.font_secondary | font_face: font_display: 'swap' }}
+        {{ settings.font_secondary | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+      {%- endif -%}
+
       :root {
         --swatch--dark: {{ settings.color_dark }};
         --swatch--light: {{ settings.color_light }};
