@@ -36,30 +36,6 @@
       "type": "url",
       "id": "credit_url",
       "label": "Credit URL"
-    },
-    {
-      "type": "header",
-      "content": "Link hover images"
-    },
-    {
-      "type": "image_picker",
-      "id": "footer_image_1",
-      "label": "Image 1"
-    },
-    {
-      "type": "image_picker",
-      "id": "footer_image_2",
-      "label": "Image 2"
-    },
-    {
-      "type": "image_picker",
-      "id": "footer_image_3",
-      "label": "Image 3"
-    },
-    {
-      "type": "image_picker",
-      "id": "footer_image_4",
-      "label": "Image 4"
     }
   ],
   "blocks": [
@@ -126,6 +102,23 @@
           "label": "Link 4 URL"
         }
       ]
+    },
+    {
+      "type": "hover_image",
+      "name": "Link hover image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text",
+          "info": "Describes the image for screen readers and search engines."
+        }
+      ]
     }
   ],
   "default": {
@@ -176,6 +169,18 @@
           "link_4_label": "Terms of service",
           "link_4_url": "/pages/terms-of-service"
         }
+      },
+      {
+        "type": "hover_image"
+      },
+      {
+        "type": "hover_image"
+      },
+      {
+        "type": "hover_image"
+      },
+      {
+        "type": "hover_image"
       }
     ]
   }

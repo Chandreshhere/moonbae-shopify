@@ -10,7 +10,71 @@
       "type": "about-main-section",
       "settings": {
         "outro_url": "https://www.instagram.com/oddritual.gc/"
-      }
+      },
+      "blocks": {
+        "flick-1": {
+          "type": "flick",
+          "settings": {}
+        },
+        "flick-2": {
+          "type": "flick",
+          "settings": {}
+        },
+        "flick-3": {
+          "type": "flick",
+          "settings": {}
+        },
+        "flick-4": {
+          "type": "flick",
+          "settings": {}
+        },
+        "flick-5": {
+          "type": "flick",
+          "settings": {}
+        },
+        "flick-6": {
+          "type": "flick",
+          "settings": {}
+        },
+        "flick-7": {
+          "type": "flick",
+          "settings": {}
+        },
+        "flick-8": {
+          "type": "flick",
+          "settings": {}
+        },
+        "sticky-1": {
+          "type": "sticky",
+          "settings": {}
+        },
+        "sticky-2": {
+          "type": "sticky",
+          "settings": {}
+        },
+        "sticky-3": {
+          "type": "sticky",
+          "settings": {}
+        },
+        "sticky-4": {
+          "type": "sticky",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "flick-1",
+        "flick-2",
+        "flick-3",
+        "flick-4",
+        "flick-5",
+        "flick-6",
+        "flick-7",
+        "flick-8",
+        "sticky-1",
+        "sticky-2",
+        "sticky-3",
+        "sticky-4"
+      ]
     },
     "about-footer": {
       "type": "about-footer",

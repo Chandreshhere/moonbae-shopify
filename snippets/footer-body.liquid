@@ -105,9 +105,22 @@
 </div>
 
 <div target-imgs_hidden="" class="target-imgs_hidden">
+  {%- comment -%}
+    One image per hover-enabled footer link, in order — the hover script pairs
+    them by index. Falls back to the bundled set when no blocks are added.
+  {%- endcomment -%}
   {%- assign footer_fallbacks = 'or-menu-hover-1.jpg,or-menu-hover-2.jpg,or-menu-hover-3.jpg,or-menu-hover-4.jpg' | split: ',' -%}
-  {%- for file in footer_fallbacks -%}
-    {%- assign key = 'footer_image_' | append: forloop.index -%}
-    {% render 'img', image: section.settings[key], fallback: file, class: 'img-fill' %}
+  {%- assign hover_i = 0 -%}
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'hover_image' -%}
+      {%- assign fb_index = hover_i | modulo: 4 -%}
+      {% render 'img', image: block.settings.image, alt: block.settings.alt, fallback: footer_fallbacks[fb_index], class: 'img-fill', attrs: block.shopify_attributes %}
+      {%- assign hover_i = hover_i | plus: 1 -%}
+    {%- endif -%}
   {%- endfor -%}
+  {%- if hover_i == 0 -%}
+    {%- for file in footer_fallbacks -%}
+      {% render 'img', fallback: file, class: 'img-fill' %}
+    {%- endfor -%}
+  {%- endif -%}
 </div>

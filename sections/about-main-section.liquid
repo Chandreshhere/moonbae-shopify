@@ -9,11 +9,15 @@
   <div nav-light="" class="split-col u-column-6">
     <div flickthrough-wrap="" img-scroll="" class="about-img_left">
       {%- assign flick_fallbacks = 'or-about-flick-1.jpg,or-about-flick-2.jpg,or-about-flick-3.jpg,or-about-flick-4.jpg,or-about-flick-5.jpg,or-about-flick-6.jpg,or-about-flick-7.jpg,or-about-flick-8.jpg' | split: ',' -%}
-      {%- for file in flick_fallbacks -%}
-        {%- assign key = 'flick_' | append: forloop.index -%}
-        {%- assign cls = 'flickthrough-img' -%}
-        {%- if forloop.first -%}{%- assign cls = 'flickthrough-img show' -%}{%- endif -%}
-        {% render 'img', image: section.settings[key], fallback: file, class: cls %}
+      {%- assign flick_i = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'flick' -%}
+          {%- assign cls = 'flickthrough-img' -%}
+          {%- if flick_i == 0 -%}{%- assign cls = 'flickthrough-img show' -%}{%- endif -%}
+          {%- assign fb_index = flick_i | modulo: 8 -%}
+          {% render 'img', image: block.settings.image, alt: block.settings.alt, fallback: flick_fallbacks[fb_index], class: cls, attrs: block.shopify_attributes %}
+          {%- assign flick_i = flick_i | plus: 1 -%}
+        {%- endif -%}
       {%- endfor -%}
     </div>
   </div>
@@ -51,14 +55,22 @@
 
 <div class="sticky-component">
   <div class="sticky-wrap">
+    {%- comment -%}
+      Capped at four blocks: the CSS positions .sticky-item is-1 … is-5, and the
+      fifth slot below is the fixed logo panel.
+    {%- endcomment -%}
     {%- assign sticky_fallbacks = 'or-about-sticky-1.jpg,or-about-sticky-2.jpg,or-about-sticky-3.jpg,or-about-sticky-4.jpg' | split: ',' -%}
-    {%- for file in sticky_fallbacks -%}
-      <div class="sticky-item is-{{ forloop.index }}">
-        <div class="sticky-item_img">
-          {%- assign key = 'sticky_' | append: forloop.index -%}
-          {% render 'img', image: section.settings[key], fallback: file, class: 'img-fill' %}
+    {%- assign sticky_i = 0 -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'sticky' -%}
+        {%- assign position = sticky_i | plus: 1 -%}
+        <div class="sticky-item is-{{ position }}" {{ block.shopify_attributes }}>
+          <div class="sticky-item_img">
+            {% render 'img', image: block.settings.image, alt: block.settings.alt, fallback: sticky_fallbacks[sticky_i], class: 'img-fill' %}
+          </div>
         </div>
-      </div>
+        {%- assign sticky_i = sticky_i | plus: 1 -%}
+      {%- endif -%}
     {%- endfor -%}
 
     <div class="sticky-item is-5 last-sticky_item">
@@ -114,46 +126,6 @@
       "content": "Flick-through images"
     },
     {
-      "type": "image_picker",
-      "id": "flick_1",
-      "label": "Flick 1"
-    },
-    {
-      "type": "image_picker",
-      "id": "flick_2",
-      "label": "Flick 2"
-    },
-    {
-      "type": "image_picker",
-      "id": "flick_3",
-      "label": "Flick 3"
-    },
-    {
-      "type": "image_picker",
-      "id": "flick_4",
-      "label": "Flick 4"
-    },
-    {
-      "type": "image_picker",
-      "id": "flick_5",
-      "label": "Flick 5"
-    },
-    {
-      "type": "image_picker",
-      "id": "flick_6",
-      "label": "Flick 6"
-    },
-    {
-      "type": "image_picker",
-      "id": "flick_7",
-      "label": "Flick 7"
-    },
-    {
-      "type": "image_picker",
-      "id": "flick_8",
-      "label": "Flick 8"
-    },
-    {
       "type": "header",
       "content": "Story"
     },
@@ -180,30 +152,6 @@
       "id": "story_right",
       "label": "Right column",
       "default": "<p>Odd Ritual is our way of building something new on the back of tradition.</p>"
-    },
-    {
-      "type": "header",
-      "content": "Sticky images"
-    },
-    {
-      "type": "image_picker",
-      "id": "sticky_1",
-      "label": "Sticky 1"
-    },
-    {
-      "type": "image_picker",
-      "id": "sticky_2",
-      "label": "Sticky 2"
-    },
-    {
-      "type": "image_picker",
-      "id": "sticky_3",
-      "label": "Sticky 3"
-    },
-    {
-      "type": "image_picker",
-      "id": "sticky_4",
-      "label": "Sticky 4"
     },
     {
       "type": "header",
@@ -264,7 +212,82 @@
       "category": "About",
       "settings": {
         "outro_url": "https://www.instagram.com/oddritual.gc/"
-      }
+      },
+      "blocks": [
+        {
+          "type": "flick"
+        },
+        {
+          "type": "flick"
+        },
+        {
+          "type": "flick"
+        },
+        {
+          "type": "flick"
+        },
+        {
+          "type": "flick"
+        },
+        {
+          "type": "flick"
+        },
+        {
+          "type": "flick"
+        },
+        {
+          "type": "flick"
+        },
+        {
+          "type": "sticky"
+        },
+        {
+          "type": "sticky"
+        },
+        {
+          "type": "sticky"
+        },
+        {
+          "type": "sticky"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "flick",
+      "name": "Flickthrough image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text",
+          "info": "Describes the image for screen readers and search engines."
+        }
+      ]
+    },
+    {
+      "type": "sticky",
+      "name": "Sticky image",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text",
+          "info": "Describes the image for screen readers and search engines."
+        }
+      ]
     }
   ]
 }

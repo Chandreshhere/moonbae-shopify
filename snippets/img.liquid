@@ -2,7 +2,9 @@
   Renders an <img> from a section/block image setting, falling back to a bundled
   placeholder asset so the theme looks complete on a brand-new store.
 
-  Params: image, fallback (asset filename), alt, class, sizes, loading
+  Params: image, fallback (asset filename), alt, class, sizes, loading, attrs
+  attrs takes raw attributes (e.g. block.shopify_attributes) so blocks stay
+  selectable in the editor without a wrapper element disturbing the CSS.
 {%- endcomment -%}
 {%- assign img_alt = alt | default: '' -%}
 {%- assign img_class = class | default: '' -%}
@@ -16,7 +18,8 @@
     class="{{ img_class }}"
     loading="{{ img_loading }}"
     width="{{ image.width }}"
-    height="{{ image.height }}">
+    height="{{ image.height }}"
+    {{ attrs }}>
 {%- else -%}
-  <img src="{{ fallback | asset_url }}" alt="{{ img_alt | escape }}" class="{{ img_class }}" loading="{{ img_loading }}">
+  <img src="{{ fallback | asset_url }}" alt="{{ img_alt | escape }}" class="{{ img_class }}" loading="{{ img_loading }}" {{ attrs }}>
 {%- endif -%}

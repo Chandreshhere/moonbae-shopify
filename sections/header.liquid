@@ -56,27 +56,22 @@
                 manual link fields do, so the menu matches the reference on a new store.
               {%- endcomment -%}
               {%- assign menu_links = linklists[section.settings.menu].links -%}
-              {%- if section.settings.menu != blank and menu_links.size > 0 -%}
+              {%- if section.blocks.size > 0 -%}
+                {%- for block in section.blocks -%}
+                  {%- assign url = block.settings.url | default: '/' -%}
+                  <div img-hover_trigger="" class="menu-list-item" {{ block.shopify_attributes }}>
+                    <a href="{{ url }}"{% if url == request.path %} aria-current="page"{% endif %} class="menu-link w-inline-block{% if url == request.path %} w--current{% endif %}">
+                      <h3 class="u-text-style-h2 is-menulink">{{ block.settings.label }}</h3>
+                    </a>
+                  </div>
+                {%- endfor -%}
+              {%- elsif section.settings.menu != blank and menu_links.size > 0 -%}
                 {%- for link in menu_links -%}
                   <div img-hover_trigger="" class="menu-list-item">
                     <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %} class="menu-link w-inline-block{% if link.active %} w--current{% endif %}">
                       <h3 class="u-text-style-h2 is-menulink">{{ link.title }}</h3>
                     </a>
                   </div>
-                {%- endfor -%}
-              {%- else -%}
-                {%- for i in (1..6) -%}
-                  {%- assign label_key = 'link_' | append: i | append: '_label' -%}
-                  {%- assign url_key = 'link_' | append: i | append: '_url' -%}
-                  {%- assign label = section.settings[label_key] -%}
-                  {%- if label != blank -%}
-                    {%- assign url = section.settings[url_key] | default: '/' -%}
-                    <div img-hover_trigger="" class="menu-list-item">
-                      <a href="{{ url }}"{% if url == request.path %} aria-current="page"{% endif %} class="menu-link w-inline-block{% if url == request.path %} w--current{% endif %}">
-                        <h3 class="u-text-style-h2 is-menulink">{{ label }}</h3>
-                      </a>
-                    </div>
-                  {%- endif -%}
                 {%- endfor -%}
               {%- endif -%}
             </div>
@@ -110,22 +105,21 @@
       </div>
 
       <div target-imgs_hidden="" class="target-imgs_hidden">
+        {%- comment -%}
+          One image per link, in link order — the hover script pairs them by index.
+        {%- endcomment -%}
         {%- assign menu_fallbacks = 'or-menu-hover-1.jpg,or-menu-hover-2.jpg,or-menu-hover-3.jpg,or-menu-hover-4.jpg' | split: ',' -%}
-        {%- assign hover_count = 4 -%}
-        {%- if section.settings.menu != blank and menu_links.size > 0 -%}
-          {%- assign hover_count = menu_links.size -%}
-        {%- else -%}
-          {%- assign hover_count = 0 -%}
-          {%- for i in (1..6) -%}
-            {%- assign label_key = 'link_' | append: i | append: '_label' -%}
-            {%- if section.settings[label_key] != blank -%}{%- assign hover_count = hover_count | plus: 1 -%}{%- endif -%}
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            {%- assign fb_index = forloop.index0 | modulo: 4 -%}
+            {% render 'img', image: block.settings.image, fallback: menu_fallbacks[fb_index], class: 'img-fill' %}
+          {%- endfor -%}
+        {%- elsif section.settings.menu != blank and menu_links.size > 0 -%}
+          {%- for link in menu_links -%}
+            {%- assign fb_index = forloop.index0 | modulo: 4 -%}
+            {% render 'img', image: nil, fallback: menu_fallbacks[fb_index], class: 'img-fill' %}
           {%- endfor -%}
         {%- endif -%}
-        {%- for i in (1..hover_count) -%}
-          {%- assign key = 'menu_image_' | append: i -%}
-          {%- assign fb_index = i | minus: 1 | modulo: 4 -%}
-          {% render 'img', image: section.settings[key], fallback: menu_fallbacks[fb_index], class: 'img-fill' %}
-        {%- endfor -%}
       </div>
     </div>
   </nav>
@@ -179,7 +173,7 @@
       "type": "link_list",
       "id": "menu",
       "label": "Menu",
-      "info": "Leave empty to use the manual links below."
+      "info": "Optional. Menu links added below take priority; a picked menu is used only when there are none."
     },
     {
       "type": "text",
@@ -241,119 +235,68 @@
       "id": "menu_location",
       "label": "Location",
       "default": "Cape Town, South Africa"
-    },
-    {
-      "type": "header",
-      "content": "Menu hover images"
-    },
-    {
-      "type": "image_picker",
-      "id": "menu_image_1",
-      "label": "Link 1 image"
-    },
-    {
-      "type": "image_picker",
-      "id": "menu_image_2",
-      "label": "Link 2 image"
-    },
-    {
-      "type": "image_picker",
-      "id": "menu_image_3",
-      "label": "Link 3 image"
-    },
-    {
-      "type": "image_picker",
-      "id": "menu_image_4",
-      "label": "Link 4 image"
-    },
-    {
-      "type": "image_picker",
-      "id": "menu_image_5",
-      "label": "Link 5 image"
-    },
-    {
-      "type": "image_picker",
-      "id": "menu_image_6",
-      "label": "Link 6 image"
-    },
-    {
-      "type": "header",
-      "content": "Menu links (used when no menu is picked)"
-    },
-    {
-      "type": "text",
-      "id": "link_1_label",
-      "label": "Link 1 label"
-    },
-    {
-      "type": "url",
-      "id": "link_1_url",
-      "label": "Link 1 URL"
-    },
-    {
-      "type": "text",
-      "id": "link_2_label",
-      "label": "Link 2 label"
-    },
-    {
-      "type": "url",
-      "id": "link_2_url",
-      "label": "Link 2 URL"
-    },
-    {
-      "type": "text",
-      "id": "link_3_label",
-      "label": "Link 3 label"
-    },
-    {
-      "type": "url",
-      "id": "link_3_url",
-      "label": "Link 3 URL"
-    },
-    {
-      "type": "text",
-      "id": "link_4_label",
-      "label": "Link 4 label"
-    },
-    {
-      "type": "url",
-      "id": "link_4_url",
-      "label": "Link 4 URL"
-    },
-    {
-      "type": "text",
-      "id": "link_5_label",
-      "label": "Link 5 label"
-    },
-    {
-      "type": "url",
-      "id": "link_5_url",
-      "label": "Link 5 URL"
-    },
-    {
-      "type": "text",
-      "id": "link_6_label",
-      "label": "Link 6 label"
-    },
-    {
-      "type": "url",
-      "id": "link_6_url",
-      "label": "Link 6 URL"
     }
   ],
   "default": {
     "settings": {
       "shop_url": "/collections/all",
-      "social_url": "https://www.instagram.com/oddritual.gc/",
-      "link_1_label": "Our Shop",
-      "link_1_url": "/collections/all",
-      "link_2_label": "Home",
-      "link_2_url": "/",
-      "link_3_label": "About us",
-      "link_3_url": "/pages/about",
-      "link_4_label": "Contact",
-      "link_4_url": "/pages/contact-us"
+      "social_url": "https://www.instagram.com/oddritual.gc/"
+    },
+    "blocks": [
+      {
+        "type": "link",
+        "settings": {
+          "label": "Our Shop",
+          "url": "/collections/all"
+        }
+      },
+      {
+        "type": "link",
+        "settings": {
+          "label": "Home",
+          "url": "/"
+        }
+      },
+      {
+        "type": "link",
+        "settings": {
+          "label": "About us",
+          "url": "/pages/about"
+        }
+      },
+      {
+        "type": "link",
+        "settings": {
+          "label": "Contact",
+          "url": "/pages/contact-us"
+        }
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Menu link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "New link"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Hover image",
+          "info": "Shown in the menu panel when this link is hovered."
+        }
+      ]
     }
-  }
+  ]
 }
 {% endschema %}

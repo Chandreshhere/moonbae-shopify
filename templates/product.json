@@ -86,13 +86,33 @@
             "link_4_label": "Terms of service",
             "link_4_url": "/pages/terms-of-service"
           }
+        },
+        "hover_image-1": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-2": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-3": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-4": {
+          "type": "hover_image",
+          "settings": {}
         }
       },
       "block_order": [
         "column-1",
         "column-2",
         "column-3",
-        "column-4"
+        "column-4",
+        "hover_image-1",
+        "hover_image-2",
+        "hover_image-3",
+        "hover_image-4"
       ]
     }
   },
