@@ -3,7 +3,7 @@
 <div class="page-inner">
   {%- if article.image -%}
     <div class="img-section">
-      <img src="{{ article.image | image_url: width: 2400 }}" alt="{{ article.title | escape }}" class="img-fill" width="{{ article.image.width }}" height="{{ article.image.height }}">
+      <img src="{{ article.image | image_url: width: 2400 }}" alt="{{ article.title | escape }}" class="img-fill">
     </div>
   {%- endif -%}
   <div class="shop-contain u-container">
