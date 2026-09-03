@@ -280,3 +280,23 @@ body:not(.show-preloader) .preloader_wrap {
 .brand-wordmark.is-nav       { font-size: 1.75rem; }
 .brand-wordmark.is-preloader { font-size: 2.5rem; }
 .brand-wordmark.is-footer    { font-size: clamp(2.5rem, 9vw, 7rem); }
+
+/* --- Gap between page content and the footer -----------------------------
+   styles.css sets .page-collection a bottom padding, then zeroes it again in
+   .page-collection.u-container — and every collection, list-collections, blog
+   and search section renders with exactly those two classes, so the override
+   always won. .page-single (product) and .page-cart were never given one at
+   all. The result was the last row of content butting straight against the
+   footer. .footer only contributes 1.25rem of its own padding-top.
+
+   8rem is the value the design already uses for .page-contain.u-container, so
+   the rhythm matches the rest of the site. */
+.page-collection.u-container,
+.page-single,
+.page-cart,
+.contact-section {
+  padding-bottom: var(--size--8rem);
+}
+
+/* .page-about_contain sets padding-bottom:0 explicitly and the About page has
+   its own bespoke footer designed to sit flush, so that one is left alone. */
