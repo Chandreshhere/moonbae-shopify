@@ -15,7 +15,7 @@
         "id": "brand_name",
         "label": "Brand name",
         "default": "moonbae",
-        "info": "Shown as the wordmark wherever no logo image is uploaded below."
+        "info": "Used as the alt text on every logo and monogram."
       },
       {
         "type": "image_picker",
