@@ -27,6 +27,27 @@
   "class": "page-contain u-container is-section",
   "settings": [
     {
+      "type": "header",
+      "content": "Monogram"
+    },
+    {
+      "type": "image_picker",
+      "id": "mark_image",
+      "label": "Monogram image",
+      "info": "Overrides the theme Brand marks monogram for this section only."
+    },
+    {
+      "type": "range",
+      "id": "mark_size",
+      "label": "Monogram height",
+      "min": 0,
+      "max": 300,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "info": "0 keeps the design default, which also scales down on mobile. Any other value fixes the height on every screen."
+    },
+    {
       "type": "richtext",
       "id": "eyebrow",
       "label": "Eyebrow",
@@ -75,23 +96,6 @@
       "default": 0,
       "unit": "px",
       "info": "0 keeps the design default."
-    },
-    {
-      "type": "image_picker",
-      "id": "mark_image",
-      "label": "Monogram image",
-      "info": "Overrides the theme Brand marks monogram for this section only."
-    },
-    {
-      "type": "range",
-      "id": "mark_size",
-      "label": "Monogram height",
-      "min": 0,
-      "max": 300,
-      "step": 4,
-      "unit": "px",
-      "default": 0,
-      "info": "0 keeps the design default, which also scales down on mobile. Any other value fixes the height on every screen."
     }
   ],
   "presets": [

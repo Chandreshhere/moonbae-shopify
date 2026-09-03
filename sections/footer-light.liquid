@@ -10,6 +10,27 @@
   "max_blocks": 4,
   "settings": [
     {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image",
+      "info": "Overrides the theme Brand marks logo for this footer only."
+    },
+    {
+      "type": "range",
+      "id": "logo_size",
+      "label": "Logo height",
+      "min": 0,
+      "max": 400,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "info": "0 keeps the design default, which also scales down on mobile. Any other value fixes the height on every screen."
+    },
+    {
       "type": "richtext",
       "id": "tagline",
       "label": "Tagline",
@@ -36,27 +57,6 @@
       "type": "url",
       "id": "credit_url",
       "label": "Credit URL"
-    },
-    {
-      "type": "header",
-      "content": "Logo"
-    },
-    {
-      "type": "image_picker",
-      "id": "logo_image",
-      "label": "Logo image",
-      "info": "Overrides the theme Brand marks logo for this footer only."
-    },
-    {
-      "type": "range",
-      "id": "logo_size",
-      "label": "Logo height",
-      "min": 0,
-      "max": 400,
-      "step": 4,
-      "unit": "px",
-      "default": 0,
-      "info": "0 keeps the design default, which also scales down on mobile. Any other value fixes the height on every screen."
     }
   ],
   "blocks": [
