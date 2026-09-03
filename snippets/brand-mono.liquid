@@ -1,17 +1,20 @@
 {%- comment -%}
-  Brand monogram — the moonbae face mark.
-
-  Same contract as brand-logo: uploaded image wins, otherwise the bundled file,
-  and `variant` must match the ground because the artwork is a fixed colour.
-
-  Params: setting, variant ('light' white linework for dark grounds, 'dark'
-          black linework for light grounds — default), class
+  Brand monogram — the moonbae face mark. Same contract as brand-logo:
+  setting override > settings.mono_light / mono_dark by variant > bundled file,
+  and `size` (px) applies only when > 0.
+  Variant default is 'dark' (black linework for light grounds).
 {%- endcomment -%}
 {%- assign brand_alt = settings.brand_name | default: shop.name -%}
-{%- if setting != blank -%}
-  <img src="{{ setting | image_url: width: 1200 }}" alt="{{ brand_alt | escape }}" class="brand-mark {{ class }}" width="{{ setting.width }}" height="{{ setting.height }}">
+{%- assign img = setting -%}
+{%- if img == blank -%}
+  {%- if variant == 'light' -%}{%- assign img = settings.mono_light -%}{%- else -%}{%- assign img = settings.mono_dark -%}{%- endif -%}
+{%- endif -%}
+{%- assign mark_style = '' -%}
+{%- if size != blank and size > 0 -%}{%- assign mark_style = 'height:' | append: size | append: 'px' -%}{%- endif -%}
+{%- if img != blank -%}
+  <img src="{{ img | image_url: width: 1200 }}" alt="{{ brand_alt | escape }}" class="brand-mark {{ class }}" width="{{ img.width }}" height="{{ img.height }}"{% if mark_style != '' %} style="{{ mark_style }}"{% endif %}>
 {%- else -%}
   {%- assign file = 'moonbae-mono.png' -%}
   {%- if variant == 'light' -%}{%- assign file = 'moonbae-mono-white.png' -%}{%- endif -%}
-  <img src="{{ file | asset_url }}" alt="{{ brand_alt | escape }}" class="brand-mark {{ class }}" width="900" height="890">
+  <img src="{{ file | asset_url }}" alt="{{ brand_alt | escape }}" class="brand-mark {{ class }}" width="900" height="890"{% if mark_style != '' %} style="{{ mark_style }}"{% endif %}>
 {%- endif -%}

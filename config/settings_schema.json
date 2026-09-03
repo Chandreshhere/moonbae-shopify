@@ -179,42 +179,73 @@
     "settings": [
       {
         "type": "paragraph",
-        "content": "Each mark falls back to the built-in moonbae artwork when left empty. Upload SVG or PNG to replace one."
+        "content": "Every slot falls back to the built-in moonbae artwork when left empty. The artwork is fixed-colour, so upload a light version for dark backgrounds and a dark version for light ones. Sizes for the header, menu, footer, intro, about, contact and made-locally marks live in those sections."
+      },
+      {
+        "type": "header",
+        "content": "Logo (wordmark)"
       },
       {
         "type": "image_picker",
-        "id": "logo_nav",
-        "label": "Header wordmark"
+        "id": "logo_light",
+        "label": "Logo — light",
+        "info": "White artwork. Used on the header, preloader and dark footer."
       },
       {
         "type": "image_picker",
-        "id": "logo_preloader",
-        "label": "Preloader wordmark"
+        "id": "logo_dark",
+        "label": "Logo — dark",
+        "info": "Black artwork. Used on light-ground pages and the light footer."
+      },
+      {
+        "type": "header",
+        "content": "Monogram"
       },
       {
         "type": "image_picker",
-        "id": "logo_menu_crest",
-        "label": "Menu crest"
+        "id": "mono_light",
+        "label": "Monogram — light",
+        "info": "White linework. Used on the menu panel."
       },
       {
         "type": "image_picker",
-        "id": "logo_intro_crest",
-        "label": "Intro crest"
+        "id": "mono_dark",
+        "label": "Monogram — dark",
+        "info": "Black linework. Used on the intro, about, contact and made-locally sections and the newsletter success state."
       },
       {
-        "type": "image_picker",
-        "id": "logo_or_icon",
-        "label": "Made-locally icon"
+        "type": "header",
+        "content": "Sizes (slots without a section)"
+      },
+      {
+        "type": "range",
+        "id": "logo_preloader_size",
+        "label": "Preloader logo height",
+        "min": 24,
+        "max": 240,
+        "step": 4,
+        "unit": "px",
+        "default": 48
+      },
+      {
+        "type": "range",
+        "id": "mono_icon_size",
+        "label": "Small monogram height",
+        "min": 24,
+        "max": 240,
+        "step": 4,
+        "unit": "px",
+        "default": 64,
+        "info": "Newsletter success, gift card and password page."
+      },
+      {
+        "type": "header",
+        "content": "Other artwork"
       },
       {
         "type": "image_picker",
         "id": "logo_community",
         "label": "Community heading artwork"
-      },
-      {
-        "type": "image_picker",
-        "id": "logo_footer",
-        "label": "Footer logo"
       },
       {
         "type": "image_picker",

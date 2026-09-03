@@ -27,7 +27,7 @@
       <div easter-trigger="" class="footer-logo_wrap">
         {%- assign footer_logo_variant = 'light' -%}
         {%- if theme == 'light' -%}{%- assign footer_logo_variant = 'dark' -%}{%- endif -%}
-        {% render 'brand-logo', setting: settings.logo_footer, variant: footer_logo_variant, class: 'is-footer' %}
+        {% render 'brand-logo', setting: section.settings.logo_image, variant: footer_logo_variant, size: section.settings.logo_size, class: 'is-footer' %}
       </div>
     </div>
     <div class="split-col u-column-3">

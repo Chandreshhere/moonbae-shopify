@@ -7,7 +7,7 @@
         {%- if section.settings.logo != blank -%}
           <img src="{{ section.settings.logo | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ section.settings.logo.width }}" height="{{ section.settings.logo.height }}">
         {%- else -%}
-          {% render 'brand-mono', variant: 'dark', class: 'is-about' %}
+          {% render 'brand-mono', setting: section.settings.mark_image, variant: 'dark', size: section.settings.mark_size, class: 'is-about' %}
         {%- endif -%}
       </div>
     </div>
@@ -86,6 +86,23 @@
       "default": 0,
       "unit": "px",
       "info": "0 keeps the design default."
+    },
+    {
+      "type": "image_picker",
+      "id": "mark_image",
+      "label": "Monogram image",
+      "info": "Overrides the theme Brand marks monogram for this section only."
+    },
+    {
+      "type": "range",
+      "id": "mark_size",
+      "label": "Monogram height",
+      "min": 0,
+      "max": 600,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "info": "0 keeps the design default, which also scales down on mobile. Any other value fixes the height on every screen."
     }
   ],
   "presets": [

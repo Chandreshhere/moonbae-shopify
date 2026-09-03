@@ -22,7 +22,7 @@
             <div class="bg-panel_contain u-container">
               <div class="menu-bottom_layout u-grid-desktop m-centered">
                 <div data-menu-fade="" class="menu-footer_col u-column-6">
-                  <div class="menu-extras_logo">{% render 'brand-mono', setting: settings.logo_menu_crest, variant: 'light', class: 'is-menu' %}</div>
+                  <div class="menu-extras_logo">{% render 'brand-mono', setting: section.settings.menu_mark_image, variant: 'light', size: section.settings.menu_mark_size, class: 'is-menu' %}</div>
                 </div>
                 <div data-menu-fade="" class="menu-footer_col u-column-4">
                   <div class="menu-bot_wrap">
@@ -140,7 +140,7 @@
 
       <div class="nav-col">
         <a href="{{ routes.root_url }}"{% if request.page_type == 'index' %} aria-current="page"{% endif %} class="nav-logo_link w-inline-block{% if request.page_type == 'index' %} w--current{% endif %}" aria-label="{{ shop.name | escape }}">
-          {%- if settings.logo_nav != blank -%}{% render 'brand-logo', setting: settings.logo_nav, class: 'is-nav' %}{%- else -%}{% render 'brand-logo', variant: 'light', class: 'is-nav is-on-dark' %}{% render 'brand-logo', variant: 'dark', class: 'is-nav is-on-light' %}{%- endif -%}
+          {%- if section.settings.logo_image != blank -%}{% render 'brand-logo', setting: section.settings.logo_image, size: section.settings.logo_size, class: 'is-nav' %}{%- else -%}{% render 'brand-logo', variant: 'light', size: section.settings.logo_size, class: 'is-nav is-on-dark' %}{% render 'brand-logo', variant: 'dark', size: section.settings.logo_size, class: 'is-nav is-on-light' %}{%- endif -%}
         </a>
       </div>
 
@@ -235,6 +235,40 @@
       "id": "menu_location",
       "label": "Location",
       "default": "Cape Town, South Africa"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image",
+      "info": "Overrides the theme Brand marks logo for the header only. Used on both light and dark pages, so pick one that reads on both."
+    },
+    {
+      "type": "range",
+      "id": "logo_size",
+      "label": "Logo height",
+      "min": 0,
+      "max": 160,
+      "step": 2,
+      "unit": "px",
+      "default": 0,
+      "info": "0 keeps the design default, which also scales down on mobile. Any other value fixes the height on every screen."
+    },
+    {
+      "type": "image_picker",
+      "id": "menu_mark_image",
+      "label": "Monogram image",
+      "info": "Overrides the theme Brand marks monogram for the menu panel only."
+    },
+    {
+      "type": "range",
+      "id": "menu_mark_size",
+      "label": "Monogram height",
+      "min": 0,
+      "max": 400,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "info": "0 keeps the design default, which also scales down on mobile. Any other value fixes the height on every screen."
     }
   ],
   "default": {

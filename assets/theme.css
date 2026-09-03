@@ -276,13 +276,22 @@ body:not(.show-preloader) .preloader_wrap {
   object-fit: contain;
 }
 
-.brand-mark.is-nav       { height: 1.75rem; }
-.brand-mark.is-preloader { height: 2.5rem; }
-.brand-mark.is-footer    { height: clamp(2.5rem, 8vw, 6rem); }
-.brand-mark.is-menu      { height: 4rem; }
-.brand-mark.is-intro     { height: clamp(6rem, 18vw, 14rem); }
-.brand-mark.is-about     { height: clamp(4rem, 10vw, 8rem); }
-.brand-mark.is-icon      { height: 3rem; }
+/* Defaults per slot. Every one can be overridden from the editor: the section
+   that owns a slot carries a size slider (inline height wins over these), and
+   the two slots with no section read theme settings through the vars above. */
+.brand-mark.is-nav       { height: 28px; }
+.brand-mark.is-preloader { height: var(--brand--logo-preloader, 48px); }
+.brand-mark.is-footer    { height: 96px; }
+.brand-mark.is-menu      { height: 96px; }
+.brand-mark.is-intro     { height: 260px; }
+.brand-mark.is-about     { height: 220px; }
+.brand-mark.is-icon      { height: var(--brand--mono-icon, 64px); }
+
+@media (max-width: 767px) {
+  .brand-mark.is-intro { height: 160px; }
+  .brand-mark.is-about { height: 140px; }
+  .brand-mark.is-footer, .brand-mark.is-menu { height: 64px; }
+}
 
 /* Nav swaps artwork when the dark treatment is on. */
 .brand-mark.is-on-light { display: none; }

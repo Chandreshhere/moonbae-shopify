@@ -1,21 +1,27 @@
 {%- comment -%}
   Brand wordmark.
 
-  Prefers the merchant's uploaded image (Theme settings → Brand marks) and falls
-  back to the bundled moonbae wordmark. The bundled artwork is a fixed colour,
-  not currentColor, so `variant` has to match the ground it sits on.
+  Image resolution, first match wins:
+    1. `setting`            a per-section override handed in by the caller
+    2. settings.logo_light / settings.logo_dark   the theme-level pair, by variant
+    3. the bundled moonbae file for the variant
+  The bundled artwork is fixed-colour, so `variant` must match the ground:
+  'light' = white artwork for dark grounds (default), 'dark' = black for light.
 
-  Params:
-    setting  image_picker value to prefer over the bundled file
-    variant  'light' = white artwork for dark grounds (default)
-             'dark'  = black artwork for light grounds
-    class    extra classes for sizing at the call site
+  `size` is a pixel height. 0 or blank keeps the CSS default for the slot, so
+  a merchant who never touches the slider gets the design's own size.
 {%- endcomment -%}
 {%- assign brand_alt = settings.brand_name | default: shop.name -%}
-{%- if setting != blank -%}
-  <img src="{{ setting | image_url: width: 1200 }}" alt="{{ brand_alt | escape }}" class="brand-mark {{ class }}" width="{{ setting.width }}" height="{{ setting.height }}">
+{%- assign img = setting -%}
+{%- if img == blank -%}
+  {%- if variant == 'dark' -%}{%- assign img = settings.logo_dark -%}{%- else -%}{%- assign img = settings.logo_light -%}{%- endif -%}
+{%- endif -%}
+{%- assign mark_style = '' -%}
+{%- if size != blank and size > 0 -%}{%- assign mark_style = 'height:' | append: size | append: 'px' -%}{%- endif -%}
+{%- if img != blank -%}
+  <img src="{{ img | image_url: width: 1200 }}" alt="{{ brand_alt | escape }}" class="brand-mark {{ class }}" width="{{ img.width }}" height="{{ img.height }}"{% if mark_style != '' %} style="{{ mark_style }}"{% endif %}>
 {%- else -%}
   {%- assign file = 'moonbae-logo-white.png' -%}
   {%- if variant == 'dark' -%}{%- assign file = 'moonbae-logo-black.png' -%}{%- endif -%}
-  <img src="{{ file | asset_url }}" alt="{{ brand_alt | escape }}" class="brand-mark {{ class }}" width="995" height="176">
+  <img src="{{ file | asset_url }}" alt="{{ brand_alt | escape }}" class="brand-mark {{ class }}" width="995" height="176"{% if mark_style != '' %} style="{{ mark_style }}"{% endif %}>
 {%- endif -%}

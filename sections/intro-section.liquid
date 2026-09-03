@@ -2,7 +2,7 @@
 <div class="split-grid u-grid-desktop m-vflex">
 
 <div class="split-col u-column-6">
-  <div class="full-logo_wrap">{% render 'brand-mono', setting: settings.logo_intro_crest, variant: 'dark', class: 'is-intro' %}</div>
+  <div class="full-logo_wrap">{% render 'brand-mono', setting: section.settings.mark_image, variant: 'dark', size: section.settings.mark_size, class: 'is-intro' %}</div>
 </div>
 <div class="split-col u-column-6 m-top_10">
   <div class="u-text-style-h3">
@@ -48,6 +48,23 @@
       "default": 0,
       "unit": "px",
       "info": "0 keeps the design default."
+    },
+    {
+      "type": "image_picker",
+      "id": "mark_image",
+      "label": "Monogram image",
+      "info": "Overrides the theme Brand marks monogram for this section only."
+    },
+    {
+      "type": "range",
+      "id": "mark_size",
+      "label": "Monogram height",
+      "min": 0,
+      "max": 600,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "info": "0 keeps the design default, which also scales down on mobile. Any other value fixes the height on every screen."
     }
   ],
   "presets": [
