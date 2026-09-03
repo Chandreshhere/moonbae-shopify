@@ -4,11 +4,7 @@
   <div class="split-grid u-grid-desktop">
     <div class="split-col u-column-3">
       <div h-fadeout="" class="about-hero-logo_wrap">
-        {%- if section.settings.logo != blank -%}
-          <img src="{{ section.settings.logo | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ section.settings.logo.width }}" height="{{ section.settings.logo.height }}">
-        {%- else -%}
-          {% render 'brand-mono', setting: section.settings.mark_image, variant: 'dark', size: section.settings.mark_size, class: 'is-about' %}
-        {%- endif -%}
+        {% render 'brand-mono', setting: section.settings.mark_image, variant: 'dark', size: section.settings.mark_size, class: 'is-about' %}
       </div>
     </div>
     <div class="split-col u-column-3 is-hidden"></div>
@@ -38,11 +34,6 @@
   "tag": "div",
   "class": "about-hero",
   "settings": [
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo (falls back to the built-in mark)"
-    },
     {
       "type": "text",
       "id": "label",
