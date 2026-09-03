@@ -280,7 +280,7 @@ body:not(.show-preloader) .preloader_wrap {
    that owns a slot carries a size slider (inline height wins over these), and
    the two slots with no section read theme settings through the vars above. */
 .brand-mark.is-nav       { height: 28px; }
-.brand-mark.is-preloader { height: var(--brand--logo-preloader, 48px); }
+.brand-mark.is-preloader { height: var(--brand--logo-preloader, 120px); }
 .brand-mark.is-footer    { height: 96px; }
 .brand-mark.is-menu      { height: 96px; }
 .brand-mark.is-intro     { height: 260px; }

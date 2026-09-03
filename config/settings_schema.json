@@ -189,7 +189,7 @@
         "type": "image_picker",
         "id": "logo_light",
         "label": "Logo — light",
-        "info": "White artwork. Used on the header, preloader and dark footer."
+        "info": "White artwork. Used on the header and dark footer."
       },
       {
         "type": "image_picker",
@@ -205,7 +205,7 @@
         "type": "image_picker",
         "id": "mono_light",
         "label": "Monogram — light",
-        "info": "White linework. Used on the menu panel."
+        "info": "White linework. Used on the preloader and the menu panel."
       },
       {
         "type": "image_picker",
@@ -220,12 +220,12 @@
       {
         "type": "range",
         "id": "logo_preloader_size",
-        "label": "Preloader logo height",
+        "label": "Preloader monogram height",
         "min": 24,
-        "max": 240,
+        "max": 320,
         "step": 4,
         "unit": "px",
-        "default": 48
+        "default": 120
       },
       {
         "type": "range",
