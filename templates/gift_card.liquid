@@ -13,7 +13,7 @@
   <body class="template-gift_card">
     <div class="u-container gift-card_page">
       <div class="or-info u-text-align-center">
-        <div class="full-logo_wrap">{% render 'icon-logo-crest-lg' %}</div>
+        <div class="full-logo_wrap">{% render 'brand-mono', variant: 'dark', class: 'is-intro' %}</div>
         <h1 class="u-text-style-h3">{{ 'gift_cards.issued.subtext' | t }}</h1>
         <div class="text-style_alt-large">{{ gift_card.balance | money }}</div>
         {{ gift_card.qr_identifier }}

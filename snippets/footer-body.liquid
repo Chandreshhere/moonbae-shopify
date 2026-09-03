@@ -25,11 +25,9 @@
   <div class="{{ top_grid }}">
     <div class="split-col u-column-6 m-bot_15">
       <div easter-trigger="" class="footer-logo_wrap">
-        {%- if settings.logo_footer != blank -%}
-          <img src="{{ settings.logo_footer | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ settings.logo_footer.width }}" height="{{ settings.logo_footer.height }}">
-        {%- else -%}
-          {% render 'brand-wordmark', class: 'is-footer' %}
-        {%- endif -%}
+        {%- assign footer_logo_variant = 'light' -%}
+        {%- if theme == 'light' -%}{%- assign footer_logo_variant = 'dark' -%}{%- endif -%}
+        {% render 'brand-logo', setting: settings.logo_footer, variant: footer_logo_variant, class: 'is-footer' %}
       </div>
     </div>
     <div class="split-col u-column-3">

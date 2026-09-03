@@ -1,0 +1,21 @@
+{%- comment -%}
+  Brand wordmark.
+
+  Prefers the merchant's uploaded image (Theme settings → Brand marks) and falls
+  back to the bundled moonbae wordmark. The bundled artwork is a fixed colour,
+  not currentColor, so `variant` has to match the ground it sits on.
+
+  Params:
+    setting  image_picker value to prefer over the bundled file
+    variant  'light' = white artwork for dark grounds (default)
+             'dark'  = black artwork for light grounds
+    class    extra classes for sizing at the call site
+{%- endcomment -%}
+{%- assign brand_alt = settings.brand_name | default: shop.name -%}
+{%- if setting != blank -%}
+  <img src="{{ setting | image_url: width: 1200 }}" alt="{{ brand_alt | escape }}" class="brand-mark {{ class }}" width="{{ setting.width }}" height="{{ setting.height }}">
+{%- else -%}
+  {%- assign file = 'moonbae-logo-white.png' -%}
+  {%- if variant == 'dark' -%}{%- assign file = 'moonbae-logo-black.png' -%}{%- endif -%}
+  <img src="{{ file | asset_url }}" alt="{{ brand_alt | escape }}" class="brand-mark {{ class }}" width="995" height="176">
+{%- endif -%}

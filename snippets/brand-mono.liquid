@@ -1,0 +1,17 @@
+{%- comment -%}
+  Brand monogram — the moonbae face mark.
+
+  Same contract as brand-logo: uploaded image wins, otherwise the bundled file,
+  and `variant` must match the ground because the artwork is a fixed colour.
+
+  Params: setting, variant ('light' white linework for dark grounds, 'dark'
+          black linework for light grounds — default), class
+{%- endcomment -%}
+{%- assign brand_alt = settings.brand_name | default: shop.name -%}
+{%- if setting != blank -%}
+  <img src="{{ setting | image_url: width: 1200 }}" alt="{{ brand_alt | escape }}" class="brand-mark {{ class }}" width="{{ setting.width }}" height="{{ setting.height }}">
+{%- else -%}
+  {%- assign file = 'moonbae-mono.png' -%}
+  {%- if variant == 'light' -%}{%- assign file = 'moonbae-mono-white.png' -%}{%- endif -%}
+  <img src="{{ file | asset_url }}" alt="{{ brand_alt | escape }}" class="brand-mark {{ class }}" width="900" height="890">
+{%- endif -%}

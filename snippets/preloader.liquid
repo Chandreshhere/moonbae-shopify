@@ -1,6 +1,6 @@
 <div class="preloader_wrap">
   <div class="preloader-inner">
-    <div class="preloader_logo-contain">{%- if settings.logo_preloader != blank -%}<img src="{{ settings.logo_preloader | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ settings.logo_preloader.width }}" height="{{ settings.logo_preloader.height }}">{%- else -%}{% render 'brand-wordmark', class: 'is-preloader' %}{%- endif -%}</div>
+    <div class="preloader_logo-contain">{% render 'brand-logo', setting: settings.logo_preloader, variant: 'light', class: 'is-preloader' %}</div>
     <div class="preloader-inner_bg"></div>
     <div class="preloader_img-contain">
       {%- assign preload_imgs = 'or-menu-hover-1.jpg,or-preloader-2.jpg,or-giving.jpg,or-preloader-4.jpg,or-preloader-5.jpg,or-preloader-6.jpg,or-preloader-7.jpg,or-preloader-8.jpg' | split: ',' -%}

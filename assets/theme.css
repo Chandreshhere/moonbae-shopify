@@ -265,21 +265,29 @@ body:not(.show-preloader) .preloader_wrap {
   pointer-events: none;
 }
 
-/* Brand wordmark — the text stand-in used until a logo image is uploaded. */
-.brand-wordmark {
-  display: inline-block;
-  font-family: var(--_typography---font--primary-family, inherit);
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  text-transform: lowercase;
-  white-space: nowrap;
-  color: currentColor;
+/* --- Brand marks ---------------------------------------------------------
+   The bundled logo and mono are fixed-colour PNGs, not currentColor SVGs, so
+   each slot renders the variant matching its ground. The nav is the only one
+   that changes at runtime (.nav-component.dark on light-ground templates), so
+   it renders both and CSS picks. */
+.brand-mark {
+  display: block;
+  width: auto;
+  object-fit: contain;
 }
 
-.brand-wordmark.is-nav       { font-size: 1.75rem; }
-.brand-wordmark.is-preloader { font-size: 2.5rem; }
-.brand-wordmark.is-footer    { font-size: clamp(2.5rem, 9vw, 7rem); }
+.brand-mark.is-nav       { height: 1.75rem; }
+.brand-mark.is-preloader { height: 2.5rem; }
+.brand-mark.is-footer    { height: clamp(2.5rem, 8vw, 6rem); }
+.brand-mark.is-menu      { height: 4rem; }
+.brand-mark.is-intro     { height: clamp(6rem, 18vw, 14rem); }
+.brand-mark.is-about     { height: clamp(4rem, 10vw, 8rem); }
+.brand-mark.is-icon      { height: 3rem; }
+
+/* Nav swaps artwork when the dark treatment is on. */
+.brand-mark.is-on-light { display: none; }
+.nav-component.dark .brand-mark.is-on-dark  { display: none; }
+.nav-component.dark .brand-mark.is-on-light { display: block; }
 
 /* --- Gap between page content and the footer -----------------------------
    styles.css sets .page-collection a bottom padding, then zeroes it again in

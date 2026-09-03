@@ -7,7 +7,7 @@
         {%- if section.settings.logo != blank -%}
           <img src="{{ section.settings.logo | image_url: width: 1200 }}" alt="{{ shop.name | escape }}" class="brand-mark" width="{{ section.settings.logo.width }}" height="{{ section.settings.logo.height }}">
         {%- else -%}
-          {% render 'icon-about-logo' %}
+          {% render 'brand-mono', variant: 'dark', class: 'is-about' %}
         {%- endif -%}
       </div>
     </div>
