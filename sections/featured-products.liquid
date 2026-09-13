@@ -77,6 +77,28 @@
   </div>
 {%- endif -%}
 
+{%- comment -%}
+  Editor-only diagnostic. `collections.all` and `all_products` contain exactly
+  what the Online Store channel can see, so an item missing here is missing
+  because it is not published to that channel — not because of this section.
+{%- endcomment -%}
+{%- if request.design_mode and section.settings.debug -%}
+  {%- assign all_vendors = collections.all.products | map: 'vendor' | uniq | sort -%}
+  <div style="padding:1rem;margin:0 auto 2rem;max-width:52rem;border:1px solid currentColor;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;text-align:left">
+    <strong>Storefront diagnostic — theme editor only</strong><br><br>
+    Products published to the Online Store: <strong>{{ collections.all.all_products_count }}</strong><br>
+    Vendors found: <strong>{{ all_vendors | join: ' | ' }}</strong><br>
+    Vendor box is set to: <strong>{% if section.settings.vendor != blank %}“{{ section.settings.vendor }}”{% else %}(empty — showing all){% endif %}</strong><br>
+    Cards this section rendered: <strong>{{ render_count }}</strong><br><br>
+    First {{ limit }} products the storefront can see:<br>
+    {%- for product in collections.all.products limit: limit %}
+      {{ forloop.index }}. {{ product.title }} — vendor: <strong>{{ product.vendor }}</strong> — /{{ product.handle }}<br>
+    {%- else %}
+      (none)<br>
+    {%- endfor %}
+  </div>
+{%- endif -%}
+
 <div product-slider="" class="product-draggable_el">
   {%- comment -%} Two identical tracks so the marquee can loop seamlessly. {%- endcomment -%}
   {%- for pass in (1..2) -%}
@@ -110,6 +132,13 @@
       "id": "vendor",
       "label": "Only this vendor",
       "info": "Optional. Shows only products whose Vendor matches, so a print-on-demand app's products can be shown on their own. Leave empty for every product."
+    },
+    {
+      "type": "checkbox",
+      "id": "debug",
+      "label": "Show storefront diagnostic",
+      "default": false,
+      "info": "Theme editor only, never on the live site. Lists what the Online Store channel can actually see, with each product's vendor."
     },
     {
       "type": "range",
