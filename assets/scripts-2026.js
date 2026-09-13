@@ -1420,10 +1420,11 @@ function reinitUdeslyCart() {
 
   const script = document.createElement("script");
   script.setAttribute("data-udesly-cart", "");
-  // THEME PATCH: load the vendored copy from assets/ instead of the original store CDN.
-  script.src =
-    window.UdeslyCartScript ||
-    "https://oddritualgolf.com/cdn/shop/t/2/assets/udesly-shopify.min.js?v=47719611079594064521747896222";
+  // THEME PATCH: load the vendored copy from assets/ (layout/theme.liquid sets
+  // window.UdeslyCartScript). Fail closed rather than falling back to the
+  // original store's CDN, which we do not control.
+  if (!window.UdeslyCartScript) return;
+  script.src = window.UdeslyCartScript;
   script.async = true;
   document.body.appendChild(script);
 }

@@ -27,7 +27,7 @@
             "title": "Shipping & Returns",
             "metafield_namespace": "custom",
             "metafield_key": "shipping_returns",
-            "text": "<p>Locally made | CT • RSA<br/>Shipping calculated at checkout.</p>"
+            "text": "<p>Made in India<br/>Shipping calculated at checkout.</p>"
           }
         }
       },
@@ -46,7 +46,7 @@
             "heading": "Site Index",
             "hover_images": true,
             "link_1_label": "Shop now",
-            "link_1_url": "/collections",
+            "link_1_url": "/collections/all",
             "link_2_label": "Home",
             "link_2_url": "/",
             "link_3_label": "About us",
@@ -60,17 +60,17 @@
           "settings": {
             "heading": "Social",
             "link_1_label": "Instagram",
-            "link_1_url": "https://www.instagram.com/oddritual.gc/"
+            "link_1_url": "https://www.instagram.com/moonbae.stores"
           }
         },
         "column-3": {
           "type": "column",
           "settings": {
             "heading": "Get in touch",
-            "link_1_label": "hello@oddritualgolf.com",
-            "link_1_url": "mailto:hello@oddritualgolf.com?subject=moonbae%20-%20Customer%20Support",
-            "link_2_label": "+27 76 207 33 87",
-            "link_2_url": "tel:+27763091991"
+            "link_1_label": "moonstorepod@gmail.com",
+            "link_1_url": "mailto:moonstorepod@gmail.com?subject=moonbae%20-%20Customer%20Support",
+            "link_2_label": "",
+            "link_2_url": ""
           }
         },
         "column-4": {
@@ -78,13 +78,13 @@
           "settings": {
             "heading": "legal",
             "link_1_label": "Privacy Policy",
-            "link_1_url": "/pages/privacy-policy",
+            "link_1_url": "/policies/privacy-policy",
             "link_2_label": "Refunds",
-            "link_2_url": "/pages/refund-policy",
+            "link_2_url": "/policies/refund-policy",
             "link_3_label": "Shipping",
-            "link_3_url": "/pages/shipping-policy",
+            "link_3_url": "/policies/shipping-policy",
             "link_4_label": "Terms of service",
-            "link_4_url": "/pages/terms-of-service"
+            "link_4_url": "/policies/terms-of-service"
           }
         },
         "hover_image-1": {

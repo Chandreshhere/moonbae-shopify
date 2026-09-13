@@ -1,0 +1,138 @@
+{%- comment -%}
+  Social link previews and search structured data.
+
+  Without these a shared link renders as a bare URL with no image, and Google
+  gets no price or availability for a product. Emitted in <head> from
+  layout/theme.liquid, after {{ content_for_header }} so nothing here is
+  overwritten by Shopify's own tags.
+{%- endcomment -%}
+
+{%- liquid
+  assign og_type = 'website'
+  assign og_title = page_title
+  assign og_description = page_description | default: shop.description | default: shop.name
+  assign og_image = settings.social_image | default: settings.logo_dark
+
+  case request.page_type
+    when 'product'
+      assign og_type = 'product'
+      if product.featured_media
+        assign og_image = product.featured_media
+      endif
+    when 'article'
+      assign og_type = 'article'
+      if article.image
+        assign og_image = article.image
+      endif
+    when 'collection'
+      if collection.featured_image
+        assign og_image = collection.featured_image
+      endif
+  endcase
+-%}
+
+<meta property="og:site_name" content="{{ settings.brand_name | default: shop.name | escape }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:title" content="{{ og_title | escape }}">
+<meta property="og:description" content="{{ og_description | strip_html | truncate: 200 | escape }}">
+<meta property="og:type" content="{{ og_type }}">
+{%- if og_image != blank %}
+  <meta property="og:image" content="http:{{ og_image | image_url: width: 1200 }}">
+  <meta property="og:image:secure_url" content="https:{{ og_image | image_url: width: 1200 }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="{{ 1200 | divided_by: og_image.aspect_ratio | round | default: 630 }}">
+  <meta property="og:image:alt" content="{{ og_image.alt | default: og_title | escape }}">
+{%- endif %}
+
+{%- if request.page_type == 'product' %}
+  <meta property="og:price:amount" content="{{ product.selected_or_first_available_variant.price | money_without_currency | strip_html }}">
+  <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
+{%- endif %}
+
+<meta name="twitter:card" content="{% if og_image != blank %}summary_large_image{% else %}summary{% endif %}">
+<meta name="twitter:title" content="{{ og_title | escape }}">
+<meta name="twitter:description" content="{{ og_description | strip_html | truncate: 200 | escape }}">
+{%- if og_image != blank %}
+  <meta name="twitter:image" content="https:{{ og_image | image_url: width: 1200 }}">
+{%- endif %}
+
+{%- comment -%} Structured data. Product carries the fields Google needs for a rich result. {%- endcomment -%}
+{%- if request.page_type == 'product' -%}
+  {%- assign variant = product.selected_or_first_available_variant -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": {{ product.title | json }},
+      "url": {{ canonical_url | json }},
+      "description": {{ product.description | strip_html | truncate: 500 | json }},
+      {%- if product.featured_media %}
+        "image": [{% for media in product.media limit: 5 %}{{ media | image_url: width: 1200 | prepend: 'https:' | json }}{% unless forloop.last %}, {% endunless %}{% endfor %}],
+      {%- endif %}
+      {%- if variant.sku != blank %}
+        "sku": {{ variant.sku | json }},
+      {%- endif %}
+      "brand": {
+        "@type": "Brand",
+        "name": {{ product.vendor | default: shop.name | json }}
+      },
+      "offers": [
+        {%- for v in product.variants -%}
+          {
+            "@type": "Offer",
+            "name": {{ v.title | json }},
+            "url": {{ v.url | prepend: request.origin | json }},
+            "price": {{ v.price | divided_by: 100.0 | json }},
+            "priceCurrency": {{ cart.currency.iso_code | json }},
+            "availability": "https://schema.org/{% if v.available %}InStock{% else %}OutOfStock{% endif %}"
+          }{% unless forloop.last %}, {% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+{%- elsif request.page_type == 'article' -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Article",
+      "headline": {{ article.title | json }},
+      "url": {{ canonical_url | json }},
+      "datePublished": {{ article.published_at | date: '%Y-%m-%d' | json }},
+      {%- if article.image %}
+        "image": [{{ article.image | image_url: width: 1200 | prepend: 'https:' | json }}],
+      {%- endif %}
+      "author": { "@type": "Person", "name": {{ article.author | json }} },
+      "publisher": { "@type": "Organization", "name": {{ shop.name | json }} }
+    }
+  </script>
+{%- elsif request.page_type == 'index' -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "WebSite",
+      "name": {{ settings.brand_name | default: shop.name | json }},
+      "url": {{ request.origin | append: routes.root_url | json }},
+      "potentialAction": {
+        "@type": "SearchAction",
+        {%- comment -%}
+          The {search_term_string} placeholder has to be built in a capture: inside
+          an output tag its closing brace ends the tag and Liquid fails to parse.
+        {%- endcomment -%}
+        {%- capture search_target -%}{{ request.origin }}{{ routes.search_url }}?q={search_term_string}{%- endcapture -%}
+        "target": {{ search_target | json }},
+        "query-input": "required name=search_term_string"
+      }
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Organization",
+      "name": {{ settings.brand_name | default: shop.name | json }},
+      "url": {{ request.origin | append: routes.root_url | json }}
+      {%- if settings.logo_dark != blank -%}
+        , "logo": {{ settings.logo_dark | image_url: width: 600 | prepend: 'https:' | json }}
+      {%- endif -%}
+    }
+  </script>
+{%- endif -%}

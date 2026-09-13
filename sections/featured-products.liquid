@@ -1,7 +1,59 @@
 {% render 'section-class', classes: 'page-contain u-container is-section', attrs: 'nav-dark', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
 <div class="product-draggable_wrap is-home">
 
-{%- assign products_list = section.settings.collection.products -%}
+{%- liquid
+  comment
+    Products come straight from the Online Store — a collection when one is
+    picked, otherwise everything the store sells. Nothing is hand-picked, so a
+    product added in Shopify (or pushed in by an app such as Qikink) shows up
+    here on its own, as soon as it is published to the Online Store channel.
+
+    The vendor setting narrows that further. Print-on-demand apps stamp every
+    product they create with the same vendor, so typing it here shows only
+    those and leaves the rest of the catalogue out.
+  endcomment
+  assign limit = section.settings.products_limit
+  assign vendor_filter = section.settings.vendor | strip | downcase
+
+  if section.settings.collection != blank
+    assign products_list = section.settings.collection.products
+  else
+    assign products_list = collections.all.products
+  endif
+-%}
+
+{%- comment -%}
+  Built before the marquee maths: the vendor filter means the number of cards
+  that actually render is not known from any count Shopify hands us.
+{%- endcomment -%}
+{%- capture cards_html -%}
+  {%- assign shown = 0 -%}
+  {%- for product in products_list -%}
+    {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+    {%- assign this_vendor = product.vendor | strip | downcase -%}
+    {%- if vendor_filter != blank and this_vendor != vendor_filter -%}{%- continue -%}{%- endif -%}
+    {% render 'product-card', product: product %}
+    {%- assign shown = shown | plus: 1 -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- liquid
+  assign render_count = shown
+
+  comment
+    The marquee is two identical tracks and scrolls forever, so a track narrower
+    than the viewport leaves dead space to its right. Repeat the line-up inside
+    each track until there is enough of it to fill the screen.
+  endcomment
+  assign repeat = 1
+  if render_count > 0 and render_count < 12
+    assign repeat = 12 | divided_by: render_count
+    assign covered = repeat | times: render_count
+    if covered < 12
+      assign repeat = repeat | plus: 1
+    endif
+  endif
+-%}
 
 <div class="or-info">
   <div class="u-text-align-center">
@@ -9,31 +61,28 @@
   </div>
 </div>
 
+{%- if request.design_mode and render_count == 0 -%}
+  <div class="u-text-align-center" style="padding: 1rem; margin: 0 auto; max-width: 44rem; border: 1px solid currentColor;">
+    <p class="body-upper">
+      No products to show here yet.
+      {%- if section.settings.vendor != blank %}
+        Nothing matches the vendor “{{ section.settings.vendor }}”. Check the spelling against the product's Vendor field in Shopify admin, or clear the box to show every product.
+      {%- elsif section.settings.collection != blank %}
+        The “{{ section.settings.collection.title }}” collection is empty — pick another one, or clear it to show every product.
+      {%- else %}
+        Add a product in Shopify and publish it to the Online Store sales channel. Products created by apps such as Qikink are not published there by default.
+      {%- endif %}
+      This notice is only visible in the theme editor.
+    </p>
+  </div>
+{%- endif -%}
+
 <div product-slider="" class="product-draggable_el">
   {%- comment -%} Two identical tracks so the marquee can loop seamlessly. {%- endcomment -%}
   {%- for pass in (1..2) -%}
     <div class="product-slider w-dyn-list" udy-collection="product">
       <div role="list" class="product-slider_list w-dyn-items">
-        {%- if products_list.size > 0 -%}
-          {%- for product in products_list limit: section.settings.products_limit -%}
-            {% render 'product-card', product: product %}
-          {%- endfor -%}
-        {%- elsif section.blocks.size > 0 -%}
-          {%- for block in section.blocks -%}
-            {%- if block.settings.product != blank -%}
-              {% render 'product-card', product: block.settings.product %}
-            {%- endif -%}
-          {%- endfor -%}
-        {%- else -%}
-          {%- comment -%}
-            Nothing picked yet: fall back to the store's own products so the marquee
-            stays populated. It must never invent products — the previous fallback
-            rendered the reference build's line-up, whose links 404 on a real store.
-          {%- endcomment -%}
-          {%- for product in collections.all.products limit: section.settings.products_limit -%}
-            {% render 'product-card', product: product %}
-          {%- endfor -%}
-        {%- endif -%}
+        {%- for fill in (1..repeat) -%}{{ cards_html }}{%- endfor -%}
       </div>
     </div>
   {%- endfor -%}
@@ -54,7 +103,13 @@
       "type": "collection",
       "id": "collection",
       "label": "Collection",
-      "info": "Leave empty to hand-pick products with the blocks below."
+      "info": "Leave empty to show every product in the store. Products must be published to the Online Store sales channel to appear."
+    },
+    {
+      "type": "text",
+      "id": "vendor",
+      "label": "Only this vendor",
+      "info": "Optional. Shows only products whose Vendor matches, so a print-on-demand app's products can be shown on their own. Leave empty for every product."
     },
     {
       "type": "range",
@@ -109,20 +164,6 @@
       "info": "0 keeps the design default."
     }
   ],
-  "blocks": [
-    {
-      "type": "product",
-      "name": "Product",
-      "settings": [
-        {
-          "type": "product",
-          "id": "product",
-          "label": "Product"
-        }
-      ]
-    }
-  ],
-  "max_blocks": 50,
   "presets": [
     {
       "name": "Featured products",

@@ -9,7 +9,7 @@
     "story": {
       "type": "about-main-section",
       "settings": {
-        "outro_url": "https://www.instagram.com/oddritual.gc/"
+        "outro_url": "https://www.instagram.com/moonbae.stores"
       },
       "blocks": {
         "flick-1": {
@@ -79,7 +79,7 @@
     "about-footer": {
       "type": "about-footer",
       "settings": {
-        "cta_url": "/collections"
+        "cta_url": "/collections/all"
       }
     }
   },

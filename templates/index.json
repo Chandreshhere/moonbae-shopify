@@ -6,25 +6,27 @@
         "slide-1": {
           "type": "slide",
           "settings": {
-            "title": "<p>Explore our First Collection</p>",
+            "title": "<p>Our first collection has landed</p>",
             "link_label": "Shop Now",
-            "link_url": "/collections"
+            "link_url": "/collections/all",
+            "new_tab": false
           }
         },
         "slide-2": {
           "type": "slide",
           "settings": {
-            "title": "<p>A modern expression of heritage</p>",
+            "title": "<p>Made slowly, in India</p>",
             "link_label": "About us",
-            "link_url": "/pages/about"
+            "link_url": "/pages/about",
+            "new_tab": false
           }
         },
         "slide-3": {
           "type": "slide",
           "settings": {
-            "title": "<p>Follow us on Instagram<br/>To join the journey</p>",
+            "title": "<p>Follow along on Instagram<br/>for what comes next</p>",
             "link_label": "Community",
-            "link_url": "https://www.instagram.com/oddritual.gc/",
+            "link_url": "https://www.instagram.com/moonbae.stores",
             "new_tab": true
           }
         }
@@ -33,26 +35,37 @@
         "slide-1",
         "slide-2",
         "slide-3"
-      ]
+      ],
+      "settings": {
+        "scroll_label": "Scroll",
+        "next_label": "Next",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
     },
     "intro": {
       "type": "intro-section",
       "settings": {
-        "padding_top": 20
+        "mark_size": 0,
+        "text": "<p>moonbae began with a simple want: clothes that feel like evening. Considered cuts, honest cloth, colour that settles rather than shouts. Made in small runs in India, and made to be worn often — pieces that soften with you instead of wearing out.</p>",
+        "padding_top": 20,
+        "padding_bottom": 0
       }
     },
     "featured-products": {
       "type": "featured-products",
       "settings": {
-        "link_url": "/collections",
-        "padding_top": 160
+        "collection": "",
+        "products_limit": 38,
+        "eyebrow": "<p>( Featured Products )</p>",
+        "link_label": "View all products",
+        "link_url": "/collections/all",
+        "padding_top": 160,
+        "padding_bottom": 0
       }
     },
     "image-ctas": {
       "type": "home-image-section",
-      "settings": {
-        "padding_top": 160
-      },
       "blocks": {
         "cta-1": {
           "type": "cta",
@@ -60,7 +73,8 @@
             "eyebrow": "Our Products",
             "hover_title": "COLLECTION 01 & 02",
             "hover_link_label": "Shop now",
-            "link_url": "/collections",
+            "link_url": "/collections/all",
+            "new_tab": false,
             "width": "6",
             "full_height": true
           }
@@ -72,6 +86,7 @@
             "hover_title": "About us",
             "hover_link_label": "Read more",
             "link_url": "/pages/about",
+            "new_tab": false,
             "width": "3",
             "full_height": false
           }
@@ -82,7 +97,7 @@
             "eyebrow": "Our Community",
             "hover_title": "Social",
             "hover_link_label": "Instagram",
-            "link_url": "https://www.instagram.com/oddritual.gc/",
+            "link_url": "https://www.instagram.com/moonbae.stores",
             "new_tab": true,
             "width": "3",
             "full_height": true
@@ -93,11 +108,20 @@
         "cta-1",
         "cta-2",
         "cta-3"
-      ]
+      ],
+      "settings": {
+        "padding_top": 160,
+        "padding_bottom": 0
+      }
     },
     "made-locally": {
       "type": "or-text-section",
       "settings": {
+        "mark_size": 0,
+        "eyebrow": "<p>moonbae ©2026<br/>Designed and made in India</p>",
+        "left_label": "Moonbae",
+        "right_label": "India",
+        "text": "<p>Everything is cut and sewn in India, close to the people who make it. Small runs, honest hours, cloth chosen by hand. Making it here is how we keep the work truthful — and how we keep home in everything we send out.</p>",
         "padding_top": 160,
         "padding_bottom": 240
       }
@@ -142,7 +166,13 @@
         "slide-5",
         "slide-6",
         "slide-7"
-      ]
+      ],
+      "settings": {
+        "label": "MOONBAE_26",
+        "swipe_label": "Swipe",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
     },
     "community": {
       "type": "community-section",
@@ -150,37 +180,37 @@
         "partner-1": {
           "type": "partner",
           "settings": {
-            "title": "Fairways to africa",
-            "url": "https://fairwaystoafrica.com/",
-            "link_label": "Visit Website",
-            "text": "<p>Bespoke golf travel. Like our clients, we are golfers. We are young-at-heart and seek unique experiences whilst playing the sport we love around the world. We believe in quality above all else, and that is what we aim to deliver.</p>"
+            "title": "Made slowly",
+            "text": "<p>Small runs, cut and sewn in India. We would rather make fewer pieces properly than many of them in a hurry.</p>",
+            "url": "",
+            "link_label": ""
           }
         },
         "partner-2": {
           "type": "partner",
           "settings": {
-            "title": "StartWell Foundation",
-            "url": "https://startwellfoundation.org/",
-            "link_label": "Visit Website",
-            "text": "<p>At StartWell, we're a passionate team making a measurable difference in the fight against a specific kind of malnutrition which is the leading cause of child stunting. We don't just talk about the problem – we take action.</p>"
+            "title": "Chosen by hand",
+            "text": "<p>Cloth picked in person, for how it falls and how it ages. Natural fibres wherever the piece allows it.</p>",
+            "url": "",
+            "link_label": ""
           }
         },
         "partner-3": {
           "type": "partner",
           "settings": {
-            "title": "242",
-            "url": "https://www.instagram.com/twofortytwo.co/",
-            "link_label": "Visit Website",
-            "text": "<p>The world moves fast, but we believe there's something powerful about slowing down. A moment to take in. To connect. To be present. It's a reminder of what happens when people gather around something simple, yet made with care: coffee &amp; connections.</p>"
+            "title": "Worn often",
+            "text": "<p>Cuts that sit easy and repeat well — made for the wardrobe you reach for, not the one you photograph.</p>",
+            "url": "",
+            "link_label": ""
           }
         },
         "partner-4": {
           "type": "partner",
           "settings": {
-            "title": "running late club",
-            "url": "https://www.runninglateclub.com/",
-            "link_label": "Visit Website",
-            "text": "<p>The Running Late Club is a community where Everyday Athletes can find a place to belong. We cater to all paces and levels of fitness, and strive to provide the accountability and inspiration needed to reach your goals.</p>"
+            "title": "Kept long",
+            "text": "<p>Finished to last and easy to mend. The best thing a piece of ours can do is soften, and stay.</p>",
+            "url": "",
+            "link_label": ""
           }
         }
       },
@@ -189,7 +219,14 @@
         "partner-2",
         "partner-3",
         "partner-4"
-      ]
+      ],
+      "settings": {
+        "giving_title": "<p>Giving back</p>",
+        "giving_text": "<p>moonbae was never only about clothes. It is the hands that cut and sew, the people who wear it, and the place it is made. We are building the giving side of this deliberately — small, local, and in the open.</p>",
+        "list_heading": "What we stand for",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
     },
     "footer": {
       "type": "footer-light",
@@ -198,9 +235,10 @@
           "type": "column",
           "settings": {
             "heading": "Site Index",
+            "menu": "",
             "hover_images": true,
             "link_1_label": "Shop now",
-            "link_1_url": "/collections",
+            "link_1_url": "/collections/all",
             "link_2_label": "Home",
             "link_2_url": "/",
             "link_3_label": "About us",
@@ -213,61 +251,65 @@
           "type": "column",
           "settings": {
             "heading": "Social",
+            "menu": "",
+            "hover_images": false,
             "link_1_label": "Instagram",
-            "link_1_url": "https://www.instagram.com/oddritual.gc/"
+            "link_1_url": "https://www.instagram.com/moonbae.stores",
+            "link_2_label": "",
+            "link_2_url": "",
+            "link_3_label": "",
+            "link_3_url": "",
+            "link_4_label": "",
+            "link_4_url": ""
           }
         },
         "column-3": {
           "type": "column",
           "settings": {
             "heading": "Get in touch",
-            "link_1_label": "hello@oddritualgolf.com",
-            "link_1_url": "mailto:hello@oddritualgolf.com?subject=moonbae%20-%20Customer%20Support",
-            "link_2_label": "+27 76 207 33 87",
-            "link_2_url": "tel:+27763091991"
+            "menu": "",
+            "hover_images": false,
+            "link_1_label": "moonstorepod@gmail.com",
+            "link_1_url": "mailto:moonstorepod@gmail.com?subject=moonbae%20-%20Customer%20Support",
+            "link_2_label": "",
+            "link_2_url": "",
+            "link_3_label": "",
+            "link_3_url": "",
+            "link_4_label": "",
+            "link_4_url": ""
           }
         },
         "column-4": {
           "type": "column",
           "settings": {
             "heading": "legal",
+            "menu": "",
+            "hover_images": false,
             "link_1_label": "Privacy Policy",
-            "link_1_url": "/pages/privacy-policy",
+            "link_1_url": "/policies/privacy-policy",
             "link_2_label": "Refunds",
-            "link_2_url": "/pages/refund-policy",
+            "link_2_url": "/policies/refund-policy",
             "link_3_label": "Shipping",
-            "link_3_url": "/pages/shipping-policy",
+            "link_3_url": "/policies/shipping-policy",
             "link_4_label": "Terms of service",
-            "link_4_url": "/pages/terms-of-service"
+            "link_4_url": "/policies/terms-of-service"
           }
-        },
-        "hover_image-1": {
-          "type": "hover_image",
-          "settings": {}
-        },
-        "hover_image-2": {
-          "type": "hover_image",
-          "settings": {}
-        },
-        "hover_image-3": {
-          "type": "hover_image",
-          "settings": {}
-        },
-        "hover_image-4": {
-          "type": "hover_image",
-          "settings": {}
         }
       },
       "block_order": [
         "column-1",
         "column-2",
         "column-3",
-        "column-4",
-        "hover_image-1",
-        "hover_image-2",
-        "hover_image-3",
-        "hover_image-4"
-      ]
+        "column-4"
+      ],
+      "settings": {
+        "logo_size": 0,
+        "tagline": "<p>moonbae<br/>dressed for the quiet hours</p>",
+        "signup_heading": "",
+        "copyright": "All rights reserved _ moonbae ©2026",
+        "credit_label": "Website by malvah",
+        "credit_url": ""
+      }
     }
   },
   "order": [

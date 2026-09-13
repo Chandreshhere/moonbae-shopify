@@ -21,6 +21,12 @@
         "type": "image_picker",
         "id": "favicon",
         "label": "Favicon"
+      },
+      {
+        "type": "image_picker",
+        "id": "social_image",
+        "label": "Social share image",
+        "info": "Shown when a link to the store is shared. 1200x630 works everywhere. Falls back to the dark logo."
       }
     ]
   },
@@ -189,7 +195,7 @@
         "type": "image_picker",
         "id": "logo_light",
         "label": "Logo — light",
-        "info": "White artwork. Used on the header and dark footer."
+        "info": "White artwork. Used on the header, preloader and dark footer."
       },
       {
         "type": "image_picker",
@@ -205,7 +211,7 @@
         "type": "image_picker",
         "id": "mono_light",
         "label": "Monogram — light",
-        "info": "White linework. Used on the preloader and the menu panel."
+        "info": "White linework. Used on the menu panel."
       },
       {
         "type": "image_picker",
@@ -220,12 +226,12 @@
       {
         "type": "range",
         "id": "logo_preloader_size",
-        "label": "Preloader monogram height",
+        "label": "Preloader logo height",
         "min": 24,
-        "max": 320,
+        "max": 240,
         "step": 4,
         "unit": "px",
-        "default": 120
+        "default": 48
       },
       {
         "type": "range",

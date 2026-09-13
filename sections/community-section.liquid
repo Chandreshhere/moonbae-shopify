@@ -46,14 +46,24 @@
             </div>
           </div>
           <div class="split-col u-column-6">
-            <a href="{{ block.settings.url }}" target="_blank" class="community-img-wrap w-inline-block">
-              {% render 'img', image: block.settings.image, fallback: community_fallbacks[i], sizes: '(max-width: 695px) 100vw, 695px' %}
-              <div class="is-mobile">
-                <div class="orgc-detail body-upper">
-                  <div class="detail-text">{{ block.settings.link_label }}</div>
+            {%- comment -%}
+              Blocks used as brand pillars carry no URL. An empty href would still be
+              clickable and reload the page, so the wrap becomes a plain div instead.
+            {%- endcomment -%}
+            {%- if block.settings.url != blank -%}
+              <a href="{{ block.settings.url }}" target="_blank" class="community-img-wrap w-inline-block">
+                {% render 'img', image: block.settings.image, fallback: community_fallbacks[i], sizes: '(max-width: 695px) 100vw, 695px' %}
+                <div class="is-mobile">
+                  <div class="orgc-detail body-upper">
+                    <div class="detail-text">{{ block.settings.link_label }}</div>
+                  </div>
                 </div>
+              </a>
+            {%- else -%}
+              <div class="community-img-wrap">
+                {% render 'img', image: block.settings.image, fallback: community_fallbacks[i], sizes: '(max-width: 695px) 100vw, 695px' %}
               </div>
-            </a>
+            {%- endif -%}
           </div>
         </div>
       </div>
@@ -85,13 +95,13 @@
       "type": "richtext",
       "id": "giving_text",
       "label": "Giving back copy",
-      "default": "<p>We never set out to be just a golf brand. moonbae is as much about culture as it is about the game — and part of that is showing up for the communities we belong to. From day one, we've believed in using the platform we're building to give back.</p>"
+      "default": "<p>moonbae was never only about clothes. It is the hands that cut and sew, the people who wear it, and the place it is made. We are building the giving side of this deliberately — small, local, and in the open.</p>"
     },
     {
       "type": "text",
       "id": "list_heading",
       "label": "List heading",
-      "default": "Our greater community"
+      "default": "What we stand for"
     },
     {
       "type": "header",
@@ -163,37 +173,37 @@
         {
           "type": "partner",
           "settings": {
-            "title": "Fairways to africa",
-            "url": "https://fairwaystoafrica.com/",
-            "link_label": "Visit Website",
-            "text": "<p>Bespoke golf travel. Like our clients, we are golfers. We are young-at-heart and seek unique experiences whilst playing the sport we love around the world. We believe in quality above all else, and that is what we aim to deliver.</p>"
+            "title": "Made slowly",
+            "url": "",
+            "link_label": "",
+            "text": "<p>Small runs, cut and sewn in India. We would rather make fewer pieces properly than many of them in a hurry.</p>"
           }
         },
         {
           "type": "partner",
           "settings": {
-            "title": "StartWell Foundation",
-            "url": "https://startwellfoundation.org/",
-            "link_label": "Visit Website",
-            "text": "<p>At StartWell, we're a passionate team making a measurable difference in the fight against a specific kind of malnutrition which is the leading cause of child stunting. We don't just talk about the problem – we take action.</p>"
+            "title": "Chosen by hand",
+            "url": "",
+            "link_label": "",
+            "text": "<p>Cloth picked in person, for how it falls and how it ages. Natural fibres wherever the piece allows it.</p>"
           }
         },
         {
           "type": "partner",
           "settings": {
-            "title": "242",
-            "url": "https://www.instagram.com/twofortytwo.co/",
-            "link_label": "Visit Website",
-            "text": "<p>The world moves fast, but we believe there's something powerful about slowing down. A moment to take in. To connect. To be present. It's a reminder of what happens when people gather around something simple, yet made with care: coffee &amp; connections.</p>"
+            "title": "Worn often",
+            "url": "",
+            "link_label": "",
+            "text": "<p>Cuts that sit easy and repeat well — made for the wardrobe you reach for, not the one you photograph.</p>"
           }
         },
         {
           "type": "partner",
           "settings": {
-            "title": "running late club",
-            "url": "https://www.runninglateclub.com/",
-            "link_label": "Visit Website",
-            "text": "<p>The Running Late Club is a community where Everyday Athletes can find a place to belong. We cater to all paces and levels of fitness, and strive to provide the accountability and inspiration needed to reach your goals.</p>"
+            "title": "Kept long",
+            "url": "",
+            "link_label": "",
+            "text": "<p>Finished to last and easy to mend. The best thing a piece of ours can do is soften, and stay.</p>"
           }
         }
       ]
