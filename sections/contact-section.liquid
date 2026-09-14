@@ -1,4 +1,4 @@
-{% render 'section-class', classes: 'contact-section', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+{% render 'section-class', classes: 'contact-section', attrs: 'nav-light', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
 
 <div class="contact_layout u-grid-desktop">
   <div class="contact-imgs_scroll u-column-6">
@@ -13,7 +13,7 @@
   <div class="contact-info_layout u-column-6">
     <div class="u-container">
       <div class="contact-info">
-        <div class="logo-icon_wrap is-contact">{% render 'icon-contact-mark' %}</div>
+        <div class="logo-icon_wrap is-contact">{% render 'brand-mono', setting: section.settings.mark_image, variant: 'light', size: section.settings.mark_size, class: 'is-icon' %}</div>
         <div class="text-style_alt-xlarge">{{ section.settings.heading }}</div>
         <div class="u-vflex-center-top u-gap-1">
           {%- if section.settings.email != blank -%}

@@ -5,7 +5,7 @@
       "settings": {
         "mark_size": 0,
         "text": "<p>Questions about a size, an order on its way, or something that arrived not quite right — write to us and a person will answer. We read everything.</p>",
-        "padding_top": 160,
+        "padding_top": 0,
         "padding_bottom": 0
       }
     },

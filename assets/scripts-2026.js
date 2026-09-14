@@ -248,6 +248,16 @@ function globalScripts() {
       });
     });
 
+    {
+      // ScrollTrigger only fires on a scroll boundary, so at scroll 0 neither
+      // set has run and the nav keeps whatever colour it loaded with. Seed it
+      // from whichever trigger comes first in the page.
+      const firstTrigger = pageEl.find("[nav-dark],[nav-light]").first();
+      if (firstTrigger.length) {
+        $(navToggleEl).toggleClass("dark", firstTrigger.is("[nav-dark]"));
+      }
+    }
+
     lightTriggers.each(function () {
       ScrollTrigger.create({
         trigger: $(this),

@@ -317,3 +317,13 @@ body:not(.show-preloader) .preloader_wrap {
 
 /* .page-about_contain sets padding-bottom:0 explicitly and the About page has
    its own bespoke footer designed to sit flush, so that one is left alone. */
+
+/* The nav is position:fixed with inset:0 0 auto, so it reserves no height and
+   any page that does not open with a full-height hero runs underneath it.
+   Pages built from stacked sections clear it here rather than relying on each
+   section's own padding, which is a merchant setting and can be dialled to 0. */
+:root { --nav--clearance: 10rem; }
+@media only screen and (max-width: 767px) { :root { --nav--clearance: 7rem; } }
+
+.template-page-about .page-main,
+.template-page-contact .page-main { padding-top: var(--nav--clearance); }

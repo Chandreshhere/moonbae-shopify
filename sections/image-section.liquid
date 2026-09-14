@@ -1,4 +1,4 @@
-{% render 'section-class', classes: 'img-section', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+{% render 'section-class', classes: 'img-section', attrs: 'nav-light', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
 
 {%- if section.settings.image != blank -%}
   <img src="{{ section.settings.image | image_url: width: 2400 }}" alt="" h-fadeout="" class="img-fill">
