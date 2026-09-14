@@ -325,5 +325,6 @@ body:not(.show-preloader) .preloader_wrap {
 :root { --nav--clearance: 10rem; }
 @media only screen and (max-width: 767px) { :root { --nav--clearance: 7rem; } }
 
-.template-page-about .page-main,
-.template-page-contact .page-main { padding-top: var(--nav--clearance); }
+.template-page .page-main,
+.template-list-collections .page-main,
+.template-search .page-main { padding-top: var(--nav--clearance); }
