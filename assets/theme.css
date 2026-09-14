@@ -328,3 +328,17 @@ body:not(.show-preloader) .preloader_wrap {
 .template-page .page-main,
 .template-list-collections .page-main,
 .template-search .page-main { padding-top: var(--nav--clearance); }
+
+/* Mobile browser chrome shows and hides as you scroll, and 100vh is the height
+   with it hidden. Any element sized that way is therefore taller than the
+   visible screen and shifts everything whenever the bar appears — which reads
+   as the page jumping around while you scroll. svh is the height with the
+   chrome showing, so the layout stays put. The vh declarations above remain as
+   the fallback for browsers without svh. */
+@supports (height: 100svh) {
+  .full-img_wrap,
+  .easter-layout { height: 100svh; }
+  .single-content_col,
+  .contact-info_layout.u-column-6,
+  .default-sticky.u-column-6 { height: 100svh; }
+}

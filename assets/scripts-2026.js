@@ -198,6 +198,25 @@ function globalScripts() {
   lenis.start();
   addLenisPreventAttribute();
   ScrollTrigger.refresh();
+
+  // ScrollTrigger measures the page once, here, before lazy images have
+  // arrived. Every pinned and triggered section is then anchored to a height
+  // the page no longer has, which is why a reload "fixed" the layout: the
+  // second time the images came from cache and were there to be measured.
+  // Re-measure as they land, debounced so a gallery does not thrash it.
+  (function remeasureWhenImagesLand() {
+    let pending;
+    const refresh = () => {
+      clearTimeout(pending);
+      pending = setTimeout(() => ScrollTrigger.refresh(), 150);
+    };
+    window.addEventListener("load", refresh, { once: true });
+    document.querySelectorAll("img").forEach((img) => {
+      if (img.complete) return;
+      img.addEventListener("load", refresh, { once: true });
+      img.addEventListener("error", refresh, { once: true });
+    });
+  })();
   //Counting items
   $("[count-items=wrap]").each(function () {
     const countWrap = $(this);
