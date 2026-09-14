@@ -86,11 +86,21 @@ families: ["Instrument Serif:regular,italic"]
         --_typography---font--secondary-family: {{ settings.font_secondary.family }}, {{ settings.font_secondary.fallback_families }};
         {%- endif %}
 
+        {%- comment -%}
+          The design sizes headings on a rem scale that steps down at each
+          breakpoint. Writing the merchant's setting out as a flat px value threw
+          that away, so a 42px heading stayed 42px on a 390px phone. clamp keeps
+          the setting as the desktop ceiling and scales down with the viewport,
+          never below a legible floor.
+        {%- endcomment -%}
+        {%- assign h1 = settings.size_h1 | default: 42 -%}
+        {%- assign h3 = settings.size_h3 | default: 42 -%}
+        {%- assign h4 = settings.size_h4 | default: 22 -%}
         --_typography---font-size--text-main: {{ settings.size_body | default: 16 }}px;
-        --_typography---font-size--h1: {{ settings.size_h1 | default: 42 }}px;
-        --_typography---font-size--h2: {{ settings.size_h1 | default: 42 }}px;
-        --_typography---font-size--h3: {{ settings.size_h3 | default: 42 }}px;
-        --_typography---font-size--h4: {{ settings.size_h4 | default: 22 }}px;
+        --_typography---font-size--h1: clamp({{ h1 | times: 62 | divided_by: 100 }}px, 5.2vw, {{ h1 }}px);
+        --_typography---font-size--h2: clamp({{ h1 | times: 62 | divided_by: 100 }}px, 5.2vw, {{ h1 }}px);
+        --_typography---font-size--h3: clamp({{ h3 | times: 62 | divided_by: 100 }}px, 5.2vw, {{ h3 }}px);
+        --_typography---font-size--h4: clamp({{ h4 | times: 80 | divided_by: 100 }}px, 2.4vw, {{ h4 }}px);
 
         --brand--logo-preloader: {{ settings.logo_preloader_size | default: 48 }}px;
         --brand--mono-icon: {{ settings.mono_icon_size | default: 64 }}px;
