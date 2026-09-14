@@ -149,7 +149,12 @@ families: ["Instrument Serif:regular,italic"]
         <div class="page_code_custom w-embed"></div>
       </div>
 
-      <div data-barba="container" class="page-main">
+      {%- comment -%}
+        Barba swaps this container but never touches <body>, so the template
+        classes the CSS keys off would go stale on every transition. The
+        container carries its own copy and scripts-2026.js copies it across.
+      {%- endcomment -%}
+      <div data-barba="container" class="page-main" data-template-classes="{{ body_theme | strip }} template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
         {% render 'preloader' %}
         {% section 'header' %}
 

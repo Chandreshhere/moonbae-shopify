@@ -4,23 +4,25 @@
   section's own spacing settings to that wrapper.
 
   Params: classes, attrs (comma separated bare attribute names), id, pt, pb
+
+  The values ride on the <script> tag as data attributes, and the inline code
+  applies them on first paint. Barba never executes inline scripts in a page it
+  swaps in, so after a transition scripts-2026.js re-applies them by reading the
+  same attributes (applySectionClasses). Both paths must stay in step.
+
+  0 for pt/pb means "use the design's own spacing" — only override when the
+  merchant has actually dialled a value in, otherwise an inline 0 would wipe
+  rules like the about hero's padding-top: 50svh.
 {%- endcomment -%}
-<script>
+<script data-section-class="{{ classes | escape }}"{% if attrs != blank %} data-section-attrs="{{ attrs | escape }}"{% endif %}{% if id %} data-section-id="{{ id | escape }}"{% endif %}{% if pt != blank and pt > 0 %} data-section-pt="{{ pt }}"{% endif %}{% if pb != blank and pb > 0 %} data-section-pb="{{ pb }}"{% endif %}>
   (function () {
-    var s = document.currentScript.closest('.shopify-section');
+    var t = document.currentScript, s = t && t.closest('.shopify-section');
     if (!s) return;
-    {%- if id %}s.id = {{ id | json }};{% endif %}
-    s.setAttribute('class', {{ classes | json }});
-    {%- if attrs != blank -%}
-      {%- assign attr_list = attrs | split: ',' -%}
-      {%- for a in attr_list -%}s.setAttribute({{ a | strip | json }}, '');{%- endfor -%}
-    {%- endif -%}
-    {%- comment -%}
-      0 means "use the design's own spacing" — only override when the merchant has
-      actually dialled a value in, otherwise an inline 0 would wipe rules like the
-      about hero's padding-top: 50svh.
-    {%- endcomment -%}
-    {%- if pt != blank and pt > 0 %}s.style.paddingTop = {{ pt | append: 'px' | json }};{% endif %}
-    {%- if pb != blank and pb > 0 %}s.style.paddingBottom = {{ pb | append: 'px' | json }};{% endif %}
+    var d = t.dataset;
+    if (d.sectionId) s.id = d.sectionId;
+    s.setAttribute('class', d.sectionClass);
+    if (d.sectionAttrs) d.sectionAttrs.split(',').forEach(function (a) { a = a.trim(); if (a) s.setAttribute(a, ''); });
+    if (d.sectionPt) s.style.paddingTop = d.sectionPt + 'px';
+    if (d.sectionPb) s.style.paddingBottom = d.sectionPb + 'px';
   })();
 </script>

@@ -1482,9 +1482,49 @@ barba.hooks.before((data) => {
   lenis.stop();
 });
 
+// Everything the theme does with inline <script> tags is lost on a Barba
+// transition, because Barba inserts the fetched HTML without executing them.
+// section-class.liquid is the only such script and it carries its values as
+// data attributes precisely so this can replay it: wrapper class, the
+// nav-dark / nav-light attributes the header colour is driven by, and the
+// merchant's padding. Without this every swapped-in page had the raw
+// shopify-section wrappers, no nav attributes (so the header stayed white on
+// white) and no spacing — until a reload ran the scripts for real.
+function applySectionClasses(root) {
+  if (!root) return;
+  root.querySelectorAll("script[data-section-class]").forEach((t) => {
+    const s = t.closest(".shopify-section") || t.parentElement;
+    if (!s) return;
+    const d = t.dataset;
+    if (d.sectionId) s.id = d.sectionId;
+    s.setAttribute("class", d.sectionClass);
+    if (d.sectionAttrs) d.sectionAttrs.split(",").forEach((a) => { a = a.trim(); if (a) s.setAttribute(a, ""); });
+    if (d.sectionPt) s.style.paddingTop = d.sectionPt + "px";
+    if (d.sectionPb) s.style.paddingBottom = d.sectionPb + "px";
+  });
+}
+
+// <body> keeps whatever template classes the first-loaded page had, so the
+// header clearance for page templates followed you home ("images move down")
+// and never arrived on About. Copy the incoming container's classes across.
+function syncTemplateClasses(container) {
+  if (!container) return;
+  const next = (container.getAttribute("data-template-classes") || "").split(/\s+/).filter(Boolean);
+  [...document.body.classList].forEach((k) => {
+    if (/^template-/.test(k) || k === "u-theme-light") document.body.classList.remove(k);
+  });
+  next.forEach((k) => document.body.classList.add(k));
+}
+
 barba.hooks.beforeEnter((data) => {
   checkPreloader();
   reinitUdeslyCart();
+  applySectionClasses(data.next.container);
+  syncTemplateClasses(data.next.container);
+  if (data.next.html) {
+    const m = data.next.html.match(/<title>([^<]*)<\/title>/i);
+    if (m) document.title = m[1].replace(/\s+/g, " ").trim();
+  }
 });
 
 barba.hooks.afterEnter(() => {});
@@ -1492,6 +1532,9 @@ barba.hooks.afterEnter(() => {});
 barba.hooks.after((data) => {
   gsap.set(data.next.container, { position: "relative" });
   $(window).scrollTop(0);
+  // The previous page's triggers were never killed, so each transition
+  // stacked another set measured against a page that no longer exists.
+  ScrollTrigger.getAll().forEach((t) => t.kill());
   globalScripts();
   resetShopify(data);
 });
