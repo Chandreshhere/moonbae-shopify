@@ -36,12 +36,23 @@
 <meta property="og:title" content="{{ og_title | escape }}">
 <meta property="og:description" content="{{ og_description | strip_html | truncate: 200 | escape }}">
 <meta property="og:type" content="{{ og_type }}">
+{%- comment -%}
+  A shared link with no image renders as bare text, so fall back to a bundled
+  1200x630 card rather than emitting nothing at all.
+{%- endcomment -%}
 {%- if og_image != blank %}
-  <meta property="og:image" content="http:{{ og_image | image_url: width: 1200 }}">
+  <meta property="og:image" content="https:{{ og_image | image_url: width: 1200 }}">
   <meta property="og:image:secure_url" content="https:{{ og_image | image_url: width: 1200 }}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="{{ 1200 | divided_by: og_image.aspect_ratio | round | default: 630 }}">
   <meta property="og:image:alt" content="{{ og_image.alt | default: og_title | escape }}">
+{%- else %}
+  {%- assign og_fallback = 'og-moonbae.png' | asset_url | prepend: 'https:' | replace: 'https:https:', 'https:' -%}
+  <meta property="og:image" content="{{ og_fallback }}">
+  <meta property="og:image:secure_url" content="{{ og_fallback }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{{ settings.brand_name | default: shop.name | escape }}">
 {%- endif %}
 
 {%- if request.page_type == 'product' %}
@@ -49,11 +60,13 @@
   <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
 {%- endif %}
 
-<meta name="twitter:card" content="{% if og_image != blank %}summary_large_image{% else %}summary{% endif %}">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ og_title | escape }}">
 <meta name="twitter:description" content="{{ og_description | strip_html | truncate: 200 | escape }}">
 {%- if og_image != blank %}
   <meta name="twitter:image" content="https:{{ og_image | image_url: width: 1200 }}">
+{%- else %}
+  <meta name="twitter:image" content="{{ 'og-moonbae.png' | asset_url | prepend: 'https:' | replace: 'https:https:', 'https:' }}">
 {%- endif %}
 
 {%- comment -%} Structured data. Product carries the fields Google needs for a rich result. {%- endcomment -%}
