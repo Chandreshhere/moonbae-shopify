@@ -9,7 +9,15 @@
 
 {%- liquid
   assign og_type = 'website'
-  assign og_title = page_title
+  comment
+    On the homepage page_title is the shop name itself, so the share title
+    must be the brand and tagline, matching the <title> in the layout.
+  endcomment
+  if request.page_type == 'index'
+    assign og_title = settings.brand_name | default: shop.name | append: ' — dressed for the quiet hours'
+  else
+    assign og_title = page_title
+  endif
   assign og_description = page_description | default: shop.description | default: settings.brand_name | default: shop.name
   assign og_image = settings.social_image | default: settings.logo_dark
 
