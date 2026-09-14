@@ -16,8 +16,8 @@
           "type": "slide",
           "settings": {
             "title": "<p>Made slowly, in India</p>",
-            "link_label": "About us",
-            "link_url": "/pages/about",
+            "link_label": "See the collection",
+            "link_url": "/collections/all",
             "new_tab": false
           }
         },
@@ -82,10 +82,10 @@
         "cta-2": {
           "type": "cta",
           "settings": {
-            "eyebrow": "Our Story",
-            "hover_title": "About us",
-            "hover_link_label": "Read more",
-            "link_url": "/pages/about",
+            "eyebrow": "Our Craft",
+            "hover_title": "Made in India",
+            "hover_link_label": "Shop now",
+            "link_url": "/collections/all",
             "new_tab": false,
             "width": "3",
             "full_height": false
@@ -241,10 +241,10 @@
             "link_1_url": "/collections/all",
             "link_2_label": "Home",
             "link_2_url": "/",
-            "link_3_label": "About us",
-            "link_3_url": "/pages/about",
-            "link_4_label": "Contact Us",
-            "link_4_url": "/pages/contact-us"
+            "link_3_label": "",
+            "link_3_url": "",
+            "link_4_label": "",
+            "link_4_url": ""
           }
         },
         "column-2": {
