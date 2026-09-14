@@ -82,11 +82,12 @@
   what the Online Store channel can see, so an item missing here is missing
   because it is not published to that channel — not because of this section.
 {%- endcomment -%}
-{%- if request.design_mode and section.settings.debug -%}
+{%- if request.design_mode and section.settings.debug or request.design_mode and render_count == 0 -%}
   {%- assign all_vendors = collections.all.products | map: 'vendor' | uniq | sort -%}
   <div style="padding:1rem;margin:0 auto 2rem;max-width:52rem;border:1px solid currentColor;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;text-align:left">
     <strong>Storefront diagnostic — theme editor only</strong><br><br>
-    Products published to the Online Store: <strong>{{ collections.all.all_products_count }}</strong><br>
+    Products published to the Online Store: <strong>{{ collections.all.all_products_count }}</strong>
+    {%- if collections.all.all_products_count == 0 %} — zero means no product carries the Online Store sales channel yet. Product status Active is not the same switch: open the product, find the Publishing card, and add Online Store.{% endif %}<br>
     Vendors found: <strong>{{ all_vendors | join: ' | ' }}</strong><br>
     Vendor box is set to: <strong>{% if section.settings.vendor != blank %}“{{ section.settings.vendor }}”{% else %}(empty — showing all){% endif %}</strong><br>
     Cards this section rendered: <strong>{{ render_count }}</strong><br><br>
