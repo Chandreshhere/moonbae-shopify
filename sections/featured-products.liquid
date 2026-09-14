@@ -68,7 +68,7 @@
       {%- if section.settings.vendor != blank %}
         Nothing matches the vendor “{{ section.settings.vendor }}”. Check the spelling against the product's Vendor field in Shopify admin, or clear the box to show every product.
       {%- elsif section.settings.collection != blank %}
-        The “{{ section.settings.collection.title }}” collection is empty — pick another one, or clear it to show every product.
+        Nothing in the “{{ section.settings.collection.title }}” collection is visible to the storefront. A product only counts here when its status is Active <em>and</em> it is published to the Online Store sales channel — a draft product still appears in the collection in admin, but not on the site. Or clear the collection to show every product.
       {%- else %}
         Add a product in Shopify and publish it to the Online Store sales channel. Products created by apps such as Qikink are not published there by default.
       {%- endif %}
