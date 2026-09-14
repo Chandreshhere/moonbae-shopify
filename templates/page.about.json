@@ -1,92 +1,142 @@
 {
   "sections": {
-    "hero": {
-      "type": "about-hero"
+    "intro": {
+      "type": "intro-section",
+      "settings": {
+        "mark_size": 0,
+        "text": "<p>moonbae is a small clothing label working out of India. We make in short runs, from cloth chosen by hand, for the hours when the day loosens its grip — when you change out of what the world asked you to wear and into something that is only yours.</p>",
+        "padding_top": 160,
+        "padding_bottom": 0
+      }
     },
     "image": {
-      "type": "image-section"
-    },
-    "story": {
-      "type": "about-main-section",
+      "type": "image-section",
       "settings": {
-        "outro_url": "https://www.instagram.com/moonbae.stores"
-      },
+        "left": "Est. 2026",
+        "center": "Dressed for the quiet hours",
+        "right": "India",
+        "padding_top": 160,
+        "padding_bottom": 0
+      }
+    },
+    "craft": {
+      "type": "or-text-section",
+      "settings": {
+        "mark_size": 0,
+        "eyebrow": "<p>moonbae ©2026<br/>Designed and made in India</p>",
+        "left_label": "Moonbae",
+        "right_label": "India",
+        "text": "<p>Everything is cut and sewn in India, close to the people who make it. Small runs, honest hours, cloth chosen by hand. Making it here is how we keep the work truthful — and how we keep home in everything we send out.</p>",
+        "padding_top": 160,
+        "padding_bottom": 240
+      }
+    },
+    "gallery": {
+      "type": "home-slider",
       "blocks": {
-        "flick-1": {
-          "type": "flick",
-          "settings": {}
-        },
-        "flick-2": {
-          "type": "flick",
-          "settings": {}
-        },
-        "flick-3": {
-          "type": "flick",
-          "settings": {}
-        },
-        "flick-4": {
-          "type": "flick",
-          "settings": {}
-        },
-        "flick-5": {
-          "type": "flick",
-          "settings": {}
-        },
-        "flick-6": {
-          "type": "flick",
-          "settings": {}
-        },
-        "flick-7": {
-          "type": "flick",
-          "settings": {}
-        },
-        "flick-8": {
-          "type": "flick",
-          "settings": {}
-        },
-        "sticky-1": {
-          "type": "sticky",
-          "settings": {}
-        },
-        "sticky-2": {
-          "type": "sticky",
-          "settings": {}
-        },
-        "sticky-3": {
-          "type": "sticky",
-          "settings": {}
-        },
-        "sticky-4": {
-          "type": "sticky",
-          "settings": {}
-        }
+        "slide-1": { "type": "slide", "settings": {} },
+        "slide-2": { "type": "slide", "settings": {} },
+        "slide-3": { "type": "slide", "settings": {} },
+        "slide-4": { "type": "slide", "settings": {} },
+        "slide-5": { "type": "slide", "settings": {} },
+        "slide-6": { "type": "slide", "settings": {} },
+        "slide-7": { "type": "slide", "settings": {} }
       },
       "block_order": [
-        "flick-1",
-        "flick-2",
-        "flick-3",
-        "flick-4",
-        "flick-5",
-        "flick-6",
-        "flick-7",
-        "flick-8",
-        "sticky-1",
-        "sticky-2",
-        "sticky-3",
-        "sticky-4"
-      ]
-    },
-    "about-footer": {
-      "type": "about-footer",
+        "slide-1",
+        "slide-2",
+        "slide-3",
+        "slide-4",
+        "slide-5",
+        "slide-6",
+        "slide-7"
+      ],
       "settings": {
-        "cta_url": "/collections/all"
+        "label": "MOONBAE_26",
+        "swipe_label": "Swipe",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "footer": {
+      "type": "footer-dark",
+      "blocks": {
+        "column-1": {
+          "type": "column",
+          "settings": {
+            "heading": "Site Index",
+            "hover_images": true,
+            "link_1_label": "Shop now",
+            "link_1_url": "/collections/all",
+            "link_2_label": "Home",
+            "link_2_url": "/",
+            "link_3_label": "",
+            "link_3_url": "",
+            "link_4_label": "",
+            "link_4_url": ""
+          }
+        },
+        "column-2": {
+          "type": "column",
+          "settings": {
+            "heading": "Social",
+            "link_1_label": "Instagram",
+            "link_1_url": "https://www.instagram.com/moonbae.stores"
+          }
+        },
+        "column-3": {
+          "type": "column",
+          "settings": {
+            "heading": "Get in touch",
+            "link_1_label": "moonstorepod@gmail.com",
+            "link_1_url": "mailto:moonstorepod@gmail.com?subject=moonbae%20-%20Customer%20Support",
+            "link_2_label": "",
+            "link_2_url": ""
+          }
+        },
+        "column-4": {
+          "type": "column",
+          "settings": {
+            "heading": "legal",
+            "link_1_label": "Privacy Policy",
+            "link_1_url": "/policies/privacy-policy",
+            "link_2_label": "Refunds",
+            "link_2_url": "/policies/refund-policy",
+            "link_3_label": "Shipping",
+            "link_3_url": "/policies/shipping-policy",
+            "link_4_label": "Terms of service",
+            "link_4_url": "/policies/terms-of-service"
+          }
+        },
+        "hover_image-1": { "type": "hover_image", "settings": {} },
+        "hover_image-2": { "type": "hover_image", "settings": {} },
+        "hover_image-3": { "type": "hover_image", "settings": {} },
+        "hover_image-4": { "type": "hover_image", "settings": {} }
+      },
+      "block_order": [
+        "column-1",
+        "column-2",
+        "column-3",
+        "column-4",
+        "hover_image-1",
+        "hover_image-2",
+        "hover_image-3",
+        "hover_image-4"
+      ],
+      "settings": {
+        "logo_size": 0,
+        "tagline": "<p>moonbae<br/>dressed for the quiet hours</p>",
+        "copyright": "All rights reserved _ moonbae ©2026",
+        "credit_label": "",
+        "credit_url": ""
       }
     }
   },
   "order": [
-    "hero",
+    "intro",
     "image",
-    "story",
-    "about-footer"
+    "craft",
+    "gallery",
+    "footer"
   ]
 }

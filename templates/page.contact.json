@@ -1,24 +1,31 @@
 {
   "sections": {
+    "intro": {
+      "type": "intro-section",
+      "settings": {
+        "mark_size": 0,
+        "text": "<p>Questions about a size, an order on its way, or something that arrived not quite right — write to us and a person will answer. We read everything.</p>",
+        "padding_top": 160,
+        "padding_bottom": 0
+      }
+    },
+    "image": {
+      "type": "image-section",
+      "settings": {
+        "left": "Get in touch",
+        "center": "We read everything",
+        "right": "India",
+        "padding_top": 160,
+        "padding_bottom": 0
+      }
+    },
     "contact": {
       "type": "contact-section",
       "blocks": {
-        "image-1": {
-          "type": "image",
-          "settings": {}
-        },
-        "image-2": {
-          "type": "image",
-          "settings": {}
-        },
-        "image-3": {
-          "type": "image",
-          "settings": {}
-        },
-        "image-4": {
-          "type": "image",
-          "settings": {}
-        }
+        "image-1": { "type": "image", "settings": {} },
+        "image-2": { "type": "image", "settings": {} },
+        "image-3": { "type": "image", "settings": {} },
+        "image-4": { "type": "image", "settings": {} }
       },
       "block_order": [
         "image-1",
@@ -27,7 +34,16 @@
         "image-4"
       ],
       "settings": {
-        "social_url": "https://www.instagram.com/moonbae.stores"
+        "mark_size": 0,
+        "heading": "<p>Contact Us</p>",
+        "email": "moonstorepod@gmail.com",
+        "signup_label": "Join our community",
+        "social_label": "Instagram",
+        "social_url": "https://www.instagram.com/moonbae.stores",
+        "footnote": "moonbae ©2026",
+        "show_form": false,
+        "padding_top": 160,
+        "padding_bottom": 0
       }
     },
     "footer": {
@@ -80,22 +96,10 @@
             "link_4_url": "/policies/terms-of-service"
           }
         },
-        "hover_image-1": {
-          "type": "hover_image",
-          "settings": {}
-        },
-        "hover_image-2": {
-          "type": "hover_image",
-          "settings": {}
-        },
-        "hover_image-3": {
-          "type": "hover_image",
-          "settings": {}
-        },
-        "hover_image-4": {
-          "type": "hover_image",
-          "settings": {}
-        }
+        "hover_image-1": { "type": "hover_image", "settings": {} },
+        "hover_image-2": { "type": "hover_image", "settings": {} },
+        "hover_image-3": { "type": "hover_image", "settings": {} },
+        "hover_image-4": { "type": "hover_image", "settings": {} }
       },
       "block_order": [
         "column-1",
@@ -106,10 +110,19 @@
         "hover_image-2",
         "hover_image-3",
         "hover_image-4"
-      ]
+      ],
+      "settings": {
+        "logo_size": 0,
+        "tagline": "<p>moonbae<br/>dressed for the quiet hours</p>",
+        "copyright": "All rights reserved _ moonbae ©2026",
+        "credit_label": "",
+        "credit_url": ""
+      }
     }
   },
   "order": [
+    "intro",
+    "image",
     "contact",
     "footer"
   ]
