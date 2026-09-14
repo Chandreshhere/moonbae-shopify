@@ -1,4 +1,5 @@
 {% render 'section-class', classes: 'page-collection u-container', attrs: 'count-items', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+<h1 class="u-visually-hidden">{{ 'general.search.heading' | t | default: 'Search' }}{% if search.terms != blank %}: {{ search.terms }}{% endif %}</h1>
 
 {%- paginate search.results by 48 -%}
 <div class="page-inner">

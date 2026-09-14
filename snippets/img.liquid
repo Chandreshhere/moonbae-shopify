@@ -6,9 +6,15 @@
   attrs takes raw attributes (e.g. block.shopify_attributes) so blocks stay
   selectable in the editor without a wrapper element disturbing the CSS.
 {%- endcomment -%}
-{%- assign img_alt = alt | default: '' -%}
+{%- comment -%} A merchant-set alt on the image itself beats an empty string. {%- endcomment -%}
+{%- assign img_alt = alt | default: image.alt | default: '' -%}
 {%- assign img_class = class | default: '' -%}
-{%- assign img_loading = loading | default: 'auto' -%}
+{%- comment -%}
+  loading="auto" is not a valid value — the spec allows only lazy and eager —
+  so browsers ignored it and nothing below the fold was deferred. Default to
+  lazy; pass loading: 'eager' for anything above the fold.
+{%- endcomment -%}
+{%- assign img_loading = loading | default: 'lazy' -%}
 {%- if image != blank -%}
   <img
     src="{{ image | image_url: width: 1920 }}"
@@ -17,9 +23,10 @@
     alt="{{ img_alt | escape }}"
     class="{{ img_class }}"
     loading="{{ img_loading }}"
+    decoding="async"
     width="{{ image.width }}"
     height="{{ image.height }}"
     {{ attrs }}>
 {%- else -%}
-  <img src="{{ fallback | asset_url }}" alt="{{ img_alt | escape }}" class="{{ img_class }}" loading="{{ img_loading }}" {{ attrs }}>
+  <img src="{{ fallback | asset_url }}" alt="{{ img_alt | escape }}" class="{{ img_class }}" loading="{{ img_loading }}" decoding="async" {{ attrs }}>
 {%- endif -%}

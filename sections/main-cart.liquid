@@ -1,4 +1,5 @@
 {% render 'section-class', classes: 'page-cart', attrs: 'nav-dark', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+<h1 class="u-visually-hidden">{{ 'cart.general.title' | t | default: 'Cart' }}</h1>
 
 {%- if cart.item_count > 0 -%}
   <div class="page-inner">

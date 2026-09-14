@@ -12,9 +12,20 @@
       {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
     </title>
 
-    {% if page_description %}
-      <meta name="description" content="{{ page_description | escape }}">
-    {% endif %}
+    {%- comment -%}
+      Without a fallback, every page the merchant has not written a description
+      for ships with none at all, and the search result gets whatever Google
+      scrapes off the page.
+    {%- endcomment -%}
+    {%- capture meta_description -%}
+      {%- if page_description != blank -%}{{ page_description }}
+      {%- elsif template.name == 'product' -%}{{ product.description | strip_html | truncatewords: 30 }}
+      {%- elsif template.name == 'collection' and collection.description != blank -%}{{ collection.description | strip_html | truncatewords: 30 }}
+      {%- elsif shop.description != blank -%}{{ shop.description }}
+      {%- else -%}{{ shop.name }} — clothing made in small runs in India.
+      {%- endif -%}
+    {%- endcapture -%}
+    <meta name="description" content="{{ meta_description | strip | truncate: 300 | escape }}">
 
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous">

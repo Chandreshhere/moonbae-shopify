@@ -27,6 +27,12 @@
         "id": "social_image",
         "label": "Social share image",
         "info": "Shown when a link to the store is shared. 1200x630 works everywhere. Falls back to the dark logo."
+      },
+      {
+        "type": "url",
+        "id": "social_instagram",
+        "label": "Instagram URL",
+        "info": "Used in structured data so search engines can link the brand to its social profile."
       }
     ]
   },

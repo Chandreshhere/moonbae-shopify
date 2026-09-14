@@ -194,7 +194,6 @@ function footerImgFollow() {
 
 //Home Slider
 function globalScripts() {
-  $("img").attr("loading", "auto");
   lenis.resize();
   lenis.start();
   addLenisPreventAttribute();

@@ -142,10 +142,49 @@
       "@context": "https://schema.org/",
       "@type": "Organization",
       "name": {{ settings.brand_name | default: shop.name | json }},
-      "url": {{ request.origin | append: routes.root_url | json }}
-      {%- if settings.logo_dark != blank -%}
-        , "logo": {{ settings.logo_dark | image_url: width: 600 | prepend: 'https:' | json }}
-      {%- endif -%}
+      "url": {{ request.origin | append: routes.root_url | json }},
+      {%- if settings.social_instagram != blank %}
+        "sameAs": [{{ settings.social_instagram | json }}],
+      {%- endif %}
+      "logo": {%- if settings.logo_dark != blank -%}
+        {{ settings.logo_dark | image_url: width: 600 | prepend: 'https:' | json }}
+      {%- else -%}
+        {{ 'og-moonbae.png' | asset_url | prepend: 'https:' | replace: 'https:https:', 'https:' | json }}
+      {%- endif %}
+    }
+  </script>
+{%- endif -%}
+
+{%- comment -%}
+  Breadcrumbs let a result show Home > Collection > Product rather than a raw
+  URL. Built per template because the middle step differs.
+{%- endcomment -%}
+{%- assign crumb_home = request.origin | append: routes.root_url -%}
+{%- capture crumbs -%}
+  {%- case request.page_type -%}
+    {%- when 'product' -%}
+      {%- assign parent = product.collections.first -%}
+      {"@type":"ListItem","position":2,"name":{% if parent %}{{ parent.title | json }}{% else %}"Products"{% endif %},"item":{% if parent %}{{ parent.url | prepend: request.origin | json }}{% else %}{{ '/collections/all' | prepend: request.origin | json }}{% endif %}},
+      {"@type":"ListItem","position":3,"name":{{ product.title | json }},"item":{{ canonical_url | json }}}
+    {%- when 'collection' -%}
+      {"@type":"ListItem","position":2,"name":{{ collection.title | json }},"item":{{ canonical_url | json }}}
+    {%- when 'article' -%}
+      {"@type":"ListItem","position":2,"name":{{ blog.title | json }},"item":{{ blog.url | prepend: request.origin | json }}},
+      {"@type":"ListItem","position":3,"name":{{ article.title | json }},"item":{{ canonical_url | json }}}
+    {%- when 'page' -%}
+      {"@type":"ListItem","position":2,"name":{{ page.title | json }},"item":{{ canonical_url | json }}}
+  {%- endcase -%}
+{%- endcapture -%}
+{%- assign crumbs = crumbs | strip -%}
+{%- if crumbs != blank -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":{{ crumb_home | json }}},
+        {{ crumbs }}
+      ]
     }
   </script>
 {%- endif -%}

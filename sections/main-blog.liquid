@@ -1,4 +1,5 @@
 {% render 'section-class', classes: 'page-collection u-container', attrs: 'count-items', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+<h1 class="u-visually-hidden">{{ blog.title }}</h1>
 
 {%- paginate blog.articles by 24 -%}
 <div class="page-inner">
