@@ -34,13 +34,34 @@
     "gallery": {
       "type": "home-slider",
       "blocks": {
-        "slide-1": { "type": "slide", "settings": {} },
-        "slide-2": { "type": "slide", "settings": {} },
-        "slide-3": { "type": "slide", "settings": {} },
-        "slide-4": { "type": "slide", "settings": {} },
-        "slide-5": { "type": "slide", "settings": {} },
-        "slide-6": { "type": "slide", "settings": {} },
-        "slide-7": { "type": "slide", "settings": {} }
+        "slide-1": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide-2": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide-3": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide-4": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide-5": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide-6": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide-7": {
+          "type": "slide",
+          "settings": {}
+        }
       },
       "block_order": [
         "slide-1",
@@ -108,10 +129,22 @@
             "link_4_url": "/policies/terms-of-service"
           }
         },
-        "hover_image-1": { "type": "hover_image", "settings": {} },
-        "hover_image-2": { "type": "hover_image", "settings": {} },
-        "hover_image-3": { "type": "hover_image", "settings": {} },
-        "hover_image-4": { "type": "hover_image", "settings": {} }
+        "hover_image-1": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-2": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-3": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-4": {
+          "type": "hover_image",
+          "settings": {}
+        }
       },
       "block_order": [
         "column-1",
@@ -130,6 +163,60 @@
         "credit_label": "",
         "credit_url": ""
       }
+    },
+    "values": {
+      "type": "community-section",
+      "blocks": {
+        "pillar-1": {
+          "type": "partner",
+          "settings": {
+            "title": "Made slowly",
+            "text": "<p>Short runs, cut and sewn in India. Nothing is made in bulk and warehoused — each piece is printed and finished after someone asks for it. It is slower, and it is the only way we know how to keep the quality where we want it.</p>",
+            "url": "",
+            "link_label": ""
+          }
+        },
+        "pillar-2": {
+          "type": "partner",
+          "settings": {
+            "title": "Chosen by hand",
+            "text": "<p>Cloth is picked in person, for how it falls and how it ages rather than how it photographs. Natural fibres wherever the piece allows it, and weights that hold their shape through a hundred washes.</p>",
+            "url": "",
+            "link_label": ""
+          }
+        },
+        "pillar-3": {
+          "type": "partner",
+          "settings": {
+            "title": "Worn often",
+            "text": "<p>We design for the part of the wardrobe you actually reach for. Cuts that sit easy, colours that go with what you already own, and nothing so loud that you can only wear it once a month.</p>",
+            "url": "",
+            "link_label": ""
+          }
+        },
+        "pillar-4": {
+          "type": "partner",
+          "settings": {
+            "title": "Kept long",
+            "text": "<p>Finished to last and easy to mend. The best thing a piece of ours can do is soften, fade a little, and stay in your rotation for years — not be replaced next season.</p>",
+            "url": "",
+            "link_label": ""
+          }
+        }
+      },
+      "block_order": [
+        "pillar-1",
+        "pillar-2",
+        "pillar-3",
+        "pillar-4"
+      ],
+      "settings": {
+        "giving_title": "<p>How we work</p>",
+        "giving_text": "<p>moonbae was never only about clothes. It is the hands that cut and sew, the people who wear it, and the place it is made. Four things decide everything we put out.</p>",
+        "list_heading": "What we stand for",
+        "padding_top": 160,
+        "padding_bottom": 0
+      }
     }
   },
   "order": [
@@ -137,6 +224,7 @@
     "image",
     "craft",
     "gallery",
+    "values",
     "footer"
   ]
 }
