@@ -194,13 +194,6 @@ function footerImgFollow() {
 
 //Home Slider
 function globalScripts() {
-  $("[sub-trigger]").on("click", function () {
-    $("body").addClass("show-signup");
-  });
-
-  $(".signup-bg, .signup-close").on("click", function () {
-    $("body").removeClass("show-signup");
-  });
   $("img").attr("loading", "auto");
   lenis.resize();
   lenis.start();
@@ -1326,9 +1319,6 @@ function checkPreloader() {
     $("body").removeClass("show-preloader");
   } else {
     preloader();
-    setTimeout(function () {
-      $("[sub-trigger]").click();
-    }, 10000);
   }
   sessionStorage.setItem("visited", "true");
 }

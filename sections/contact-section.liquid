@@ -26,11 +26,6 @@
               <div class="body-upper f-5">{{ section.settings.phone }}</div>
             </a>
           {%- endif -%}
-          {%- if section.settings.signup_label != blank -%}
-            <div h-flip="" sub-trigger="" class="text-link">
-              <div class="body-upper f-5">{{ section.settings.signup_label }}</div>
-            </div>
-          {%- endif -%}
           {%- if section.settings.social_url != blank -%}
             <a h-flip="" href="{{ section.settings.social_url }}" target="_blank" class="text-link w-inline-block">
               <div class="body-upper f-5">{{ section.settings.social_label }}</div>
@@ -156,12 +151,6 @@
       "id": "phone",
       "label": "Phone",
       "info": "Optional. Left empty, the phone line is not rendered."
-    },
-    {
-      "type": "text",
-      "id": "signup_label",
-      "label": "Newsletter trigger label",
-      "default": "Join our community"
     },
     {
       "type": "text",

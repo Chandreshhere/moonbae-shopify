@@ -310,59 +310,6 @@
     ]
   },
   {
-    "name": "Newsletter",
-    "settings": [
-      {
-        "type": "html",
-        "id": "newsletter_embed",
-        "label": "Embed code",
-        "info": "Paste a Klaviyo / Mailchimp embed to replace the built-in form."
-      },
-      {
-        "type": "text",
-        "id": "newsletter_label",
-        "label": "Field label",
-        "default": "Email"
-      },
-      {
-        "type": "text",
-        "id": "newsletter_placeholder",
-        "label": "Placeholder",
-        "default": "Email address"
-      },
-      {
-        "type": "text",
-        "id": "newsletter_button",
-        "label": "Button label",
-        "default": "Sign up"
-      },
-      {
-        "type": "text",
-        "id": "newsletter_name_label",
-        "label": "Name field label",
-        "default": "First name"
-      },
-      {
-        "type": "richtext",
-        "id": "newsletter_terms",
-        "label": "Fine print",
-        "default": "<p>By signing up you agree to receive email from moonbae. Unsubscribe any time.</p>"
-      },
-      {
-        "type": "text",
-        "id": "newsletter_success_heading",
-        "label": "Success heading",
-        "default": "You're in."
-      },
-      {
-        "type": "richtext",
-        "id": "newsletter_success_text",
-        "label": "Success copy",
-        "default": "<p>Welcome to the club — keep an eye on your inbox.</p>"
-      }
-    ]
-  },
-  {
     "name": "Behaviour",
     "settings": [
       {
