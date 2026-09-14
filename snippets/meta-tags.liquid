@@ -10,7 +10,7 @@
 {%- liquid
   assign og_type = 'website'
   assign og_title = page_title
-  assign og_description = page_description | default: shop.description | default: shop.name
+  assign og_description = page_description | default: shop.description | default: settings.brand_name | default: shop.name
   assign og_image = settings.social_image | default: settings.logo_dark
 
   case request.page_type
@@ -87,7 +87,7 @@
       {%- endif %}
       "brand": {
         "@type": "Brand",
-        "name": {{ product.vendor | default: shop.name | json }}
+        "name": {{ settings.brand_name | default: product.vendor | json }}
       },
       "offers": [
         {%- for v in product.variants -%}
@@ -115,7 +115,7 @@
         "image": [{{ article.image | image_url: width: 1200 | prepend: 'https:' | json }}],
       {%- endif %}
       "author": { "@type": "Person", "name": {{ article.author | json }} },
-      "publisher": { "@type": "Organization", "name": {{ shop.name | json }} }
+      "publisher": { "@type": "Organization", "name": {{ settings.brand_name | default: shop.name | json }} }
     }
   </script>
 {%- elsif request.page_type == 'index' -%}

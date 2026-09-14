@@ -5,12 +5,16 @@
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <link rel="canonical" href="{{ canonical_url }}">
 
+    {%- assign site_name = settings.brand_name | default: shop.name -%}
     <title>
-      {{ page_title }}
-      {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
-      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
-      {%- assign site_name = settings.brand_name | default: shop.name -%}
-      {%- unless page_title contains site_name %} &ndash; {{ site_name }}{% endunless -%}
+      {%- if request.page_type == 'index' -%}
+        {{ site_name }} &ndash; dressed for the quiet hours
+      {%- else -%}
+        {{ page_title }}
+        {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
+        {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+        {%- unless page_title contains site_name %} &ndash; {{ site_name }}{% endunless -%}
+      {%- endif -%}
     </title>
 
     {%- comment -%}

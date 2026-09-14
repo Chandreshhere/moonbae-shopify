@@ -136,7 +136,7 @@
       </div>
 
       <div class="nav-col">
-        <a href="{{ routes.root_url }}"{% if request.page_type == 'index' %} aria-current="page"{% endif %} class="nav-logo_link w-inline-block{% if request.page_type == 'index' %} w--current{% endif %}" aria-label="{{ shop.name | escape }}">
+        <a href="{{ routes.root_url }}"{% if request.page_type == 'index' %} aria-current="page"{% endif %} class="nav-logo_link w-inline-block{% if request.page_type == 'index' %} w--current{% endif %}" aria-label="{{ settings.brand_name | default: shop.name | escape }}">
           {%- if section.settings.logo_image != blank -%}{% render 'brand-logo', setting: section.settings.logo_image, size: section.settings.logo_size, class: 'is-nav' %}{%- else -%}{% render 'brand-logo', variant: 'light', size: section.settings.logo_size, class: 'is-nav is-on-dark' %}{% render 'brand-logo', variant: 'dark', size: section.settings.logo_size, class: 'is-nav is-on-light' %}{%- endif -%}
         </a>
       </div>
