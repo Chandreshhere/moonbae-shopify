@@ -619,6 +619,28 @@ function globalScripts() {
     );
   });
 
+  // Sticky mobile add-to-cart: show the bar while the real button is off
+  // screen, and route its click to the real button so the one form and the
+  // cart drawer handle everything. Price follows the real price element,
+  // which the cart script rewrites on variant change.
+  $("[data-sticky-atc]").each(function () {
+    const bar = this;
+    const form = document.querySelector(bar.getAttribute("data-sticky-atc"));
+    const real = form && form.querySelector('[data-node-type="commerce-add-to-cart-button"]');
+    if (!real || !("IntersectionObserver" in window)) return;
+    new IntersectionObserver(
+      ([entry]) => bar.classList.toggle("is-visible", !entry.isIntersecting && !real.disabled),
+      { threshold: 0 }
+    ).observe(real);
+    bar.querySelector("[data-sticky-atc-btn]").addEventListener("click", () => real.click());
+    const price = document.querySelector("[data-product-price]");
+    const mirror = bar.querySelector("[data-sticky-atc-price]");
+    if (price && mirror && "MutationObserver" in window) {
+      new MutationObserver(() => (mirror.textContent = price.textContent))
+        .observe(price, { childList: true, characterData: true, subtree: true });
+    }
+  });
+
   $(".product-accordion").each(function () {
     $(this).on("click", function () {
       if ($(this).hasClass("open")) {

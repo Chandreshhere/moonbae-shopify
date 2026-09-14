@@ -201,6 +201,23 @@
   </div>
 {%- endif -%}
 
+{%- comment -%}
+  Sticky mobile add-to-cart. On a phone the real button scrolls away under the
+  description and never comes back. This bar mirrors it once it leaves the
+  viewport and clicks the real button, so every add still goes through the
+  one form and the cart drawer. Not rendered at all when the variant is sold
+  out — a sticky "sold out" bar would only get in the way.
+{%- endcomment -%}
+{%- if current_variant.available -%}
+  <div class="sticky-atc" data-sticky-atc="#product_form_{{ product.id }}" aria-hidden="true">
+    <div class="sticky-atc_info">
+      <div class="body-upper sticky-atc_title">{{ product.title }}</div>
+      <div class="body-upper" data-sticky-atc-price>{{ current_variant.price | money }}</div>
+    </div>
+    <button type="button" class="sticky-atc_btn body-upper" data-sticky-atc-btn tabindex="-1">{{ section.settings.add_label }}</button>
+  </div>
+{%- endif -%}
+
 {% schema %}
 {
   "name": "Product",

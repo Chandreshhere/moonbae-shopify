@@ -1,0 +1,129 @@
+{% render 'section-class', classes: 'page-contain u-container is-section faq-section', attrs: 'nav-dark', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+
+{%- comment -%}
+  Built on the product page's accordion — same classes, so the existing
+  click handler and open-state CSS drive it with no JS of its own. The
+  FAQPage structured data below is what earns the expandable result in
+  Google; a question with no text is left out of both.
+{%- endcomment -%}
+
+<div class="or-info">
+  <div class="u-text-align-center">
+    <div class="text-style_alt-large">{{ section.settings.eyebrow }}</div>
+  </div>
+</div>
+
+<div class="faq-list">
+  {%- for block in section.blocks -%}
+    {%- if block.settings.question != blank -%}
+      <div class="product-accordion faq-item" {{ block.shopify_attributes }}>
+        <div class="product-toggle">
+          <div class="product-info_title_block">
+            <div class="body-upper">{{ block.settings.question }}</div>
+          </div>
+          <div class="accordion-dropdown">
+            <div class="accordion-dropdown_content">
+              <div class="u-text-style-small f-5">
+                <div class="w-richtext">{{ block.settings.answer }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="toggle-icon">
+            <div class="toggle-line"></div>
+            <div class="toggle-line is-vert"></div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+</div>
+
+{%- capture faq_items -%}
+  {%- for block in section.blocks -%}
+    {%- if block.settings.question != blank -%}
+      ,{"@type":"Question","name":{{ block.settings.question | json }},"acceptedAnswer":{"@type":"Answer","text":{{ block.settings.answer | strip_html | strip | json }}}}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign faq_items = faq_items | strip | remove_first: ',' -%}
+{%- if faq_items != blank -%}
+  <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{{ faq_items }}]}
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "FAQ",
+  "tag": "div",
+  "class": "page-contain u-container is-section faq-section",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "eyebrow",
+      "label": "Heading",
+      "default": "<p>( Questions )</p>"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 320,
+      "step": 4,
+      "default": 0,
+      "unit": "px",
+      "info": "0 keeps the design default."
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 320,
+      "step": 4,
+      "default": 0,
+      "unit": "px",
+      "info": "0 keeps the design default."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 20,
+  "presets": [
+    {
+      "name": "FAQ",
+      "category": "Content",
+      "blocks": [
+        { "type": "question", "settings": { "question": "How long does delivery take?", "answer": "<p>Every piece is printed after you order, which takes 2–4 business days. Delivery inside India is then 3–7 business days to metro cities and up to 12 for other pin codes — usually 5–11 business days door to door. You get a tracking link by email the moment it ships.</p>" } },
+        { "type": "question", "settings": { "question": "Can I return or exchange it?", "answer": "<p>Each piece is made for you individually, so we can't take returns for change of mind or fit — please check the size guide before ordering, and ask us if you're between sizes. If it arrives damaged, misprinted, wrong, or gets lost in transit, we replace or refund it free. Write to us within 7 days of delivery.</p>" } },
+        { "type": "question", "settings": { "question": "Why do you ask for an unboxing video?", "answer": "<p>One continuous, unedited recording from the sealed parcel to the item coming out. It takes ten seconds and it's the only proof that a fault didn't happen after delivery — without it, our print partner won't accept a claim, so neither can we.</p>" } },
+        { "type": "question", "settings": { "question": "Can I cancel an order?", "answer": "<p>Yes, within 12 hours of placing it, as long as printing hasn't started. Email us as soon as you can. Once it's in production the piece exists only for you and can't be cancelled.</p>" } },
+        { "type": "question", "settings": { "question": "How do the sizes run?", "answer": "<p>Our tees are cut oversized — size down if you want a closer fit. Garments are hand-cut and can vary by up to ±0.5 inch from the size guide, which is standard for apparel and not a fault.</p>" } },
+        { "type": "question", "settings": { "question": "How do I look after it?", "answer": "<p>Wash cold, inside out, on a gentle cycle. No bleach. Hang to dry or tumble low. Don't iron directly over the print. Treated this way it will soften with every wash and last for years.</p>" } },
+        { "type": "question", "settings": { "question": "Where is it made?", "answer": "<p>India. Cut, printed and finished in small runs, close to the people who make it. Nothing is made in bulk or warehoused — each piece is made once someone asks for it.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
