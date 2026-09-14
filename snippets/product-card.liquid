@@ -29,9 +29,7 @@
         <div class="product-block_info">
           <div class="product-info">
             <div class="body-upper">{{ product.title }}</div>
-            {%- if product.selected_or_first_available_variant.sku != blank -%}
-              <p class="body-upper text-grey">({{ product.selected_or_first_available_variant.sku }})</p>
-            {%- endif -%}
+            {% render 'product-code', product: product, tag: 'p', class: 'body-upper text-grey' %}
           </div>
           <div class="product-btn_flex">
             <div class="price">{{ product.price | money }}</div>

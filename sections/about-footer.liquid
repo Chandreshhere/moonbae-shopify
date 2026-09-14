@@ -75,7 +75,7 @@
               <a text-btn="" href="{{ product.url }}" class="footer-product_link u-grid-desktop m-hflex w-inline-block">
                 <div class="u-column-4 m-col_3">
                   <div class="footer-text_item is-desktop">
-                    <p class="body-upper">({{ product.selected_or_first_available_variant.sku }})</p>
+                    {% render 'product-code', product: product, tag: 'p', class: 'body-upper' %}
                   </div>
                   <div class="m-product-img_wrap">
                     {%- if hover_media -%}

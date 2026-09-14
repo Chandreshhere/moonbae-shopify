@@ -1,0 +1,21 @@
+{%- comment -%}
+  The design prints a short product code beside the title. A print-on-demand
+  supplier's SKU is a 32-character machine string, which reads as noise in that
+  slot, so only render a code short enough to be read as one. Merchants with
+  real codes still get the design; Qikink's internal ids stay out of sight.
+
+  Params: product, tag (p|div), class, brackets (default true)
+{%- endcomment -%}
+{%- assign code = product.selected_or_first_available_variant.sku | default: '' | strip -%}
+{%- if code != blank and code.size <= 16 -%}
+  {%- if brackets == false -%}
+    {%- assign label = code -%}
+  {%- else -%}
+    {%- capture label -%}({{ code }}){%- endcapture -%}
+  {%- endif -%}
+  {%- if tag == 'div' -%}
+    <div class="{{ class }}">{{ label }}</div>
+  {%- else -%}
+    <p class="{{ class }}">{{ label }}</p>
+  {%- endif -%}
+{%- endif -%}

@@ -42,10 +42,10 @@
           <div class="split-grid u-grid-desktop">
             <div class="split-col u-column-8 m-col_12">
               <h1 class="product-title">{{ product.title }}</h1>
-              <h1 class="u-text-style-h4 f-5">{{ current_variant.sku }}</h1>
+              {% render 'product-code', product: product, tag: 'p', class: 'u-text-style-h4 f-5', brackets: false %}
             </div>
             <div class="split-col u-column-4 u-text-align-right m-align_left">
-              <h1 data-commerce-type="variation-price" class="product-title price" data-product-price>{{ current_variant.price | money }}</h1>
+              <div data-commerce-type="variation-price" class="product-title price" data-product-price>{{ current_variant.price | money }}</div>
             </div>
           </div>
           <div class="product-description_wrap u-text-style-small f-5">

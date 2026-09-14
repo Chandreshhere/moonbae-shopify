@@ -24,7 +24,7 @@
       {%- endif -%}
       <div overlay="el" class="product-overlay"></div>
       <div cta-cursor_el="" class="cta-hover_el is-desktop">
-        <div class="body-upper">({{ product.selected_or_first_available_variant.sku }})</div>
+        {% render 'product-code', product: product, tag: 'div', class: 'body-upper' %}
         <div class="orgc-detail body-upper">
           {% render 'icon-bracket-left' %}
           <div class="detail-text">{{ view_label | default: 'View Product' }}</div>
