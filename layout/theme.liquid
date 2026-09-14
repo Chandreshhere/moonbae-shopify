@@ -9,7 +9,8 @@
       {{ page_title }}
       {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
       {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
-      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+      {%- assign site_name = settings.brand_name | default: shop.name -%}
+      {%- unless page_title contains site_name %} &ndash; {{ site_name }}{% endunless -%}
     </title>
 
     {%- comment -%}
@@ -22,7 +23,7 @@
       {%- elsif template.name == 'product' -%}{{ product.description | strip_html | truncatewords: 30 }}
       {%- elsif template.name == 'collection' and collection.description != blank -%}{{ collection.description | strip_html | truncatewords: 30 }}
       {%- elsif shop.description != blank -%}{{ shop.description }}
-      {%- else -%}{{ shop.name }} — clothing made in small runs in India.
+      {%- else -%}{{ settings.brand_name | default: shop.name }} — clothing made in small runs in India.
       {%- endif -%}
     {%- endcapture -%}
     <meta name="description" content="{{ meta_description | strip | truncate: 300 | escape }}">
