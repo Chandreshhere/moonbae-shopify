@@ -1523,7 +1523,11 @@ barba.hooks.beforeEnter((data) => {
   syncTemplateClasses(data.next.container);
   if (data.next.html) {
     const m = data.next.html.match(/<title>([^<]*)<\/title>/i);
-    if (m) document.title = m[1].replace(/\s+/g, " ").trim();
+    if (m) {
+      // The title is raw HTML source, so decode its entities (&ndash;) first.
+      const decoded = new DOMParser().parseFromString(m[1], "text/html").documentElement.textContent;
+      document.title = decoded.replace(/\s+/g, " ").trim();
+    }
   }
 });
 
