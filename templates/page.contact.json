@@ -22,10 +22,22 @@
     "contact": {
       "type": "contact-section",
       "blocks": {
-        "image-1": { "type": "image", "settings": {} },
-        "image-2": { "type": "image", "settings": {} },
-        "image-3": { "type": "image", "settings": {} },
-        "image-4": { "type": "image", "settings": {} }
+        "image-1": {
+          "type": "image",
+          "settings": {}
+        },
+        "image-2": {
+          "type": "image",
+          "settings": {}
+        },
+        "image-3": {
+          "type": "image",
+          "settings": {}
+        },
+        "image-4": {
+          "type": "image",
+          "settings": {}
+        }
       },
       "block_order": [
         "image-1",
@@ -58,10 +70,10 @@
             "link_1_url": "/collections/all",
             "link_2_label": "Home",
             "link_2_url": "/",
-            "link_3_label": "",
-            "link_3_url": "",
-            "link_4_label": "",
-            "link_4_url": ""
+            "link_3_label": "About us",
+            "link_3_url": "/pages/about",
+            "link_4_label": "Contact Us",
+            "link_4_url": "/pages/contact-us"
           }
         },
         "column-2": {
@@ -96,10 +108,22 @@
             "link_4_url": "/policies/terms-of-service"
           }
         },
-        "hover_image-1": { "type": "hover_image", "settings": {} },
-        "hover_image-2": { "type": "hover_image", "settings": {} },
-        "hover_image-3": { "type": "hover_image", "settings": {} },
-        "hover_image-4": { "type": "hover_image", "settings": {} }
+        "hover_image-1": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-2": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-3": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-4": {
+          "type": "hover_image",
+          "settings": {}
+        }
       },
       "block_order": [
         "column-1",

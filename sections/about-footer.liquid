@@ -22,8 +22,8 @@
               </a>
             {%- endfor -%}
           {%- else -%}
-            {%- assign labels = 'Shop now,Home' | split: ',' -%}
-            {%- assign urls = '/collections/all,/' | split: ',' -%}
+            {%- assign labels = 'Shop now,Home,About us,Contact us' | split: ',' -%}
+            {%- assign urls = '/collections/all,/,/pages/about,/pages/contact-us' | split: ',' -%}
             {%- for label in labels -%}
               <a text-btn="" href="{{ urls[forloop.index0] }}" class="footer-link is-menu w-inline-block">
                 <div class="footer-link_layout body-upper">
