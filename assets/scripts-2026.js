@@ -78,6 +78,11 @@ $(".date").text(new Date().getFullYear());
   }
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", onScroll, { passive: true });
+  // This runs at parse time, before the banner exists in the DOM, so the first
+  // apply() found nothing and the nav started flush at 0 — overlapping the
+  // banner until the first scroll. Re-apply once the document is built.
+  document.addEventListener("DOMContentLoaded", apply);
+  window.addEventListener("load", apply);
   if (typeof lenis !== "undefined" && lenis.on) lenis.on("scroll", onScroll);
   // Barba swaps the container, not the banner, but the nav is inside the
   // container — so re-apply after a transition or the new nav starts at 0.

@@ -578,22 +578,42 @@ body > .announcement-bar { isolation: auto; }
    a light wash keeps the links legible without hiding what is behind. The
    colour follows the nav's own theme: .dark means dark type on a light
    ground, so it frosts white, and the default frosts dark. */
-.orgc-nav {
+/* The blur goes on a pseudo-element, never on .orgc-nav itself: backdrop-filter
+   makes an element the containing block for position:fixed descendants, and the
+   cart drawer is rendered inside the nav — putting it here re-anchored the
+   drawer to the nav bar instead of the viewport. */
+.orgc-nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   background-color: color-mix(in srgb, var(--swatch--dark) 28%, transparent);
-  transition: background-color 400ms ease, backdrop-filter 400ms ease;
+  transition: background-color 400ms ease;
 }
-.nav-component.dark .orgc-nav {
+.nav-component.dark .orgc-nav::before {
   background-color: color-mix(in srgb, var(--swatch--light) 55%, transparent);
 }
 /* No blur support (older Firefox, some in-app browsers): fall back to a
    slightly stronger tint so the links never sit unreadable on a photo. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .orgc-nav { background-color: color-mix(in srgb, var(--swatch--dark) 55%, transparent); }
-  .nav-component.dark .orgc-nav { background-color: color-mix(in srgb, var(--swatch--light) 80%, transparent); }
+  .orgc-nav::before { background-color: color-mix(in srgb, var(--swatch--dark) 55%, transparent); }
+  .nav-component.dark .orgc-nav::before { background-color: color-mix(in srgb, var(--swatch--light) 80%, transparent); }
 }
 /* The overlay menu paints its own full-screen background, so the frost would
    only double up behind it. */
-.nav[data-nav="open"] ~ .orgc-nav,
-body:has(.nav[data-nav="open"]) .orgc-nav { backdrop-filter: none; -webkit-backdrop-filter: none; }
+body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+/* The card's link only wrapped the little info panel at the bottom, so on a
+   phone — where there is no hover to reveal it — most of the card did nothing.
+   A transparent overlay makes the whole card the link; the info panel sits
+   above it and still takes its own clicks. */
+.product-card_overlay { position: absolute; inset: 0; z-index: 1; display: block; }
+.product-img_wrap .slider-link { z-index: 2; }
+
+/* Without hover there is no way to reveal the name and price, so show them. */
+@media (hover: none) {
+  .product-img_wrap.is-slider .slider-link { opacity: 1; }
+}

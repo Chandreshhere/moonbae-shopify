@@ -25,6 +25,13 @@
         <img src="{{ 'or-product-hover-1.jpg' | asset_url }}" alt="" class="product-hover_img" loading="lazy">
       {%- endif -%}
 
+      {%- comment -%}
+        Covers the whole card so a tap anywhere opens the product. Hidden from
+        assistive tech and the tab order, because the link below it already
+        carries the product name.
+      {%- endcomment -%}
+      <a class="product-card_overlay" href="{{ product.url }}" aria-hidden="true" tabindex="-1"></a>
+
       <a arrow-trigger="" href="{{ product.url }}" class="slider-link w-inline-block">
         <div class="product-block_info">
           <div class="product-info">
