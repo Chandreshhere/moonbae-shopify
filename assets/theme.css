@@ -325,9 +325,14 @@ body:not(.show-preloader) .preloader_wrap {
 :root { --nav--clearance: 10rem; }
 @media only screen and (max-width: 767px) { :root { --nav--clearance: 7rem; } }
 
-.template-page .page-main,
-.template-list-collections .page-main,
-.template-search .page-main { padding-top: var(--nav--clearance); }
+/* Keyed to the container's own attribute, not the body class. During a
+   transition both the outgoing and incoming containers are in the DOM and both
+   carry .page-main, so a rule scoped to <body> applied to whichever page was
+   leaving as well — and swapping the body classes mid-transition yanked the
+   old page 160px up. Each container now keeps its own clearance. */
+.page-main[data-template-classes~="template-page"],
+.page-main[data-template-classes~="template-list-collections"],
+.page-main[data-template-classes~="template-search"] { padding-top: var(--nav--clearance); }
 
 /* Mobile browser chrome shows and hides as you scroll, and 100vh is the height
    with it hidden. Any element sized that way is therefore taller than the

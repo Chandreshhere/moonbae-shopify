@@ -1991,27 +1991,30 @@ barba.init({
           },
         });
 
+        // Transform rather than margin: animating marginTop reflows the
+        // document every frame, which the browser reports as layout shift and
+        // the eye reads as the page lurching. y moves the same distance on the
+        // compositor and costs no layout at all.
         barbaTransitionTl.fromTo(
           data.current.container,
           {
             opacity: 1,
-            marginTop: "0vh",
+            y: "0vh",
           },
           {
             opacity: 0.4,
-            // ease: "expo.inOut",
-            marginTop: "20vh",
+            y: "20vh",
           }
         );
 
         barbaTransitionTl.fromTo(
           data.next.container,
           {
-            marginTop: "-20vh",
+            y: "-20vh",
             clipPath: "polygon(0% 0%, 100% 0%, 100% 0vh, 0% 0vh)",
           },
           {
-            marginTop: "0vh",
+            y: "0vh",
             clipPath: "polygon(0% 0%, 100% 0%, 100% 100vh, 0% 100vh)",
             // ease: "expo.inOut",
             clearProps: "all",
