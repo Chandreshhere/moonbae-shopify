@@ -2100,21 +2100,52 @@ function flowOffset(current) {
   return bar ? bar.offsetHeight || 0 : 0;
 }
 
+// The nav is position:fixed, but it lives inside the Barba container, and both
+// containers carry a transform for the length of the transition — which makes
+// the container, not the viewport, the containing block its top is measured
+// from. Neither header survives that on its own, so both are pinned by hand for
+// the duration and handed back to CSS in hooks.after.
 barba.hooks.enter((data) => {
+  const current = data.current && data.current.container;
+
+  // Measured before anything is moved: taking the container out of flow first
+  // would be measuring the answer after changing the question.
+  //
+  // The nav's resolved top, not its rect: the header carries a
+  // translateY(-100%) whenever it has hidden itself on the way down the page,
+  // and a rect includes that, so freezing on the rect would have applied the
+  // hide twice. While the containing block is still the viewport, the resolved
+  // top is exactly where the header sits on screen.
+  let leaving = null;
+  let leavingTop = 0;
+  if (current) {
+    leaving = current.querySelector(".orgc-nav");
+    if (leaving) {
+      const shown = parseFloat(getComputedStyle(leaving).top) || 0;
+      leavingTop = shown - current.getBoundingClientRect().top;
+    }
+  }
+
   gsap.set(data.next.container, {
     position: "fixed",
-    top: flowOffset(data.current && data.current.container),
+    top: flowOffset(current),
     left: 0,
     width: "100%",
   });
-  // The nav is position:fixed, but it lives inside the container and the
-  // container carries a transform for the whole transition — which makes the
-  // container, not the viewport, the nav's containing block. So the nav's own
-  // banner offset stacks on top of the container's and the header sits one
-  // banner too low until the transform clears, then snaps back. Zero it for the
-  // duration; hooks.after hands it back to CSS.
+
+  // Arriving header: its banner offset would stack on top of the container's
+  // own, putting it one banner too low until the transform clears and it snaps
+  // back. The container already sits at the offset, so the nav wants zero.
   const nav = data.next.container.querySelector(".orgc-nav");
   if (nav) gsap.set(nav, { top: 0 });
+
+  // Departing header: the same trap, and by far the more visible one, because
+  // it happens the instant you click rather than at the end. At the top of a
+  // page it threw the header down by a banner. Anywhere further down — which is
+  // where most clicks happen — it threw it off the top of the screen: 566px in
+  // a single frame on a page scrolled 600. Freeze it where the eye last saw it
+  // and let it slide away with the rest of the page.
+  if (leaving) gsap.set(leaving, { top: leavingTop });
 });
 barba.hooks.before((data) => {
   lenis.stop();
