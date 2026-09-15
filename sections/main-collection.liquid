@@ -24,7 +24,10 @@
       </div>
     </div>
 
-    <div class="product-col_wrap w-dyn-list" udy-collection="product">
+    <div class="collection-layout{% if collection.filters.size > 0 %} has-filters{% endif %}">
+      {% render 'collection-filters', collection: collection, section: section %}
+
+      <div class="product-col_wrap w-dyn-list" udy-collection="product">
       <div role="list" class="product-col_list u-grid-desktop w-dyn-items">
         {%- for product in collection.products -%}
           {% render 'product-card-grid', product: product, view_label: section.settings.view_label %}
@@ -33,6 +36,7 @@
             <p class="body-upper">{{ 'collections.general.no_matches' | t }}</p>
           </div>
         {%- endfor -%}
+      </div>
       </div>
     </div>
 
@@ -68,6 +72,13 @@
       "id": "eyebrow",
       "label": "Eyebrow",
       "default": "<p>COLLECTION 01 & 02<br/>moonbae ©️2026</p>"
+    },
+    {
+      "type": "text",
+      "id": "filter_label",
+      "label": "Filter heading",
+      "default": "Filter",
+      "info": "The rail only appears once filters are set up in Shopify's Search & Discovery app."
     },
     {
       "type": "text",

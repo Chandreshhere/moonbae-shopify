@@ -1,0 +1,91 @@
+{%- comment -%}
+  Left-hand filter rail for the collection grid.
+
+  Uses Shopify's own storefront filters (collection.filters), which the
+  merchant configures in the Search & Discovery app. Those give us the facet
+  values, their result counts and the URLs to apply or clear each one, so the
+  filtering is real and server-side rather than hiding cards with JS.
+
+  If no filters are configured, collection.filters is empty and this renders
+  nothing at all — the grid then behaves exactly as it did before.
+
+  The form GETs the collection URL, so it works with JavaScript off; the small
+  script in scripts-2026.js only submits it on change to save a click.
+{%- endcomment -%}
+
+{%- if collection.filters.size > 0 -%}
+  <aside class="collection-filters" aria-label="{{ 'collections.filters.title' | t | default: 'Filter' }}">
+    <button type="button" class="collection-filters_toggle body-upper is-mobile" data-filters-toggle aria-expanded="false">
+      {{ section.settings.filter_label | default: 'Filter' }}
+    </button>
+
+    <form method="get" action="{{ collection.url }}" class="collection-filters_form" data-filters-form>
+      {%- comment -%} Carry the active sort across a filter change. {%- endcomment -%}
+      {%- if collection.sort_by != blank -%}
+        <input type="hidden" name="sort_by" value="{{ collection.sort_by | escape }}">
+      {%- endif -%}
+
+      <div class="collection-filters_head">
+        <p class="body-upper">{{ section.settings.filter_label | default: 'Filter' }}</p>
+        {%- assign any_active = false -%}
+        {%- for f in collection.filters -%}
+          {%- if f.active_values.size > 0 or f.min_value.value or f.max_value.value -%}{%- assign any_active = true -%}{%- endif -%}
+        {%- endfor -%}
+        {%- if any_active -%}
+          <a href="{{ collection.url }}" class="body-upper collection-filters_clear">{{ 'collections.filters.clear_all' | t | default: 'Clear all' }}</a>
+        {%- endif -%}
+      </div>
+
+      {%- for filter in collection.filters -%}
+        <div class="collection-filter" data-filter-group>
+          <button type="button" class="collection-filter_head body-upper" data-filter-head aria-expanded="true">
+            <span>{{ filter.label }}</span>
+            <span class="collection-filter_icon" aria-hidden="true"></span>
+          </button>
+
+          <div class="collection-filter_body">
+            {%- case filter.type -%}
+              {%- when 'price_range' -%}
+                <div class="collection-filter_price">
+                  <label class="u-visually-hidden" for="filter-min-{{ forloop.index }}">{{ 'collections.filters.min' | t | default: 'Minimum' }}</label>
+                  <input id="filter-min-{{ forloop.index }}" class="collection-filter_input body-upper" type="number" inputmode="numeric"
+                         name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                         min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                         placeholder="{{ 0 | money_without_currency }}">
+                  <span aria-hidden="true">–</span>
+                  <label class="u-visually-hidden" for="filter-max-{{ forloop.index }}">{{ 'collections.filters.max' | t | default: 'Maximum' }}</label>
+                  <input id="filter-max-{{ forloop.index }}" class="collection-filter_input body-upper" type="number" inputmode="numeric"
+                         name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                         min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                         placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}">
+                </div>
+
+              {%- else -%}
+                <ul class="collection-filter_list" role="list">
+                  {%- for value in filter.values -%}
+                    <li>
+                      <label class="collection-filter_option body-upper{% if value.count == 0 and value.active == false %} is-empty{% endif %}">
+                        <input type="checkbox"
+                               name="{{ value.param_name }}"
+                               value="{{ value.value | escape }}"
+                               {% if value.active %}checked{% endif %}
+                               {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+                        <span class="collection-filter_box" aria-hidden="true"></span>
+                        <span class="collection-filter_name">{{ value.label }}</span>
+                        <span class="collection-filter_qty">({{ value.count }})</span>
+                      </label>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+            {%- endcase -%}
+          </div>
+        </div>
+      {%- endfor -%}
+
+      {%- comment -%} Without JS this is how the filter is applied. {%- endcomment -%}
+      <noscript>
+        <button type="submit" class="collection-filters_apply body-upper">{{ 'collections.filters.apply' | t | default: 'Apply' }}</button>
+      </noscript>
+    </form>
+  </aside>
+{%- endif -%}

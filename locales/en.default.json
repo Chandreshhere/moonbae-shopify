@@ -36,6 +36,13 @@
     "general": {
       "title": "Collections",
       "no_matches": "No products found."
+    },
+    "filters": {
+      "title": "Filter",
+      "clear_all": "Clear all",
+      "apply": "Apply",
+      "min": "Minimum price",
+      "max": "Maximum price"
     }
   },
   "products": {

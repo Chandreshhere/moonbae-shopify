@@ -636,6 +636,40 @@ function globalScripts() {
     );
   });
 
+  // Collection filters. The form is a real GET to the collection URL, so it
+  // works without any of this; the script only submits on change so a filter
+  // applies in one click rather than two, and handles the open/close states.
+  $("[data-filters-form]").each(function () {
+    const form = this;
+    form.addEventListener("change", (e) => {
+      if (e.target.matches('input[type="number"]')) return; // wait for blur on price
+      form.submit();
+    });
+    form.addEventListener("blur", (e) => {
+      if (e.target.matches('input[type="number"]')) form.submit();
+    }, true);
+  });
+  $("[data-filter-head]").each(function () {
+    const head = this;
+    const group = head.closest("[data-filter-group]");
+    group.setAttribute("data-open", "true");
+    head.addEventListener("click", () => {
+      const open = group.getAttribute("data-open") !== "false";
+      group.setAttribute("data-open", open ? "false" : "true");
+      head.setAttribute("aria-expanded", open ? "false" : "true");
+    });
+  });
+  $("[data-filters-toggle]").each(function () {
+    const btn = this;
+    const rail = btn.closest(".collection-filters");
+    rail.setAttribute("data-open", "false");
+    btn.addEventListener("click", () => {
+      const open = rail.getAttribute("data-open") === "true";
+      rail.setAttribute("data-open", open ? "false" : "true");
+      btn.setAttribute("aria-expanded", open ? "false" : "true");
+    });
+  });
+
   // Scroll parallax for [data-parallax] frames (the gallery slides). Scrubbed
   // to scroll so it runs off native scroll on mobile and Lenis on desktop
   // alike. Slides that are display:none simply have nothing to move until the

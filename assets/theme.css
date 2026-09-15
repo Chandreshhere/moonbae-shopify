@@ -401,3 +401,88 @@ body:not(.show-preloader) .preloader_wrap {
   padding-right: 0;
 }
 .product-draggable_el.is-static .product-slider_list { cursor: default; flex-wrap: wrap; justify-content: center; }
+
+/* ---- Collection filter rail ---------------------------------------------
+   Two columns on desktop: a sticky rail, then the existing grid. The grid
+   keeps its own internal column maths, so the rail sits outside it. */
+.collection-layout { width: 100%; }
+.collection-layout.has-filters { display: block; }
+
+@media only screen and (min-width: 992px) {
+  .collection-layout.has-filters {
+    display: grid;
+    grid-template-columns: minmax(12rem, 16rem) 1fr;
+    column-gap: var(--size--3rem);
+    align-items: start;
+  }
+  .collection-filters {
+    position: sticky;
+    top: calc(var(--nav--clearance, 10rem) * 0.7);
+    max-height: 80svh;
+    overflow-y: auto;
+    padding-left: var(--site--margin);
+  }
+  .collection-filters_toggle { display: none; }
+}
+
+.collection-filters_head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 1rem; padding-bottom: .75rem; border-bottom: 1px solid currentColor;
+}
+.collection-filters_clear { text-decoration: underline; opacity: .6; }
+.collection-filters_clear:hover { opacity: 1; }
+
+.collection-filter { border-bottom: 1px solid var(--swatch--dark-faded-2); }
+.collection-filter_head {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  width: 100%; padding: .9rem 0; background: none; border: 0; color: inherit;
+  font: inherit; text-align: left; cursor: pointer;
+}
+/* Same plus/minus language as the product accordion */
+.collection-filter_icon { position: relative; width: .75rem; height: .75rem; flex: none; }
+.collection-filter_icon::before,
+.collection-filter_icon::after {
+  content: ""; position: absolute; inset: 50% 0 auto 0; height: 1px;
+  background: currentColor; transition: transform 300ms cubic-bezier(.25,1,.5,1);
+}
+.collection-filter_icon::after { transform: rotate(90deg); }
+.collection-filter[data-open="false"] .collection-filter_icon::after { transform: rotate(0deg); }
+.collection-filter_body {
+  display: grid; grid-template-rows: 1fr; overflow: hidden;
+  transition: grid-template-rows 300ms cubic-bezier(.25,1,.5,1), opacity 300ms;
+}
+.collection-filter_body > * { min-height: 0; }
+.collection-filter[data-open="false"] .collection-filter_body { grid-template-rows: 0fr; opacity: 0; }
+
+.collection-filter_list { list-style: none; margin: 0; padding: 0 0 .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.collection-filter_option { display: flex; align-items: center; gap: .55rem; cursor: pointer; }
+.collection-filter_option.is-empty { opacity: .35; cursor: not-allowed; }
+.collection-filter_option input { position: absolute; opacity: 0; width: 0; height: 0; }
+.collection-filter_box {
+  width: .85rem; height: .85rem; flex: none; border: 1px solid currentColor; position: relative;
+}
+.collection-filter_option input:checked + .collection-filter_box::after {
+  content: ""; position: absolute; inset: 2px; background: currentColor;
+}
+.collection-filter_option input:focus-visible + .collection-filter_box { outline: 2px solid currentColor; outline-offset: 2px; }
+.collection-filter_qty { opacity: .5; }
+
+.collection-filter_price { display: flex; align-items: center; gap: .5rem; padding: 0 0 .9rem; }
+.collection-filter_input {
+  width: 100%; min-width: 0; padding: .45rem .5rem; font: inherit; color: inherit;
+  background: transparent; border: 1px solid var(--swatch--dark-faded-3);
+}
+.collection-filters_apply { margin-top: 1rem; padding: .75rem 1.25rem; font: inherit; cursor: pointer; }
+
+/* Mobile: a drawer behind a Filter button rather than a rail */
+@media only screen and (max-width: 991px) {
+  .collection-filters_toggle {
+    display: inline-flex; align-items: center; gap: .5rem; margin: 0 var(--site--margin) 1.25rem;
+    padding: .7rem 1.1rem; background: none; border: 1px solid currentColor;
+    color: inherit; font: inherit; cursor: pointer;
+  }
+  .collection-filters_form {
+    display: none; padding: 0 var(--site--margin) 1.5rem;
+  }
+  .collection-filters[data-open="true"] .collection-filters_form { display: block; }
+}
