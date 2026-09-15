@@ -645,10 +645,20 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 .product-breadcrumb a:hover { opacity: 1; text-decoration: underline; text-underline-offset: .2em; }
 .product-breadcrumb [aria-current] { opacity: .8; }
 
+/* The band runs the full width below the buy area, two columns on desktop:
+   specs on the left, benefits on the right. */
+.product-detail_band {
+  display: grid; grid-template-columns: 1fr; gap: var(--size--3rem, 3rem);
+  padding-top: var(--size--5rem, 5rem); padding-bottom: var(--size--3rem, 3rem);
+}
+@media only screen and (min-width: 992px) {
+  .product-detail_band { grid-template-columns: 1fr 1fr; column-gap: var(--size--6rem, 6rem); }
+}
 .product-specs {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
-  gap: 0; margin: var(--size--2rem, 2rem) 0 0;
+  gap: 0; margin: 0;
   border-top: 1px solid var(--swatch--dark-faded-2);
+  align-self: start;
 }
 .product-spec {
   padding: .9rem 0; border-bottom: 1px solid var(--swatch--dark-faded-2);
@@ -657,7 +667,7 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 .product-spec_label { opacity: .5; font-size: .68rem; }
 .product-spec_value { margin: 0; font-size: .82rem; }
 
-.product-benefits { margin-top: var(--size--2rem, 2rem); }
+.product-benefits { margin-top: 0; align-self: start; }
 .product-benefits_heading { opacity: .5; font-size: .68rem; margin-bottom: .75rem; }
 .product-benefits_list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .product-benefit {

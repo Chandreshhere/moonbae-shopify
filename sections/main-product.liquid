@@ -69,49 +69,6 @@
             {{ product.description }}
           </div>
 
-          {%- comment -%}
-            Specs and benefits. Each reads a product metafield first and falls
-            back to the value typed on the block, so one block can serve the
-            whole catalogue and still say something different per product.
-          {%- endcomment -%}
-          {%- assign specs = section.blocks | where: 'type', 'spec' -%}
-          {%- if specs.size > 0 -%}
-            <dl class="product-specs">
-              {%- for block in specs -%}
-                {%- assign mf = product.metafields[block.settings.metafield_namespace][block.settings.metafield_key] -%}
-                {%- assign value = mf | default: block.settings.value -%}
-                {%- if value != blank -%}
-                  <div class="product-spec" {{ block.shopify_attributes }}>
-                    <dt class="body-upper product-spec_label">{{ block.settings.label }}</dt>
-                    <dd class="body-upper product-spec_value">{{ value }}</dd>
-                  </div>
-                {%- endif -%}
-              {%- endfor -%}
-            </dl>
-          {%- endif -%}
-
-          {%- assign benefits = section.blocks | where: 'type', 'benefit' -%}
-          {%- if benefits.size > 0 -%}
-            <div class="product-benefits">
-              {%- if section.settings.benefits_heading != blank -%}
-                <p class="body-upper product-benefits_heading">
-                  {{ section.settings.benefits_heading }} {{ current_variant.price | money }}
-                </p>
-              {%- endif -%}
-              <ul class="product-benefits_list" role="list">
-                {%- for block in benefits -%}
-                  {%- if block.settings.title != blank -%}
-                    <li class="product-benefit" {{ block.shopify_attributes }}>
-                      <span class="product-benefit_title body-upper">{{ block.settings.title }}</span>
-                      {%- if block.settings.text != blank -%}
-                        <span class="product-benefit_text">{{ block.settings.text }}</span>
-                      {%- endif -%}
-                    </li>
-                  {%- endif -%}
-                {%- endfor -%}
-              </ul>
-            </div>
-          {%- endif -%}
         </div>
 
         {%- if section.blocks.size > 0 -%}
@@ -245,6 +202,62 @@
     </div>
   </div>
 </div>
+
+{%- comment -%}
+  Specs and benefits sit below the buy area rather than beside it. The info
+  column is a fixed 100svh sticky panel with the add-to-cart pinned to its
+  bottom by margin-top:auto, so anything added inside it pushes the button
+  past the bottom edge and out of sight.
+{%- endcomment -%}
+{%- assign has_specs = section.blocks | where: 'type', 'spec' -%}
+{%- assign has_benefits = section.blocks | where: 'type', 'benefit' -%}
+{%- if has_specs.size > 0 or has_benefits.size > 0 -%}
+  <div class="product-detail_band u-container">
+  {%- comment -%}
+    Specs and benefits. Each reads a product metafield first and falls
+    back to the value typed on the block, so one block can serve the
+    whole catalogue and still say something different per product.
+  {%- endcomment -%}
+  {%- assign specs = section.blocks | where: 'type', 'spec' -%}
+  {%- if specs.size > 0 -%}
+    <dl class="product-specs">
+      {%- for block in specs -%}
+        {%- assign mf = product.metafields[block.settings.metafield_namespace][block.settings.metafield_key] -%}
+        {%- assign value = mf | default: block.settings.value -%}
+        {%- if value != blank -%}
+          <div class="product-spec" {{ block.shopify_attributes }}>
+            <dt class="body-upper product-spec_label">{{ block.settings.label }}</dt>
+            <dd class="body-upper product-spec_value">{{ value }}</dd>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </dl>
+  {%- endif -%}
+
+  {%- assign benefits = section.blocks | where: 'type', 'benefit' -%}
+  {%- if benefits.size > 0 -%}
+    <div class="product-benefits">
+      {%- if section.settings.benefits_heading != blank -%}
+        <p class="body-upper product-benefits_heading">
+          {{ section.settings.benefits_heading }} {{ current_variant.price | money }}
+        </p>
+      {%- endif -%}
+      <ul class="product-benefits_list" role="list">
+        {%- for block in benefits -%}
+          {%- if block.settings.title != blank -%}
+            <li class="product-benefit" {{ block.shopify_attributes }}>
+              <span class="product-benefit_title body-upper">{{ block.settings.title }}</span>
+              {%- if block.settings.text != blank -%}
+                <span class="product-benefit_text">{{ block.settings.text }}</span>
+              {%- endif -%}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+  </div>
+{%- endif -%}
 
 {%- comment -%} Related products, exactly as the reference laid them out. {%- endcomment -%}
 {%- assign related = collections[section.settings.related_collection].products | default: product.collections.first.products -%}
