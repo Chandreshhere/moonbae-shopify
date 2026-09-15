@@ -496,9 +496,21 @@ body:not(.show-preloader) .preloader_wrap {
      scrolls under it. */
   position: relative; z-index: 2;
   background: var(--announcement-bg, #000); color: var(--announcement-fg, #fff);
-  text-align: center; padding: .55rem var(--site--margin);
+  text-align: center; padding: 0 var(--site--margin);
   font-size: .72rem; letter-spacing: .06em;
+
+  /* Height is fixed rather than derived from the text. The bar is the first
+     thing in normal flow, so when the web font swapped in and the line box
+     grew a pixel, every section below it jumped down. A set height and line
+     height means the swap changes nothing. */
+  --announcement-height: 2.1rem;
+  height: var(--announcement-height);
+  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
 }
+/* Flex would otherwise shrink the marquee track back to the container width. */
+.announcement-bar_marquee, .announcement-bar_track { flex: none; }
+.announcement-bar_track { width: 100%; }
 .announcement-bar a { color: inherit; text-decoration: underline; text-underline-offset: .2em; }
 .announcement-bar_track { position: relative; display: grid; }
 .announcement-bar_item {
