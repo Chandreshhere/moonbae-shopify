@@ -957,26 +957,16 @@ function globalScripts() {
               '<span class="cart-rec_title body-upper">' + p.title + "</span>" +
               '<span class="cart-rec_price body-upper">' + formatMoney(p.price) + "</span>" +
               "</span></a>" +
-              // One variant adds straight away. Several opens a size list on
-              // the card itself — adding without asking would pick someone's
-              // size for them, and leaving the cart to choose it loses the sale.
+              // Straight into the cart, whichever variant it is. Asking for a
+              // size first put a second tap between a shopper and an impulse
+              // buy for the sake of a decision they can change in the line
+              // item a moment later — the select on the cart row does that,
+              // and it is in front of them rather than behind a button.
               (function () {
                 const vs = p.__variants || [];
                 if (!vs.length) return "";
-                if (vs.length === 1) {
-                  return '<button type="button" class="cart-rec_add" data-add-variant="' + vs[0].id +
-                    '" aria-label="Add ' + p.title.replace(/"/g, "&quot;") + ' to cart">+</button>';
-                }
-                return (
-                  '<button type="button" class="cart-rec_add" data-pick-variant aria-expanded="false"' +
-                  ' aria-label="Choose a size for ' + p.title.replace(/"/g, "&quot;") + '">+</button>' +
-                  '<div class="cart-rec_picker" hidden>' +
-                  vs.map((v) =>
-                    '<button type="button" class="cart-rec_size body-upper" data-add-variant="' + v.id + '">' +
-                    (v.title || "").replace(/</g, "&lt;") + "</button>"
-                  ).join("") +
-                  "</div>"
-                );
+                return '<button type="button" class="cart-rec_add" data-add-variant="' + vs[0].id +
+                  '" aria-label="Add ' + p.title.replace(/"/g, "&quot;") + ' to cart">+</button>';
               })() +
               "</div>"
             );
@@ -1027,7 +1017,14 @@ function globalScripts() {
     setTimeout(() => {
       fetch("/cart.js", { headers: { Accept: "application/json" } })
         .then((r) => r.json())
-        .then((cart) => { window.updateCartProgress(cart); window.updateCartRecs(cart); })
+        .then((cart) => {
+          // Kept so the rows can be rebuilt after the bridge re-renders them
+          // without paying for another round trip to say the same thing.
+          window.__lastCart = cart;
+          window.updateCartProgress(cart);
+          window.updateCartRecs(cart);
+          window.updateCartVariants(cart);
+        })
         .catch(() => {});
     }, 500);
   }
@@ -1056,22 +1053,99 @@ function globalScripts() {
     if (e.target.closest('[data-node-type="cart-quantity"]')) refreshCartProgress();
   });
 
-  // Open the size list on the card rather than navigating away.
-  document.addEventListener("click", (e) => {
-    const pick = e.target.closest("[data-pick-variant]");
-    if (pick) {
-      e.preventDefault();
-      const card = pick.closest(".cart-rec");
-      const picker = card && card.querySelector(".cart-rec_picker");
-      if (!picker) return;
-      document.querySelectorAll(".cart-rec_picker").forEach((p) => { if (p !== picker) p.hidden = true; });
-      picker.hidden = !picker.hidden;
-      pick.setAttribute("aria-expanded", picker.hidden ? "false" : "true");
-      return;
-    }
-    if (!e.target.closest(".cart-rec")) {
-      document.querySelectorAll(".cart-rec_picker").forEach((p) => (p.hidden = true));
-    }
+  // Size on the cart line, not in front of the add button.
+  //
+  // The drawer's rows are rendered by the cart bridge from a Webflow template
+  // that only knows the variant that is already in the cart — no siblings, no
+  // handle. So the other sizes have to be fetched: /cart.js for the handle and
+  // the variant id of each row, then the product's own .js for its variants,
+  // cached per product because three rows of the same tee is one request.
+  const variantCache = {};
+  function variantsFor(handle) {
+    if (variantCache[handle]) return variantCache[handle];
+    variantCache[handle] = fetch("/products/" + handle + ".js", { headers: { Accept: "application/json" } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((prod) => (prod && prod.variants) || [])
+      .catch(() => []);
+    return variantCache[handle];
+  }
+
+  window.updateCartVariants = function (cart) {
+    const items = (cart && cart.items) || [];
+    if (!items.length) return;
+    // The template puts the variant id on the remove link and on the quantity
+    // input's name, which is the only thread back from a row to a cart line.
+    document.querySelectorAll(".cart-item").forEach((row) => {
+      const idEl = row.querySelector("[data-product-id]") || row.querySelector(".w-commerce-commercecartquantity");
+      const id = parseInt(idEl && (idEl.getAttribute("data-product-id") || idEl.getAttribute("name")), 10);
+      if (!id) return;
+      const line = items.find((i) => i.variant_id === id || i.id === id);
+      if (!line || !line.handle) return;
+      // A product with nothing but Shopify's own Default Title has no size to
+      // offer, and a select with one meaningless option in it is just noise.
+      if (line.product_has_only_default_variant) return;
+      if (row.__variantFor === id) return; // already built for this variant
+      row.__variantFor = id;
+
+      variantsFor(line.handle).then((variants) => {
+        if (row.__variantFor !== id) return; // the row was re-rendered underneath us
+        const sellable = variants.filter((v) => v.available || v.id === id);
+        if (sellable.length < 2) return;
+        let select = row.querySelector(".cart-item_variant");
+        if (!select) {
+          select = document.createElement("select");
+          select.className = "cart-item_variant body-upper";
+          select.setAttribute("aria-label", "Size");
+          const host = row.querySelector(".cart-details_contain") || row;
+          const price = host.querySelector(".cart-item_price");
+          if (price && price.nextSibling) host.insertBefore(select, price.nextSibling);
+          else host.appendChild(select);
+        }
+        select.innerHTML = sellable
+          .map((v) =>
+            '<option value="' + v.id + '"' + (v.id === id ? " selected" : "") + ">" +
+            String(v.title || "").replace(/</g, "&lt;") + "</option>"
+          )
+          .join("");
+        select.dataset.from = String(id);
+      });
+    });
+  };
+
+  // Swapping a size is a remove and an add: Shopify has no call that changes
+  // the variant of a line in place. /cart/update.js takes both in one request,
+  // which keeps it atomic — a change.js pair can leave the cart empty of the
+  // row if the second call fails. Quantities are carried across, and folded in
+  // if the size being switched to is already in the cart on its own line.
+  document.addEventListener("change", (e) => {
+    const select = e.target.closest(".cart-item_variant");
+    if (!select) return;
+    const from = parseInt(select.dataset.from, 10);
+    const to = parseInt(select.value, 10);
+    if (!from || !to || from === to) return;
+    select.disabled = true;
+    fetch("/cart.js", { headers: { Accept: "application/json" } })
+      .then((r) => r.json())
+      .then((cart) => {
+        const items = cart.items || [];
+        const moving = items.find((i) => i.variant_id === from || i.id === from);
+        const already = items.find((i) => i.variant_id === to || i.id === to);
+        const updates = {};
+        updates[from] = 0;
+        updates[to] = (moving ? moving.quantity : 1) + (already ? already.quantity : 0);
+        return fetch("/cart/update.js", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ updates: updates }),
+        });
+      })
+      .then(() => {
+        window.__cartRecsFor = null;
+        refreshCartProgress();
+        if (window.Udesly && window.Udesly.dispatch) window.Udesly.dispatch("cart-should-be-updated");
+      })
+      .catch(() => {})
+      .finally(() => { select.disabled = false; });
   });
 
   // Quick add from a recommendation.
@@ -1089,7 +1163,6 @@ function globalScripts() {
       .then(() => {
         window.__cartRecsFor = null; // the cart changed, so the suggestions should too
         refreshCartProgress();
-        document.querySelectorAll(".cart-rec_picker").forEach((p) => (p.hidden = true));
         // Ask the cart bridge to re-render its line items where it stands.
         // It renders them from its own copy of the cart and listens on its own
         // event bus for exactly two names — neither of which is a DOM event on
@@ -1155,7 +1228,13 @@ function globalScripts() {
   document.querySelectorAll('[data-node-type="commerce-cart-list"], .cart-list').forEach((list) => {
     if (list.__qtyObserved) return;
     list.__qtyObserved = true;
-    new MutationObserver(() => window.enhanceQuantity(list)).observe(list, { childList: true, subtree: true });
+    new MutationObserver(() => {
+      window.enhanceQuantity(list);
+      // The size selects are thrown away with the rows, and waiting for the
+      // next cart fetch to put them back left a row with no size on it for
+      // half a second every time anything changed.
+      if (window.__lastCart) window.updateCartVariants(window.__lastCart);
+    }).observe(list, { childList: true, subtree: true });
   });
 
   // Collection filters. The form is a real GET to the collection URL, so it
