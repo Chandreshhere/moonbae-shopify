@@ -52,27 +52,83 @@
 {
   "name": "Announcement bar",
   "settings": [
-    { "type": "checkbox", "id": "enabled", "label": "Show the bar", "default": true },
-    { "type": "select", "id": "style", "label": "Style", "default": "marquee",
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Show the bar",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Style",
+      "default": "marquee",
       "options": [
-        { "value": "marquee", "label": "Scrolling marquee" },
-        { "value": "rotate", "label": "One at a time" }
-      ] },
-    { "type": "range", "id": "speed", "label": "Seconds for one full pass", "min": 10, "max": 80, "step": 5, "default": 30,
-      "info": "Higher is slower. Marquee only." },
-    { "type": "text", "id": "separator", "label": "Separator", "default": "◆" },
-    { "type": "range", "id": "rotate_seconds", "label": "Seconds per message", "min": 3, "max": 12, "step": 1, "default": 5,
-      "info": "Only applies when there is more than one message." },
-    { "type": "color", "id": "bg", "label": "Background", "default": "#050fff" },
-    { "type": "color", "id": "fg", "label": "Text", "default": "#ffffff" }
+        {
+          "value": "marquee",
+          "label": "Scrolling marquee"
+        },
+        {
+          "value": "rotate",
+          "label": "One at a time"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Seconds for one full pass",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "default": 30,
+      "info": "Higher is slower. Marquee only."
+    },
+    {
+      "type": "text",
+      "id": "separator",
+      "label": "Separator",
+      "default": "◆"
+    },
+    {
+      "type": "range",
+      "id": "rotate_seconds",
+      "label": "Seconds per message",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "default": 5,
+      "info": "Only applies when there is more than one message."
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Background",
+      "default": "#050fff"
+    },
+    {
+      "type": "color",
+      "id": "fg",
+      "label": "Text",
+      "default": "#ffffff"
+    }
   ],
   "blocks": [
     {
       "type": "message",
       "name": "Message",
       "settings": [
-        { "type": "text", "id": "text", "label": "Text", "default": "Free shipping on orders over ₹1,599" },
-        { "type": "url", "id": "url", "label": "Link" }
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Free shipping on orders over ₹1,599"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        }
       ]
     }
   ],
@@ -80,8 +136,36 @@
   "default": {
     "settings": {},
     "blocks": [
-      { "type": "message", "settings": { "text": "Free shipping on orders over ₹1,599" } },
-      { "type": "message", "settings": { "text": "Made to order in India — dispatched in 2–4 business days" } }
+      {
+        "type": "message",
+        "settings": {
+          "text": "Free shipping over ₹1,599"
+        }
+      },
+      {
+        "type": "message",
+        "settings": {
+          "text": "Made to order in India — dispatched in 2–4 business days"
+        }
+      },
+      {
+        "type": "message",
+        "settings": {
+          "text": "Cut and sewn in small runs, never warehoused"
+        }
+      },
+      {
+        "type": "message",
+        "settings": {
+          "text": "Replaced free if it arrives damaged or wrong"
+        }
+      },
+      {
+        "type": "message",
+        "settings": {
+          "text": "Dressed for the quiet hours"
+        }
+      }
     ]
   }
 }
