@@ -17,6 +17,7 @@
       </div>
 
       <form action="{{ routes.cart_url }}" method="post" novalidate class="cart-page_form">
+      {% render 'cart-progress' %}
         <div class="footer-titles_layout u-grid-desktop is-desktop">
           <div class="u-column-2"><div class="body-upper"><p>{{ section.settings.col_item }}</p></div></div>
           <div class="u-column-8"><div class="body-upper"><p>{{ section.settings.col_name }}</p></div></div>
@@ -61,7 +62,6 @@
               <div class="field_copy">{{ settings.cart_shipping_label }}</div>
               <div class="body-upper">{{ settings.cart_shipping_note }}</div>
             </div>
-            {% render 'cart-progress' %}
             {% render 'cart-recommendations' %}
             <div class="checkout-actions">
               <button type="submit" name="update" class="checkout-button body-upper is-secondary">{{ section.settings.update_label }}</button>

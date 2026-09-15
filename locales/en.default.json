@@ -11,7 +11,8 @@
       "title": "Search",
       "placeholder": "Search",
       "submit": "Search",
-      "no_results": "No results for \"{{ terms }}\"."
+      "no_results": "No results for \"{{ terms }}\".",
+      "heading": "Search"
     },
     "404": {
       "title": "Page not found"
@@ -19,6 +20,9 @@
     "password_page": {
       "password_placeholder": "Password",
       "submit": "Enter"
+    },
+    "breadcrumb": {
+      "home": "Home"
     }
   },
   "cart": {

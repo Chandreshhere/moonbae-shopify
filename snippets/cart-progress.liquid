@@ -96,15 +96,22 @@
     </div>
 
     {%- if tier_amounts.size > 0 -%}
-      <ul class="cart-tiers" role="list">
+      {%- comment -%}
+        Each label is placed at its own milestone's position on the track, not
+        spread evenly — with one tier a spread row just parks it in the corner
+        with nothing to relate it to.
+      {%- endcomment -%}
+      <div class="cart-tiers">
         {%- for a in tier_amounts -%}
           {%- assign cents = a | times: 100 -%}
-          <li class="cart-tier{% if cart.total_price >= cents %} is-reached{% endif %}" data-tier="{{ cents }}">
+          {%- assign at = cents | times: 100 | divided_by: top_goal -%}
+          <span class="cart-tier{% if cart.total_price >= cents %} is-reached{% endif %}"
+                data-tier="{{ cents }}" style="left: {{ at }}%">
             <span class="cart-tier_amount body-upper">{{ cents | money }}</span>
             <span class="cart-tier_label body-upper">{{ tier_labels[forloop.index0] }}</span>
-          </li>
+          </span>
         {%- endfor -%}
-      </ul>
+      </div>
     {%- endif -%}
   </div>
 {%- endif -%}

@@ -547,7 +547,9 @@ body:has(.announcement-bar) .orgc-nav { top: var(--announcement-offset, 2.1rem);
 .cart-progress_fill {
   position: absolute; inset: 0 auto 0 0; display: block; height: 100%;
   background: currentColor; opacity: 1;
-  transition: width 500ms cubic-bezier(.25,1,.5,1);
+  /* Long and eased, so crossing a milestone reads as the bar filling rather
+     than a number changing. */
+  transition: width 900ms cubic-bezier(.22,1,.36,1);
 }
 
 /* ---- Announcement marquee ----------------------------------------------- */
@@ -701,28 +703,49 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 }
 .cart-progress_pip.is-reached { opacity: 1; }
 
-.cart-tiers {
-  list-style: none; margin: .55rem 0 0; padding: 0;
-  display: flex; justify-content: space-between; gap: .5rem;
+/* Labels are absolutely placed under their own milestone, and the row is
+   given height so the following content does not sit on top of them. */
+.cart-tiers { position: relative; height: 2rem; margin-top: .45rem; }
+.cart-tier {
+  position: absolute; top: 0; transform: translateX(-50%);
+  display: flex; flex-direction: column; gap: .05rem; align-items: center;
+  opacity: .4; white-space: nowrap; transition: opacity 400ms ease;
 }
-.cart-tier { display: flex; flex-direction: column; gap: .1rem; opacity: .4; text-align: center; }
-.cart-tier:first-child { text-align: left; }
-.cart-tier:last-child { text-align: right; }
+/* Clamp the ends so a label at 0% or 100% is not half off the edge. */
+.cart-tier[style*="left: 100%"] { transform: translateX(-100%); align-items: flex-end; }
+.cart-tier[style*="left: 0%"] { transform: translateX(0); align-items: flex-start; }
 .cart-tier.is-reached { opacity: 1; }
 .cart-tier_amount { font-size: .66rem; }
 .cart-tier_label { font-size: .62rem; opacity: .7; }
 
 .cart-recs { padding: .9rem 0; border-top: 1px solid color-mix(in srgb, currentColor 20%, transparent); }
 .cart-recs_heading { font-size: .68rem; opacity: .55; margin-bottom: .6rem; }
-.cart-recs_list { display: flex; flex-direction: column; gap: .55rem; }
-.cart-rec { display: flex; align-items: center; gap: .6rem; color: inherit; }
+/* A horizontal rail: three suggestions read as a row of products, where a
+   stacked list reads as more cart items. Scrolls rather than wraps. */
+.cart-recs_list {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(6.5rem, 1fr);
+  gap: .6rem; overflow-x: auto; scroll-snap-type: x proximity;
+  scrollbar-width: none; padding-bottom: .2rem;
+}
+.cart-recs_list::-webkit-scrollbar { display: none; }
+.cart-rec { position: relative; scroll-snap-align: start; }
+.cart-rec_link { display: flex; flex-direction: column; gap: .35rem; color: inherit; }
 .cart-rec:hover .cart-rec_title { text-decoration: underline; text-underline-offset: .2em; }
-.cart-rec_img { width: 2.6rem; height: 3.25rem; object-fit: cover; flex: none; }
+.cart-rec_img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; }
 .cart-rec_info { display: flex; flex-direction: column; gap: .1rem; min-width: 0; }
 .cart-rec_title {
-  font-size: .68rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: .64rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.cart-rec_price { font-size: .66rem; opacity: .6; }
+.cart-rec_price { font-size: .62rem; opacity: .6; }
+.cart-rec_add {
+  position: absolute; top: .3rem; right: .3rem;
+  width: 1.5rem; height: 1.5rem; display: flex; align-items: center; justify-content: center;
+  background: var(--swatch--light); color: var(--swatch--dark);
+  border: 1px solid color-mix(in srgb, var(--swatch--dark) 35%, transparent);
+  font: inherit; font-size: .9rem; line-height: 1; cursor: pointer; padding: 0;
+}
+.cart-rec_add:hover { background: var(--swatch--dark); color: var(--swatch--light); }
+.cart-rec_add[disabled] { opacity: .4; cursor: wait; }
 
 /* The open state moved from the shared wrapper to each option's own group, so
    the icon has to follow it rather than keying off the wrapper. */
@@ -755,3 +778,19 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
   -webkit-appearance: none; margin: 0;
 }
 .qty-stepper .w-commerce-commercecartquantity:focus { outline: none; }
+
+/* ---- Confetti ------------------------------------------------------------
+   Plain divs falling once, then removed. No library for one moment. */
+.confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 3; }
+.confetti_bit {
+  position: absolute; top: -10%; width: 6px; height: 10px; opacity: 0;
+  animation: confetti-fall 1.6s cubic-bezier(.3,.7,.4,1) forwards;
+}
+@keyframes confetti-fall {
+  0%   { opacity: 1; transform: translate3d(0, 0, 0) rotate(0deg); }
+  100% { opacity: 0; transform: translate3d(calc(var(--drift, 0) * 40px), 220px, 0) rotate(var(--spin, 180deg)); }
+}
+@media (prefers-reduced-motion: reduce) { .confetti { display: none; } }
+
+/* The bar is the first thing in the drawer now, so it needs its own room. */
+.cart-progress { position: relative; padding: 1rem var(--site--gutter); }

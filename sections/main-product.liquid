@@ -7,9 +7,20 @@
     <div class="single-img_col u-column-7">
       <div class="single-featured_img">
         {%- if product.featured_media -%}
+          {%- comment -%}
+            width/height matter here beyond tidiness: with no intrinsic size the
+            browser reserves nothing, so until the file arrives the alt text
+            sprawls across an empty box — which is what "White Baby Tee Front
+            Design" appearing as words on the page actually was.
+          {%- endcomment -%}
           <img
             alt="{{ product.featured_media.alt | default: product.title | escape }}"
             src="{{ product.featured_media | image_url: width: 1920 }}"
+            width="{{ product.featured_media.width }}"
+            height="{{ product.featured_media.height }}"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
             class="img-contain"
             data-commerce-type="variation-image"
             srcset="{{ product.featured_media | image_url: width: 500 }} 500w, {{ product.featured_media | image_url: width: 800 }} 800w, {{ product.featured_media | image_url: width: 1200 }} 1200w, {{ product.featured_media | image_url: width: 1600 }} 1600w, {{ product.featured_media | image_url: width: 1920 }} 1920w"
@@ -20,12 +31,19 @@
       </div>
 
       {%- if product.media.size > 1 -%}
-        <div class="single-more_imgs w-dyn-list" data-commerce-type="more-images">
+        {%- comment -%}
+          No data-commerce-type here: the cart bridge tries to take ownership of
+          a "more-images" list and render it from a Webflow template, finds none
+          because Liquid has already rendered the real media, and logs
+          "Invalid Template More Images" on every product page.
+        {%- endcomment -%}
+        <div class="single-more_imgs w-dyn-list">
           <div role="list" class="split-grid u-grid-desktop is-product_slider w-dyn-items">
             {%- for media in product.media offset: 1 -%}
               <div role="listitem" class="split-col u-column-6 w-dyn-item">
                 <div class="product-img_wrap">
-                  <img alt="{{ media.alt | escape }}" src="{{ media | image_url: width: 1200 }}" class="img-contain"
+                  <img alt="{{ media.alt | default: product.title | escape }}" src="{{ media | image_url: width: 1200 }}"
+                       width="{{ media.width }}" height="{{ media.height }}" loading="lazy" decoding="async" class="img-contain"
                        srcset="{{ media | image_url: width: 500 }} 500w, {{ media | image_url: width: 800 }} 800w, {{ media | image_url: width: 1200 }} 1200w"
                        sizes="(max-width: 991px) 50vw, 29vw">
                 </div>

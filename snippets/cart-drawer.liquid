@@ -42,6 +42,9 @@
         </a>
       </div>
       <div class="w-commerce-commercecartformwrapper cart-form_wrap">
+        {%- comment -%} Above the line items: the goal should be the first thing read. {%- endcomment -%}
+        {% render 'cart-progress', variant: variant %}
+
         <form style="" class="w-commerce-commercecartform default-state" data-node-type="commerce-cart-form">
           <div class="w-commerce-commercecartlist cart-list" data-wf-collection="database.commerceOrder.userItems" data-wf-template-id="{{ tpl }}" data-lenis-prevent=""></div>
           {%- if variant == 'menu' -%}
@@ -58,7 +61,6 @@
               <div class="field_copy">{{ settings.cart_shipping_label }}</div>
               <div class="{% if variant == 'menu' %} {% endif %}body-upper">{{ settings.cart_shipping_note }}</div>
             </div>
-            {% render 'cart-progress', variant: variant %}
             {% render 'cart-recommendations' %}
             <div class="checkout-actions">
               <div data-node-type="commerce-cart-quick-checkout-actions" class="web-payments"></div>

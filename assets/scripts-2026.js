@@ -766,6 +766,28 @@ function globalScripts() {
       .replace(/\{\{\s*amount_no_decimals_with_comma_separator\s*\}\}/g, lakh);
   }
 
+  // A short confetti burst, drawn as plain divs rather than pulling in a
+  // library for one moment. Skipped entirely for anyone who asked for reduced
+  // motion, and it removes itself so nothing accumulates in the DOM.
+  window.celebrate = function (anchor) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const host = document.createElement("div");
+    host.className = "confetti";
+    (anchor || document.body).appendChild(host);
+    const colors = ["#050fff", "#ffffff", "#000000", "#9aa0ff"];
+    for (let i = 0; i < 28; i++) {
+      const bit = document.createElement("i");
+      bit.className = "confetti_bit";
+      bit.style.left = Math.random() * 100 + "%";
+      bit.style.background = colors[i % colors.length];
+      bit.style.animationDelay = Math.random() * 0.18 + "s";
+      bit.style.setProperty("--drift", (Math.random() * 2 - 1).toFixed(2));
+      bit.style.setProperty("--spin", Math.round(Math.random() * 720 - 360) + "deg");
+      host.appendChild(bit);
+    }
+    setTimeout(() => host.remove(), 2200);
+  };
+
   // The drawer is rendered twice — once for the nav, once for the menu — and
   // the cart page has its own copy, so every one of these must be updated or
   // whichever the visitor opens second shows a stale number.
@@ -792,13 +814,21 @@ function globalScripts() {
       if (track) track.setAttribute("aria-valuenow", pct);
     }
 
-    // Mark whichever milestones the cart has passed.
+    // Mark whichever milestones the cart has passed, and celebrate only the
+    // ones crossed just now — re-opening the drawer should not re-fire it.
     el.querySelectorAll("[data-pip]").forEach((p) =>
       p.classList.toggle("is-reached", total >= parseInt(p.getAttribute("data-pip"), 10))
     );
-    el.querySelectorAll("[data-tier]").forEach((t) =>
-      t.classList.toggle("is-reached", total >= parseInt(t.getAttribute("data-tier"), 10))
-    );
+    el.querySelectorAll("[data-tier]").forEach((t) => {
+      const at = parseInt(t.getAttribute("data-tier"), 10);
+      const reached = total >= at;
+      const was = t.classList.contains("is-reached");
+      t.classList.toggle("is-reached", reached);
+      if (reached && !was && !window.__celebrated?.has(at)) {
+        (window.__celebrated = window.__celebrated || new Set()).add(at);
+        window.celebrate(el);
+      }
+    });
 
     // One sentence, about the nearest goal still ahead — shipping or a tier,
     // whichever comes first. Naming every unreached tier at once reads as noise.
@@ -849,12 +879,21 @@ function globalScripts() {
           .map((p) => {
             const img = p.featured_image || (p.images && p.images[0]) || "";
             return (
-              '<a class="cart-rec" href="' + p.url + '">' +
+              '<div class="cart-rec">' +
+              '<a class="cart-rec_link" href="' + p.url + '">' +
               (img ? '<img class="cart-rec_img" src="' + img + '" alt="" loading="lazy" decoding="async">' : "") +
               '<span class="cart-rec_info">' +
               '<span class="cart-rec_title body-upper">' + p.title + "</span>" +
               '<span class="cart-rec_price body-upper">' + formatMoney(p.price) + "</span>" +
-              "</span></a>"
+              "</span></a>" +
+              // Only offer one-tap add when there is a single variant to add;
+              // anything with sizes has to be chosen on the product page.
+              (p.__variantId
+                ? '<button type="button" class="cart-rec_add" data-add-variant="' + p.__variantId +
+                  '" aria-label="Add ' + p.title.replace(/"/g, "&quot;") + ' to cart">+</button>'
+                : '<a class="cart-rec_add" href="' + p.url + '" aria-label="Choose options for ' +
+                  p.title.replace(/"/g, "&quot;") + '">+</a>') +
+              "</div>"
             );
           })
           .join("");
@@ -878,6 +917,7 @@ function globalScripts() {
                 // are integer paise. Normalise to paise.
                 price: Math.round(parseFloat((p.variants[0] || {}).price || "0") * 100),
                 featured_image: (p.images[0] || {}).src || "",
+                __variantId: (p.variants || []).length === 1 ? p.variants[0].id : null,
               }))
           )
         )
@@ -889,6 +929,10 @@ function globalScripts() {
       .then((r) => r.json())
       .then((data) => {
         const picks = (data.products || []).filter((p) => !inCart.has(p.id)).slice(0, 3);
+        picks.forEach((p) => {
+          const vs = p.variants || [];
+          p.__variantId = vs.length === 1 && vs[0].available !== false ? vs[0].id : null;
+        });
         if (picks.length) render(picks);
         else fromCatalogue();
       })
@@ -918,6 +962,29 @@ function globalScripts() {
   });
   document.addEventListener("change", (e) => {
     if (e.target.closest('[data-node-type="cart-quantity"]')) refreshCartProgress();
+  });
+
+  // Quick add from a recommendation.
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-add-variant]");
+    if (!btn) return;
+    e.preventDefault();
+    btn.disabled = true;
+    fetch("/cart/add.js", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ id: parseInt(btn.getAttribute("data-add-variant"), 10), quantity: 1 }),
+    })
+      .then((r) => r.json())
+      .then(() => {
+        recsFor = null; // the cart changed, so the suggestions should too
+        refreshCartProgress();
+        // The drawer renders its line items from the cart bridge; nudge it.
+        const open = document.querySelector('[data-node-type="commerce-cart-open-link"]');
+        if (open) open.click();
+      })
+      .catch(() => {})
+      .finally(() => { btn.disabled = false; });
   });
   refreshCartProgress();
 
