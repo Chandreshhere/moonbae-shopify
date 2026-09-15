@@ -722,3 +722,31 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 /* The open state moved from the shared wrapper to each option's own group, so
    the icon has to follow it rather than keying off the wrapper. */
 .option:has(.size-button_group.show) .toggle-line.is-vert { transform: scaleY(0); opacity: 0; }
+
+/* ---- Quantity stepper ----------------------------------------------------
+   Wraps the existing number input rather than replacing it, so the cart bridge
+   and the cart form keep working unchanged. The native spinner is hidden — two
+   sets of controls on one field is worse than none. */
+.qty-stepper {
+  display: inline-flex; align-items: stretch;
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  width: max-content; margin-bottom: .5rem;
+}
+.qty-stepper_btn {
+  background: none; border: 0; color: inherit; font: inherit; cursor: pointer;
+  width: 2rem; line-height: 1; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.qty-stepper_btn:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
+.qty-stepper .w-commerce-commercecartquantity {
+  width: 2.5rem; height: auto; margin: 0; padding: .5rem 0;
+  border: 0; border-left: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-right: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-radius: 0; background: transparent; color: inherit;
+  text-align: center; font: inherit; -moz-appearance: textfield;
+}
+.qty-stepper .w-commerce-commercecartquantity::-webkit-outer-spin-button,
+.qty-stepper .w-commerce-commercecartquantity::-webkit-inner-spin-button {
+  -webkit-appearance: none; margin: 0;
+}
+.qty-stepper .w-commerce-commercecartquantity:focus { outline: none; }

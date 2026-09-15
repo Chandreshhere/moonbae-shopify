@@ -915,6 +915,52 @@ function globalScripts() {
   });
   refreshCartProgress();
 
+  // Quantity steppers. The number inputs stay exactly where they are — the
+  // cart bridge listens for their change event and the cart page posts them as
+  // updates[] — so the buttons drive the real input and fire the same event a
+  // keystroke would. Replacing the inputs would mean reimplementing both.
+  window.enhanceQuantity = function (root) {
+    (root || document).querySelectorAll(".w-commerce-commercecartquantity").forEach((input) => {
+      if (input.closest(".qty-stepper")) return; // already wrapped
+
+      const wrap = document.createElement("div");
+      wrap.className = "qty-stepper";
+      input.parentNode.insertBefore(wrap, input);
+
+      const make = (dir, label) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "qty-stepper_btn";
+        b.setAttribute("aria-label", label);
+        b.textContent = dir < 0 ? "\u2212" : "+";
+        b.addEventListener("click", () => {
+          const min = parseInt(input.getAttribute("min"), 10);
+          const floor = isNaN(min) ? 0 : min;
+          const next = Math.max(floor, (parseInt(input.value, 10) || 0) + dir);
+          if (next === (parseInt(input.value, 10) || 0)) return;
+          input.value = next;
+          // Both, because the bridge and the cart form listen for different ones.
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+          input.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+        return b;
+      };
+
+      wrap.appendChild(make(-1, "Decrease quantity"));
+      wrap.appendChild(input);
+      wrap.appendChild(make(1, "Increase quantity"));
+    });
+  };
+  window.enhanceQuantity(document);
+
+  // The drawer re-renders its line items from a template whenever the cart
+  // changes, which throws the wrappers away — so re-apply when it does.
+  document.querySelectorAll('[data-node-type="commerce-cart-list"], .cart-list').forEach((list) => {
+    if (list.__qtyObserved) return;
+    list.__qtyObserved = true;
+    new MutationObserver(() => window.enhanceQuantity(list)).observe(list, { childList: true, subtree: true });
+  });
+
   // Collection filters. The form is a real GET to the collection URL, so it
   // works without any of this; the script only submits on change so a filter
   // applies in one click rather than two, and handles the open/close states.
