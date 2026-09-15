@@ -26,8 +26,10 @@
     "free_shipping_threshold": 1599,
     "tab_away_text": "Come back — your cart is waiting | We miss you already | The moon is still up. So is your cart. | Still here. Still your size. | Psst… you left something behind | Your tee is getting lonely | Don't make us count the stars alone | Free shipping doesn't wait up",
     "cart_promo_text": "Free shipping over ₹1,599",
-    "tier_1_amount": 0,
+    "tier_1_amount": 3599,
     "tier_2_amount": 0,
-    "tier_3_amount": 0
+    "tier_3_amount": 0,
+    "tier_1_label": "10% off",
+    "tier_1_code": "MOON10"
   }
 }
