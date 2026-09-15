@@ -514,7 +514,11 @@ body:not(.show-preloader) .preloader_wrap {
 
    No extra padding is needed on page templates: the banner is in flow, so it
    already pushes the content down by its own height. */
-body:has(.announcement-bar) .orgc-nav { top: var(--announcement-offset, 0px); }
+/* The fallback matters: the variable is only set once the script runs, and a
+   fallback of 0 meant the nav painted over the banner for the first frames of
+   every load. One line of banner is ~2.1rem, so start there and let the script
+   refine it to the real measurement. */
+body:has(.announcement-bar) .orgc-nav { top: var(--announcement-offset, 2.1rem); }
 
 /* ---- Free shipping progress --------------------------------------------- */
 .cart-progress { display: flex; flex-direction: column; gap: .5rem; padding: .9rem 0; }
