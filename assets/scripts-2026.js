@@ -64,6 +64,9 @@ lenis.on("scroll", ScrollTrigger.update);
 gsap.ticker.add((time) => {
   lenis.raf(time * 1000);
 });
+// With Lenis driving scroll, GSAP's lag smoothing makes a dropped frame jump
+// the timeline to "catch up", which reads as a stutter on scrubbed animations.
+gsap.ticker.lagSmoothing(0);
 
 function footerImgFollow() {
   let footerProductsList = $(".footer-products_list");
@@ -206,15 +209,23 @@ function globalScripts() {
   // Re-measure as they land, debounced so a gallery does not thrash it.
   (function remeasureWhenImagesLand() {
     let pending;
+    let lastHeight = document.documentElement.scrollHeight;
+    const commit = () => {
+      // Refreshing while the user is scrolling recomputes every scrubbed
+      // value mid-motion, which shows up as a jump. Wait for a still moment.
+      if (lenis.isScrolling) return void (pending = setTimeout(commit, 200));
+      const h = document.documentElement.scrollHeight;
+      if (h === lastHeight) return; // nothing moved; a refresh would only cost a jump
+      lastHeight = h;
+      // Lenis clamps scrolling to a limit it measured when the page was still
+      // short, so re-measure that too or the page cannot be scrolled to its
+      // new bottom until Lenis notices on its own.
+      lenis.resize();
+      ScrollTrigger.refresh();
+    };
     const refresh = () => {
       clearTimeout(pending);
-      pending = setTimeout(() => {
-        // Lenis clamps scrolling to a limit it measured when the page was
-        // still short, so re-measure that too or the page cannot be scrolled
-        // to its new bottom until Lenis notices on its own.
-        lenis.resize();
-        ScrollTrigger.refresh();
-      }, 150);
+      pending = setTimeout(commit, 200);
     };
     window.addEventListener("load", refresh, { once: true });
     document.querySelectorAll("img").forEach((img) => {
@@ -630,15 +641,18 @@ function globalScripts() {
   // alike. Slides that are display:none simply have nothing to move until the
   // slider shows them; invalidateOnRefresh re-measures when that happens.
   if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    // Phones get a deeper drift: the frame is shorter, so the same percentage
+    // reads as far less movement. The CSS gives mobile a taller image to match.
+    const travel = window.matchMedia("(max-width: 767px)").matches ? 14 : 8;
     $("[data-parallax]").each(function () {
       const frame = this;
       const img = frame.querySelector("img");
       if (!img) return;
       gsap.fromTo(
         img,
-        { yPercent: -8 },
+        { yPercent: -travel },
         {
-          yPercent: 8,
+          yPercent: travel,
           ease: "none",
           scrollTrigger: {
             trigger: frame.closest(".hero-slider_wrap") || frame,

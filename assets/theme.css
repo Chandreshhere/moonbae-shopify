@@ -379,6 +379,16 @@ body:not(.show-preloader) .preloader_wrap {
 .hero-slide_visual[data-parallax] { overflow: hidden; }
 .hero-slide_visual[data-parallax] > .hero-visual_el.u-cover-absolute {
   height: 120%; top: -10%; will-change: transform;
+  /* Promote to its own layer so the scrubbed transform never repaints the
+     image itself — repainting a full-bleed photo  frame is what stutters. */
+  backface-visibility: hidden;
+}
+/* Phones drift further (14% in JS), so they need more image behind the frame:
+   14% of a 140%-tall image is 19.6% of the frame, just inside the 20% slack. */
+@media only screen and (max-width: 767px) {
+  .hero-slide_visual[data-parallax] > .hero-visual_el.u-cover-absolute {
+    height: 140%; top: -20%;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-slide_visual[data-parallax] > .hero-visual_el.u-cover-absolute { height: 100%; top: 0; }
