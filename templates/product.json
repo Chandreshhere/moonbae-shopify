@@ -29,13 +29,89 @@
             "metafield_key": "shipping_returns",
             "text": "<p>Made in India<br/>Shipping calculated at checkout.</p>"
           }
+        },
+        "spec-1": {
+          "type": "spec",
+          "settings": {
+            "label": "Composition",
+            "value": "100% cotton",
+            "metafield_namespace": "custom",
+            "metafield_key": "spec_composition"
+          }
+        },
+        "spec-2": {
+          "type": "spec",
+          "settings": {
+            "label": "Weight",
+            "value": "220 GSM",
+            "metafield_namespace": "custom",
+            "metafield_key": "spec_weight"
+          }
+        },
+        "spec-3": {
+          "type": "spec",
+          "settings": {
+            "label": "Fit",
+            "value": "Oversized",
+            "metafield_namespace": "custom",
+            "metafield_key": "spec_fit"
+          }
+        },
+        "spec-4": {
+          "type": "spec",
+          "settings": {
+            "label": "Made in",
+            "value": "India",
+            "metafield_namespace": "custom",
+            "metafield_key": "spec_made_in"
+          }
+        },
+        "benefit-1": {
+          "type": "benefit",
+          "settings": {
+            "title": "Made to order, in India",
+            "text": "Printed and finished after you order — never warehoused"
+          }
+        },
+        "benefit-2": {
+          "type": "benefit",
+          "settings": {
+            "title": "Dispatched in 2–4 business days",
+            "text": "Delivered in 5–11 business days across India"
+          }
+        },
+        "benefit-3": {
+          "type": "benefit",
+          "settings": {
+            "title": "Free shipping over ₹1,599",
+            "text": "Flat ₹60 below that"
+          }
+        },
+        "benefit-4": {
+          "type": "benefit",
+          "settings": {
+            "title": "Replaced if it arrives wrong",
+            "text": "Damaged, misprinted or incorrect — tell us within 5 days"
+          }
         }
       },
       "block_order": [
         "accordion-1",
         "accordion-2",
-        "accordion-3"
-      ]
+        "accordion-3",
+        "spec-1",
+        "spec-2",
+        "spec-3",
+        "spec-4",
+        "benefit-1",
+        "benefit-2",
+        "benefit-3",
+        "benefit-4"
+      ],
+      "settings": {
+        "show_breadcrumb": true,
+        "benefits_heading": "What you get for"
+      }
     },
     "footer": {
       "type": "footer-dark",

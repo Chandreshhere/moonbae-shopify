@@ -38,6 +38,23 @@
 
     <div class="single-content_col u-column-5 m-col_12">
       <div class="single-product_options">
+        {%- comment -%}
+          Breadcrumb. Matches the BreadcrumbList structured data already in
+          meta-tags, so what a visitor sees and what Google reads agree.
+        {%- endcomment -%}
+        {%- if section.settings.show_breadcrumb -%}
+          {%- assign parent = product.collections.first -%}
+          <nav class="product-breadcrumb body-upper" aria-label="Breadcrumb">
+            <a href="{{ routes.root_url }}">{{ 'general.breadcrumb.home' | t | default: 'Home' }}</a>
+            <span aria-hidden="true">/</span>
+            {%- if parent -%}
+              <a href="{{ parent.url }}">{{ parent.title }}</a>
+              <span aria-hidden="true">/</span>
+            {%- endif -%}
+            <span aria-current="page">{{ product.title }}</span>
+          </nav>
+        {%- endif -%}
+
         <div class="single-product_head">
           <div class="split-grid u-grid-desktop">
             <div class="split-col u-column-8 m-col_12">
@@ -51,6 +68,50 @@
           <div class="product-description_wrap u-text-style-small f-5">
             {{ product.description }}
           </div>
+
+          {%- comment -%}
+            Specs and benefits. Each reads a product metafield first and falls
+            back to the value typed on the block, so one block can serve the
+            whole catalogue and still say something different per product.
+          {%- endcomment -%}
+          {%- assign specs = section.blocks | where: 'type', 'spec' -%}
+          {%- if specs.size > 0 -%}
+            <dl class="product-specs">
+              {%- for block in specs -%}
+                {%- assign mf = product.metafields[block.settings.metafield_namespace][block.settings.metafield_key] -%}
+                {%- assign value = mf | default: block.settings.value -%}
+                {%- if value != blank -%}
+                  <div class="product-spec" {{ block.shopify_attributes }}>
+                    <dt class="body-upper product-spec_label">{{ block.settings.label }}</dt>
+                    <dd class="body-upper product-spec_value">{{ value }}</dd>
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </dl>
+          {%- endif -%}
+
+          {%- assign benefits = section.blocks | where: 'type', 'benefit' -%}
+          {%- if benefits.size > 0 -%}
+            <div class="product-benefits">
+              {%- if section.settings.benefits_heading != blank -%}
+                <p class="body-upper product-benefits_heading">
+                  {{ section.settings.benefits_heading }} {{ current_variant.price | money }}
+                </p>
+              {%- endif -%}
+              <ul class="product-benefits_list" role="list">
+                {%- for block in benefits -%}
+                  {%- if block.settings.title != blank -%}
+                    <li class="product-benefit" {{ block.shopify_attributes }}>
+                      <span class="product-benefit_title body-upper">{{ block.settings.title }}</span>
+                      {%- if block.settings.text != blank -%}
+                        <span class="product-benefit_text">{{ block.settings.text }}</span>
+                      {%- endif -%}
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
         </div>
 
         {%- if section.blocks.size > 0 -%}
@@ -226,6 +287,19 @@
   "settings": [
     {
       "type": "text",
+      "id": "benefits_heading",
+      "label": "Benefits heading",
+      "default": "What you get for",
+      "info": "The product's price is appended automatically."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Show breadcrumb",
+      "default": true
+    },
+    {
+      "type": "text",
       "id": "add_label",
       "label": "Add to cart label",
       "default": "Add to Cart"
@@ -315,6 +389,53 @@
           "type": "text",
           "id": "metafield_key",
           "label": "Metafield key"
+        }
+      ]
+    },
+    {
+      "type": "spec",
+      "name": "Spec",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Composition"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "info": "Used when the metafield below is empty."
+        },
+        {
+          "type": "text",
+          "id": "metafield_namespace",
+          "label": "Metafield namespace",
+          "default": "custom"
+        },
+        {
+          "type": "text",
+          "id": "metafield_key",
+          "label": "Metafield key"
+        }
+      ]
+    },
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Fast delivery"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Detail",
+          "default": "Dispatched in 2–4 business days"
         }
       ]
     }
