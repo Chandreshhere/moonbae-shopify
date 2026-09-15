@@ -537,20 +537,8 @@ body:not(.show-preloader) .preloader_wrap {
    refine it to the real measurement. */
 body:has(.announcement-bar) .orgc-nav { top: var(--announcement-offset, 2.1rem); }
 
-/* ---- Free shipping progress --------------------------------------------- */
-.cart-progress { display: flex; flex-direction: column; gap: .5rem; padding: .9rem 0; }
-.cart-progress_text { font-size: .72rem; letter-spacing: .06em; }
-.cart-progress_track {
-  position: relative; height: 2px; width: 100%;
-  background: currentColor; opacity: .25; overflow: hidden;
-}
-.cart-progress_fill {
-  position: absolute; inset: 0 auto 0 0; display: block; height: 100%;
-  background: currentColor; opacity: 1;
-  /* Long and eased, so crossing a milestone reads as the bar filling rather
-     than a number changing. */
-  transition: width 900ms cubic-bezier(.22,1,.36,1);
-}
+/* The cart drawer, progress bar included, is one block at the end of this
+   file — see "Cart drawer". */
 
 /* ---- Announcement marquee ----------------------------------------------- */
 .announcement-bar_marquee { display: flex; width: max-content; will-change: transform; }
@@ -689,66 +677,6 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
   .product-specs { grid-template-columns: repeat(2, 1fr); column-gap: var(--site--gutter); }
 }
 
-/* ---- Cart: promo line, tier milestones, recommendations ------------------- */
-.cart-promo {
-  font-size: .68rem; letter-spacing: .06em; opacity: .75;
-  padding: .6rem 0; border-bottom: 1px solid currentColor;
-  border-color: color-mix(in srgb, currentColor 20%, transparent);
-}
-.cart-progress_track { overflow: visible; }
-.cart-progress_pip {
-  position: absolute; top: 50%; width: 5px; height: 5px; margin-left: -2px;
-  transform: translateY(-50%) rotate(45deg);
-  background: currentColor; opacity: .35;
-}
-.cart-progress_pip.is-reached { opacity: 1; }
-
-/* Labels are absolutely placed under their own milestone, and the row is
-   given height so the following content does not sit on top of them. */
-.cart-tiers { position: relative; height: 2rem; margin-top: .45rem; }
-.cart-tier {
-  position: absolute; top: 0; transform: translateX(-50%);
-  display: flex; flex-direction: column; gap: .05rem; align-items: center;
-  opacity: .4; white-space: nowrap; transition: opacity 400ms ease;
-}
-/* Clamp the ends so a label at 0% or 100% is not half off the edge. */
-.cart-tier[style*="left: 100%"] { transform: translateX(-100%); align-items: flex-end; }
-.cart-tier[style*="left: 0%"] { transform: translateX(0); align-items: flex-start; }
-.cart-tier.is-reached { opacity: 1; }
-.cart-tier_amount { font-size: .66rem; }
-.cart-tier_label { font-size: .62rem; opacity: .7; }
-
-.cart-recs { padding: .9rem 0; border-top: 1px solid color-mix(in srgb, currentColor 20%, transparent); }
-.cart-recs_heading { font-size: .68rem; opacity: .55; margin-bottom: .6rem; }
-/* A horizontal rail: three suggestions read as a row of products, where a
-   stacked list reads as more cart items. Scrolls rather than wraps. */
-.cart-recs_list {
-  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(9.5rem, 1fr);
-  gap: .6rem; overflow-x: auto; scroll-snap-type: x proximity;
-  scrollbar-width: none; padding-bottom: .2rem;
-}
-.cart-recs_list::-webkit-scrollbar { display: none; }
-.cart-rec { position: relative; scroll-snap-align: start; }
-/* Row rather than column: the rail used to be ~150px tall, which left the
-   item list barely any height inside the drawer. */
-.cart-rec_link { display: flex; align-items: center; gap: .5rem; color: inherit; }
-.cart-rec:hover .cart-rec_title { text-decoration: underline; text-underline-offset: .2em; }
-.cart-rec_img { width: 2.6rem; height: 3.25rem; object-fit: cover; display: block; flex: none; }
-.cart-rec_info { display: flex; flex-direction: column; gap: .1rem; min-width: 0; }
-.cart-rec_title {
-  font-size: .64rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.cart-rec_price { font-size: .62rem; opacity: .6; }
-.cart-rec_add {
-  position: absolute; top: 50%; right: .1rem; transform: translateY(-50%);
-  width: 1.5rem; height: 1.5rem; display: flex; align-items: center; justify-content: center;
-  background: var(--swatch--light); color: var(--swatch--dark);
-  border: 1px solid color-mix(in srgb, var(--swatch--dark) 35%, transparent);
-  font: inherit; font-size: .9rem; line-height: 1; cursor: pointer; padding: 0;
-}
-.cart-rec_add:hover { background: var(--swatch--dark); color: var(--swatch--light); }
-.cart-rec_add[disabled] { opacity: .4; cursor: wait; }
-
 /* The open state moved from the shared wrapper to each option's own group, so
    the icon has to follow it rather than keying off the wrapper. */
 .option:has(.size-button_group.show) .toggle-line.is-vert { transform: scaleY(0); opacity: 0; }
@@ -781,21 +709,196 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 }
 .qty-stepper .w-commerce-commercecartquantity:focus { outline: none; }
 
-/* ---- Confetti ------------------------------------------------------------
-   Plain divs falling once, then removed. No library for one moment. */
-.confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 3; }
-.confetti_bit {
-  position: absolute; top: -10%; width: 6px; height: 10px; opacity: 0;
-  animation: confetti-fall 1.6s cubic-bezier(.3,.7,.4,1) forwards;
-}
-@keyframes confetti-fall {
-  0%   { opacity: 1; transform: translate3d(0, 0, 0) rotate(0deg); }
-  100% { opacity: 0; transform: translate3d(calc(var(--drift, 0) * 40px), 220px, 0) rotate(var(--spin, 180deg)); }
-}
-@media (prefers-reduced-motion: reduce) { .confetti { display: none; } }
 
-/* The bar is the first thing in the drawer now, so it needs its own room. */
-.cart-progress { position: relative; padding: 1rem var(--site--gutter); }
+/* ---- Cart drawer ---------------------------------------------------------
+   Every block inside the drawer — header, promo, progress, item list,
+   recommendations, footer, the empty and error states — used to carry its own
+   horizontal padding: 2rem here, --site--gutter there, nothing at all on the
+   recommendations, which is why the heading sat flush against the panel edge
+   while "My Cart" was half an inch in. One variable now sets that inset for
+   all of them, so everything in the drawer lines up on the same two rules.
+
+   --site--gutter is deliberately not reused: it is the page grid's gutter and
+   changes with the viewport, but the drawer is a fixed-width panel and should
+   not restyle itself because the window behind it got narrower. */
+.cart-container { --cart--pad: 1.75rem; }
+@media only screen and (max-width: 420px) { .cart-container { --cart--pad: 1.15rem; } }
+
+.cart-container .cart-header,
+.cart-container .cart-list,
+.cart-container .cart-footer,
+.cart-container .cart-progress,
+.cart-container .cart-promo,
+.cart-container .cart-recs,
+.cart-container .empty-state {
+  padding-left: var(--cart--pad);
+  padding-right: var(--cart--pad);
+}
+/* The error banner is a filled box rather than a band of content, so it takes
+   the inset as margin and keeps its own padding. */
+.cart-container .error-state { margin-left: var(--cart--pad); margin-right: var(--cart--pad); }
+
+.cart-container .cart-header { padding-top: 1.35rem; padding-bottom: 1.1rem; }
+
+/* The panel itself must not scroll: the item list is the scroller, so the
+   progress bar stays pinned under the header and the checkout button stays
+   pinned to the bottom however many lines are in the cart. Webflow's base
+   styles put overflow:auto on the container, which scrolled the whole drawer
+   as one long page instead. */
+.cart-container { overflow: hidden; }
+.cart-container .cart-form_wrap,
+.cart-container .w-commerce-commercecartform { min-height: 0; }
+.cart-container .cart-list {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto;
+  padding-top: .9rem; padding-bottom: .9rem;
+}
+/* Without this the list grew to fill the drawer and left a hand's width of
+   blank panel between the last item and the recommendations. Everything that
+   is not the list keeps its own height: as flex children they would otherwise
+   be squeezed first, and the bar and the checkout button are the two things
+   that must not be. */
+.cart-container .cart-promo,
+.cart-container .cart-progress,
+.cart-container .cart-recs,
+.cart-container .cart-footer,
+.cart-container .empty-state,
+.cart-container .error-state { flex: none; }
+
+/* ---- Cart drawer: promo line --------------------------------------------- */
+.cart-promo {
+  font-size: .68rem; letter-spacing: .06em; opacity: .75; text-align: center;
+  padding-top: .7rem; padding-bottom: .7rem;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+}
+
+/* ---- Cart drawer: progress toward free shipping and the discount tiers ----
+   Milestones are evenly spaced along the track and each one sits at the centre
+   of its own legend column, so a node and its caption line up by construction.
+   cart-progress.liquid computes both and explains why. */
+.cart-progress {
+  position: relative;
+  padding-top: 1.15rem; padding-bottom: 1.25rem;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+}
+.cart-progress_text {
+  font-size: .72rem; letter-spacing: .06em; line-height: 1.4;
+  text-align: center; margin: 0 0 1rem;
+}
+
+.cart-progress_track {
+  position: relative; height: 8px; width: 100%;
+  border-radius: 999px; overflow: visible;
+  /* Not opacity on the track: that dims its children too, so the fill — which
+     is the same colour — came out exactly as pale as the groove it was meant
+     to stand out from, and the bar looked like it never moved. */
+  background: color-mix(in srgb, currentColor 13%, transparent);
+}
+.cart-progress_fill {
+  position: absolute; inset: 0 auto 0 0; display: block; height: 100%;
+  min-width: 0; border-radius: inherit; overflow: hidden;
+  background: currentColor;
+  /* Long and eased, so crossing a milestone reads as the bar filling rather
+     than a number changing. */
+  transition: width 900ms cubic-bezier(.22, 1, .36, 1);
+}
+/* A highlight sweeping the filled length: the difference between a bar that
+   has a value and a bar that is working towards one. It stops once there is
+   nothing left to work towards. */
+.cart-progress_fill::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--swatch--light) 60%, transparent) 50%,
+    transparent 100%);
+  transform: translateX(-100%);
+  animation: cart-progress-sheen 2.6s cubic-bezier(.4, 0, .2, 1) infinite;
+}
+@keyframes cart-progress-sheen {
+  0%        { transform: translateX(-100%); }
+  55%, 100% { transform: translateX(100%); }
+}
+.cart-progress.is-complete .cart-progress_fill::after { animation: none; opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .cart-progress_fill { transition: none; }
+  .cart-progress_fill::after { animation: none; opacity: 0; }
+}
+
+/* Nodes sit proud of the groove so the bar can be read at a glance: hollow for
+   a goal still ahead, solid once it is banked. */
+.cart-progress_node {
+  position: absolute; top: 50%; width: 11px; height: 11px; margin-left: -5.5px;
+  transform: translateY(-50%) rotate(45deg);
+  background: var(--swatch--light);
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  transition: background 400ms ease, border-color 400ms ease, transform 500ms cubic-bezier(.22, 1, .36, 1);
+}
+.cart-progress_node.is-reached {
+  background: currentColor; border-color: currentColor;
+  transform: translateY(-50%) rotate(45deg) scale(1.2);
+}
+
+/* One column per milestone, each caption centred under its own node. A single
+   tier therefore centres itself rather than landing in a corner. */
+.cart-progress_legend {
+  display: grid;
+  grid-template-columns: repeat(var(--cart-progress-cols, 2), minmax(0, 1fr));
+  margin-top: .85rem;
+}
+.cart-milestone {
+  display: flex; flex-direction: column; gap: .12rem;
+  align-items: center; text-align: center;
+  padding: 0 .3rem; opacity: .4; transition: opacity 400ms ease;
+}
+.cart-milestone.is-reached { opacity: 1; }
+.cart-milestone_amount { font-size: .64rem; }
+.cart-milestone_label { font-size: .6rem; opacity: .7; line-height: 1.25; }
+
+/* ---- Cart drawer: recommendations ---------------------------------------- */
+.cart-recs {
+  padding-top: 1rem; padding-bottom: 1rem;
+  border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+}
+.cart-recs_heading { font-size: .68rem; opacity: .55; margin-bottom: .65rem; }
+/* A horizontal rail: three suggestions read as a row of products, where a
+   stacked list reads as more cart items. Scrolls rather than wraps. */
+.cart-recs_list {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(12rem, 1fr);
+  gap: .5rem; overflow-x: auto; scroll-snap-type: x proximity;
+  scrollbar-width: none; padding-bottom: .2rem;
+}
+.cart-recs_list::-webkit-scrollbar { display: none; }
+/* A row, not a stack: as a column the rail stood ~150px tall and took that
+   height straight off the item list. The add button is a flex child rather
+   than an overlay — floated on top it printed itself across the title. */
+.cart-rec {
+  position: relative; scroll-snap-align: start;
+  display: flex; align-items: center; gap: .5rem;
+  padding: .35rem .4rem .35rem .35rem;
+  background: var(--swatch--light-grey); border-radius: 3px;
+}
+.cart-rec_link { display: flex; align-items: center; gap: .5rem; color: inherit; flex: 1; min-width: 0; }
+.cart-rec:hover .cart-rec_title { text-decoration: underline; text-underline-offset: .2em; }
+.cart-rec_img { width: 2.4rem; height: 3rem; object-fit: cover; display: block; flex: none; border-radius: 2px; }
+.cart-rec_info { display: flex; flex-direction: column; gap: .12rem; min-width: 0; }
+/* Two lines rather than an ellipsis: at rail width almost every real product
+   name was cut to "Yapper Ba…", which tells a shopper nothing. */
+.cart-rec_title {
+  font-size: .64rem; line-height: 1.25;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.cart-rec_price { font-size: .62rem; opacity: .6; }
+.cart-rec_add {
+  flex: none;
+  width: 1.6rem; height: 1.6rem; display: flex; align-items: center; justify-content: center;
+  background: var(--swatch--light); color: var(--swatch--dark);
+  border: 1px solid color-mix(in srgb, var(--swatch--dark) 35%, transparent);
+  border-radius: 2px;
+  font: inherit; font-size: .9rem; line-height: 1; cursor: pointer; padding: 0;
+  transition: background 200ms ease, color 200ms ease;
+}
+.cart-rec_add:hover { background: var(--swatch--dark); color: var(--swatch--light); }
+.cart-rec_add[disabled] { opacity: .4; cursor: wait; }
 
 /* Size list opened from the + on a recommendation. */
 .cart-rec_picker {
@@ -811,22 +914,34 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 }
 .cart-rec_size:hover { background: var(--swatch--dark); color: var(--swatch--light); }
 
-/* Milestone legend: evenly spread, ends pulled inward so nothing hugs a corner. */
-.cart-milestones {
-  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
-  margin-top: .5rem; gap: .5rem;
+/* ---- Cart drawer: footer -------------------------------------------------- */
+.cart-container .cart-footer {
+  padding-top: 1.1rem; padding-bottom: 1.35rem;
+  border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent);
 }
-.cart-milestone {
-  display: flex; flex-direction: column; gap: .05rem;
-  opacity: .4; transition: opacity 400ms ease; white-space: nowrap;
-}
-.cart-milestone:first-child { align-items: flex-start; text-align: left; }
-.cart-milestone:last-child { align-items: flex-end; text-align: right; }
-.cart-milestone:only-child { align-items: center; text-align: center; }
-.cart-milestone.is-reached { opacity: 1; }
-.cart-milestone_amount { font-size: .62rem; }
-.cart-milestone_label { font-size: .6rem; opacity: .7; }
+/* .checkout-actions is a wrapping flex row so the cart page can sit Update and
+   Checkout side by side. The drawer has one button in that row, and as a flex
+   item it shrank to the width of the word "Checkout" — a thumb-sized target
+   floating in the corner of a 480px panel. Give it the row to itself. */
+.cart-container .checkout-actions .checkout-button { flex: 1 1 100%; }
 
-/* The status line reads as a caption for the bar, so centre it with the bar. */
-.cart-progress_text { text-align: center; }
-.cart-promo { text-align: center; }
+/* ---- Confetti ------------------------------------------------------------
+   Plain divs falling once, then removed. No library for one moment.
+
+   Fixed to the viewport rather than parented to the progress block: inside it
+   the bits were clipped to a box a couple of centimetres tall, so the burst
+   was over before it had cleared the bar. z-index clears the drawer's 1001.
+   scripts-2026.js positions the host over whichever bar was just filled. */
+.confetti {
+  position: fixed; left: 0; top: 0; width: 100vw; height: 0;
+  overflow: visible; pointer-events: none; z-index: 1200;
+}
+.confetti_bit {
+  position: absolute; top: 0; width: 6px; height: 10px; opacity: 0;
+  animation: confetti-fall 1.8s cubic-bezier(.3, .7, .4, 1) forwards;
+}
+@keyframes confetti-fall {
+  0%   { opacity: 1; transform: translate3d(0, 0, 0) rotate(0deg); }
+  100% { opacity: 0; transform: translate3d(calc(var(--drift, 0) * 60px), var(--fall, 240px), 0) rotate(var(--spin, 180deg)); }
+}
+@media (prefers-reduced-motion: reduce) { .confetti { display: none; } }

@@ -6,19 +6,40 @@
   Liquid cannot verify that, so the setting says so plainly. A bar that
   promises a code checkout rejects is worse than no bar at all.
 
-  Params: variant — passed through from the drawer, styling only.
+  Free shipping and the tiers are one sorted list, not two — a merchant can put
+  free shipping above or below a tier and the bar still reads left to right.
+
+  The milestones are spaced evenly along the track rather than by their money
+  value. Scaled to the largest goal, ₹500 against a ₹9,999 top tier sat at 5%
+  and the first reward looked unreachable; even segments make early progress
+  feel like progress, which is the whole point of the bar. Each milestone sits
+  at the centre of its own segment, which is also the centre of its label
+  column below — so a node and its caption line up by construction rather than
+  by two sets of numbers that have to be kept in step.
 {%- endcomment -%}
 
 {%- liquid
   assign ship_threshold = settings.free_shipping_threshold | default: 0 | times: 100
 
   comment
-    Build the tier list, skipping any left blank so a store can run one tier
-    or three without the markup changing.
+    One record per milestone: a zero-padded amount to sort on, then the real
+    amount in paise, the kind, the reward label and the discount code. Padded
+    because Liquid sorts lexicographically, so 900 would otherwise sort above
+    1000. Records are separated by a double semicolon and fields by a pipe, and
+    both are stripped out of merchant copy before it goes in.
+
+    Quote characters are kept out of every comment inside a liquid tag on
+    purpose: the tag is tokenised line by line, and a stray quote in prose ends
+    up opening a string that never closes.
   endcomment
-  assign tier_amounts = ''
-  assign tier_labels = ''
-  assign tier_codes = ''
+  assign rows = ''
+
+  if ship_threshold > 0
+    assign lbl = settings.free_shipping_short | default: 'Free shipping' | replace: '|', ' ' | replace: ';;', ' '
+    assign pad = ship_threshold | prepend: '000000000000' | slice: -12, 12
+    assign rows = rows | append: pad | append: '|' | append: ship_threshold | append: '|ship|' | append: lbl | append: '|'
+  endif
+
   for i in (1..3)
     case i
       when 1
@@ -35,87 +56,183 @@
         assign cde = settings.tier_3_code
     endcase
     if amt != blank and amt > 0
-      assign tier_amounts = tier_amounts | append: amt | append: ','
-      assign tier_labels = tier_labels | append: lbl | append: '|'
-      assign tier_codes = tier_codes | append: cde | append: '|'
+      assign cents = amt | times: 100
+      assign pad = cents | prepend: '000000000000' | slice: -12, 12
+      assign lbl = lbl | default: '' | replace: '|', ' ' | replace: ';;', ' '
+      assign cde = cde | default: '' | strip | replace: '|', '' | replace: ';;', ''
+      comment
+        The separator goes between records, never after the last one. A
+        trailing one leaves an empty record whose survival depends on how the
+        engine treats trailing blanks in split, and an empty record renders as
+        a phantom milestone at zero.
+      endcomment
+      if rows != blank
+        assign rows = rows | append: ';;'
+      endif
+      assign rows = rows | append: pad | append: '|' | append: cents | append: '|tier|' | append: lbl | append: '|' | append: cde
     endif
   endfor
-  assign tier_amounts = tier_amounts | split: ','
-  assign tier_labels = tier_labels | split: '|'
-  assign tier_codes = tier_codes | split: '|'
+
+  assign milestones = rows | split: ';;' | sort
+  assign count = milestones.size
 -%}
+
+{%- comment -%}
+  The merchant's copy, with the theme's wording as the fallback. Resolved once,
+  up here, rather than at each of the half-dozen places it is used: the status
+  line below and the data attributes the script re-renders it from have to say
+  the same thing, and a default repeated six times is a default that drifts.
+{%- endcomment -%}
+{%- assign ship_prefix = settings.free_shipping_away_text | default: "You're" -%}
+{%- assign ship_suffix = settings.free_shipping_away_suffix | default: 'away from free shipping' -%}
+{%- assign ship_won = settings.free_shipping_reached_text | default: 'Free shipping unlocked' -%}
+{%- assign tier_prefix = settings.tier_away_text | default: 'Add' -%}
+{%- assign tier_suffix = settings.tier_away_suffix | default: 'more to unlock' -%}
 
 {%- if settings.cart_promo_text != blank -%}
   <p class="cart-promo body-upper">{{ settings.cart_promo_text }}</p>
 {%- endif -%}
 
-{%- if ship_threshold > 0 or tier_amounts.size > 0 -%}
+{%- if count > 0 -%}
   {%- liquid
     comment
-      The bar is scaled to the furthest goal, so one track can carry the
-      shipping threshold and every tier without them fighting for space.
+      Fill is piecewise across the segments: within a segment it interpolates on
+      the money still owed, so the bar creeps forward with every item rather
+      than jumping a whole segment at a time. Past the last milestone it runs to
+      the end of the track — a bar stopped short of full when everything is
+      unlocked reads as unfinished.
     endcomment
-    assign top_goal = ship_threshold
-    for a in tier_amounts
-      assign cents = a | times: 100
-      if cents > top_goal
-        assign top_goal = cents
-      endif
+    assign total = cart.total_price
+    assign fill = 0
+    assign prev_amt = 0
+    assign prev_pos = 0
+    assign resolved = false
+    assign next_amt = 0
+    assign next_kind = ''
+    assign next_label = ''
+    assign next_code = ''
+
+    for row in milestones
+      assign parts = row | split: '|'
+      assign at = parts[1] | plus: 0
+      assign pos = forloop.index0 | times: 2 | plus: 1 | times: 5000 | divided_by: count | divided_by: 100.0
+      unless resolved
+        if total < at
+          assign span = at | minus: prev_amt
+          assign gap = pos | minus: prev_pos
+          if span > 0
+            assign into = total | minus: prev_amt | times: 1.0
+            assign fill = into | divided_by: span | times: gap | plus: prev_pos
+          else
+            assign fill = prev_pos
+          endif
+          assign resolved = true
+          assign next_amt = at
+          assign next_kind = parts[2]
+          assign next_label = parts[3]
+          assign next_code = parts[4] | default: ''
+        endif
+      endunless
+      assign prev_amt = at
+      assign prev_pos = pos
     endfor
-    assign pct = 0
-    if top_goal > 0
-      assign pct = cart.total_price | times: 100 | divided_by: top_goal
-      if pct > 100
-        assign pct = 100
+    unless resolved
+      assign fill = 100
+    endunless
+    comment
+      Two decimals is plenty for a width, and keeps the inline style readable.
+    endcomment
+    assign fill = fill | times: 100 | round | divided_by: 100.0
+
+    comment
+      The status line is rendered here as well as recomputed in JS. Left to the
+      script alone the drawer opened with an empty line that filled in a beat
+      later, which both flashes and shifts everything under it.
+    endcomment
+    if resolved
+      assign away = next_amt | minus: total | money
+      if next_kind == 'ship'
+        capture status
+          echo ship_prefix
+          echo ' '
+          echo away
+          echo ' '
+          echo ship_suffix
+        endcapture
+      else
+        capture status
+          echo tier_prefix
+          echo ' '
+          echo away
+          echo ' '
+          echo tier_suffix
+          echo ' '
+          echo next_label
+          if next_code != blank
+            echo ' with code '
+            echo next_code
+          endif
+        endcapture
       endif
+    else
+      comment
+        Nothing left ahead: name everything unlocked rather than going blank.
+      endcomment
+      assign won = ''
+      for row in milestones
+        assign parts = row | split: '|'
+        if parts[2] == 'ship'
+          assign won_part = ship_won
+        else
+          assign won_part = parts[3]
+        endif
+        if won != blank
+          assign won = won | append: ' · '
+        endif
+        assign won = won | append: won_part
+      endfor
+      assign status = won
     endif
   -%}
 
-  <div class="cart-progress" data-cart-progress
-       data-threshold="{{ ship_threshold }}"
-       data-top-goal="{{ top_goal }}"
-       data-tiers="{{ tier_amounts | join: ',' }}"
-       data-tier-labels="{{ tier_labels | join: '|' | escape }}"
-       data-tier-codes="{{ tier_codes | join: '|' | escape }}"
-       data-prefix="{{ settings.free_shipping_away_text | default: "You're" | escape }}"
-       data-suffix="{{ settings.free_shipping_away_suffix | default: 'away from free shipping' | escape }}"
-       data-reached="{{ settings.free_shipping_reached_text | default: 'Free shipping unlocked' | escape }}"
-       data-tier-prefix="{{ settings.tier_away_text | default: 'Add' | escape }}"
-       data-tier-suffix="{{ settings.tier_away_suffix | default: 'more to unlock' | escape }}">
+  <div class="cart-progress{% if resolved == false %} is-complete{% endif %}" data-cart-progress
+       data-prefix="{{ ship_prefix | escape }}"
+       data-suffix="{{ ship_suffix | escape }}"
+       data-reached="{{ ship_won | escape }}"
+       data-tier-prefix="{{ tier_prefix | escape }}"
+       data-tier-suffix="{{ tier_suffix | escape }}"
+       style="--cart-progress-cols: {{ count }}">
 
-    <p class="cart-progress_text body-upper" data-cart-progress-text></p>
+    <p class="cart-progress_text body-upper" data-cart-progress-text>{{ status }}</p>
 
-    <div class="cart-progress_track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ pct }}">
-      <span class="cart-progress_fill" data-cart-progress-fill style="width: {{ pct }}%"></span>
-      {%- for a in tier_amounts -%}
-        {%- assign cents = a | times: 100 -%}
-        {%- assign at = cents | times: 100 | divided_by: top_goal -%}
-        <span class="cart-progress_pip{% if cart.total_price >= cents %} is-reached{% endif %}"
-              style="left: {{ at }}%" data-pip="{{ cents }}" aria-hidden="true"></span>
+    <div class="cart-progress_track" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+         aria-valuenow="{{ fill | round }}" aria-label="{{ status | strip | escape }}">
+      <span class="cart-progress_fill" data-cart-progress-fill style="width: {{ fill }}%"></span>
+      {%- for row in milestones -%}
+        {%- assign parts = row | split: '|' -%}
+        {%- assign at = parts[1] | plus: 0 -%}
+        {%- assign pos = forloop.index0 | times: 2 | plus: 1 | times: 5000 | divided_by: count | divided_by: 100.0 -%}
+        <span class="cart-progress_node{% if cart.total_price >= at %} is-reached{% endif %}"
+              style="left: {{ pos }}%" data-node="{{ at }}" aria-hidden="true"></span>
       {%- endfor -%}
     </div>
 
     {%- comment -%}
-      One legend under the track carrying every milestone, free shipping
-      included. Two entries or more always read as a balanced row; a single
-      tier on its own had nothing to sit against and landed in the corner.
+      One legend column per milestone, so every caption sits directly under its
+      own node however many milestones the merchant has switched on.
     {%- endcomment -%}
-    {%- if tier_amounts.size > 0 or ship_threshold > 0 -%}
-      <div class="cart-milestones">
-        {%- if ship_threshold > 0 -%}
-          <span class="cart-milestone{% if cart.total_price >= ship_threshold %} is-reached{% endif %}" data-tier="{{ ship_threshold }}">
-            <span class="cart-milestone_amount body-upper">{{ ship_threshold | money }}</span>
-            <span class="cart-milestone_label body-upper">{{ settings.free_shipping_short | default: 'Free shipping' }}</span>
-          </span>
-        {%- endif -%}
-        {%- for a in tier_amounts -%}
-          {%- assign cents = a | times: 100 -%}
-          <span class="cart-milestone{% if cart.total_price >= cents %} is-reached{% endif %}" data-tier="{{ cents }}">
-            <span class="cart-milestone_amount body-upper">{{ cents | money }}</span>
-            <span class="cart-milestone_label body-upper">{{ tier_labels[forloop.index0] }}</span>
-          </span>
-        {%- endfor -%}
-      </div>
-    {%- endif -%}
+    <div class="cart-progress_legend">
+      {%- for row in milestones -%}
+        {%- assign parts = row | split: '|' -%}
+        {%- assign at = parts[1] | plus: 0 -%}
+        {%- assign pos = forloop.index0 | times: 2 | plus: 1 | times: 5000 | divided_by: count | divided_by: 100.0 -%}
+        <span class="cart-milestone{% if cart.total_price >= at %} is-reached{% endif %}"
+              data-tier="{{ at }}" data-pos="{{ pos }}" data-kind="{{ parts[2] }}"
+              data-label="{{ parts[3] | escape }}" data-code="{{ parts[4] | default: '' | escape }}">
+          <span class="cart-milestone_amount body-upper">{{ at | money }}</span>
+          <span class="cart-milestone_label body-upper">{{ parts[3] }}</span>
+        </span>
+      {%- endfor -%}
+    </div>
   </div>
 {%- endif -%}

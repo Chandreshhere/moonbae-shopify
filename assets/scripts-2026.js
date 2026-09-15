@@ -769,23 +769,43 @@ function globalScripts() {
   // A short confetti burst, drawn as plain divs rather than pulling in a
   // library for one moment. Skipped entirely for anyone who asked for reduced
   // motion, and it removes itself so nothing accumulates in the DOM.
+  //
+  // The host is fixed to the viewport rather than parented to the progress
+  // block. Inside it the bits were clipped to a box a couple of centimetres
+  // tall, so the burst was over before it had cleared the bar — and the drawer
+  // is rendered twice (nav and menu), so whichever copy happened to be hidden
+  // could swallow the whole thing.
   window.celebrate = function (anchor) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const host = document.createElement("div");
     host.className = "confetti";
-    (anchor || document.body).appendChild(host);
+    // Burst from the bar that was just filled, when we can find it on screen;
+    // otherwise from the top of the viewport.
+    const box = anchor && anchor.getBoundingClientRect && anchor.getBoundingClientRect();
+    if (box && box.width > 0) {
+      host.style.left = box.left + "px";
+      host.style.top = box.top + "px";
+      host.style.width = box.width + "px";
+    }
+    document.body.appendChild(host);
     const colors = ["#050fff", "#ffffff", "#000000", "#9aa0ff"];
-    for (let i = 0; i < 28; i++) {
+    for (let i = 0; i < 46; i++) {
       const bit = document.createElement("i");
       bit.className = "confetti_bit";
       bit.style.left = Math.random() * 100 + "%";
       bit.style.background = colors[i % colors.length];
-      bit.style.animationDelay = Math.random() * 0.18 + "s";
+      bit.style.animationDelay = (Math.random() * 0.22).toFixed(2) + "s";
+      // A little variation in size and travel, so 46 identical rectangles do
+      // not fall as one block.
+      const scale = 0.7 + Math.random() * 0.8;
+      bit.style.width = (5 * scale).toFixed(1) + "px";
+      bit.style.height = (9 * scale).toFixed(1) + "px";
       bit.style.setProperty("--drift", (Math.random() * 2 - 1).toFixed(2));
-      bit.style.setProperty("--spin", Math.round(Math.random() * 720 - 360) + "deg");
+      bit.style.setProperty("--fall", Math.round(180 + Math.random() * 220) + "px");
+      bit.style.setProperty("--spin", Math.round(Math.random() * 900 - 450) + "deg");
       host.appendChild(bit);
     }
-    setTimeout(() => host.remove(), 2200);
+    setTimeout(() => host.remove(), 2400);
   };
 
   // The drawer is rendered twice — once for the nav, once for the menu — and
@@ -794,40 +814,76 @@ function globalScripts() {
   window.updateCartProgress = function (cart) {
     const total = cart && typeof cart.total_price === "number" ? cart.total_price : null;
     if (total === null) return;
-    document.querySelectorAll("[data-cart-progress]").forEach((el) => updateOneProgress(el, total));
+    const bars = [...document.querySelectorAll("[data-cart-progress]")];
+    bars.forEach((el) => updateOneProgress(el, total));
+    // Celebrating inside updateOneProgress fired once per copy of the drawer,
+    // and the first copy to run is not necessarily the one on screen. Collect
+    // the milestones crossed by this update instead, then fire once, at the bar
+    // the visitor can actually see.
+    const crossed = bars.reduce((acc, el) => acc.concat(el.__crossed || []), []);
+    if (!crossed.length) return;
+    const visible = bars.find((el) => el.getBoundingClientRect().width > 0) || bars[0];
+    window.celebrate(visible && visible.querySelector(".cart-progress_track"));
   };
 
-  function updateOneProgress(el, total) {
+  // Where a milestone sits on the track, and how full the bar is for a given
+  // total. Both are read off the legend the Liquid rendered, so the script and
+  // the server cannot drift apart on the geometry — see cart-progress.liquid
+  // for why the milestones are evenly spaced rather than scaled to the money.
+  function stopsOf(el) {
+    return [...el.querySelectorAll(".cart-milestone")]
+      .map((m) => ({
+        el: m,
+        at: parseInt(m.getAttribute("data-tier"), 10) || 0,
+        pos: parseFloat(m.getAttribute("data-pos")) || 0,
+        kind: m.getAttribute("data-kind") || "tier",
+        label: (m.getAttribute("data-label") || "").trim(),
+        code: (m.getAttribute("data-code") || "").trim(),
+      }))
+      .sort((a, b) => a.at - b.at);
+  }
 
-    const ship = parseInt(el.getAttribute("data-threshold"), 10) || 0;
-    const topGoal = parseInt(el.getAttribute("data-top-goal"), 10) || ship;
-    const tiers = (el.getAttribute("data-tiers") || "")
-      .split(",").filter(Boolean).map((n) => parseInt(n, 10) * 100);
-    const labels = (el.getAttribute("data-tier-labels") || "").split("|");
-    const codes = (el.getAttribute("data-tier-codes") || "").split("|");
-
-    if (topGoal > 0) {
-      const pct = Math.min(100, Math.round((total / topGoal) * 100));
-      const fill = el.querySelector("[data-cart-progress-fill]");
-      if (fill) fill.style.width = pct + "%";
-      const track = el.querySelector(".cart-progress_track");
-      if (track) track.setAttribute("aria-valuenow", pct);
+  function fillFor(total, stops) {
+    if (!stops.length) return 0;
+    if (total >= stops[stops.length - 1].at) return 100;
+    let prevAt = 0;
+    let prevPos = 0;
+    for (const s of stops) {
+      if (total < s.at) {
+        const span = s.at - prevAt;
+        return span > 0 ? prevPos + ((s.pos - prevPos) * (total - prevAt)) / span : prevPos;
+      }
+      prevAt = s.at;
+      prevPos = s.pos;
     }
+    return 100;
+  }
 
-    // Mark whichever milestones the cart has passed, and celebrate only the
-    // ones crossed just now — re-opening the drawer should not re-fire it.
-    el.querySelectorAll("[data-pip]").forEach((p) =>
-      p.classList.toggle("is-reached", total >= parseInt(p.getAttribute("data-pip"), 10))
-    );
-    el.querySelectorAll("[data-tier]").forEach((t) => {
-      // covers both the pips on the track and the legend entries below it
-      const at = parseInt(t.getAttribute("data-tier"), 10);
-      const reached = total >= at;
-      const was = t.classList.contains("is-reached");
-      t.classList.toggle("is-reached", reached);
-      if (reached && !was && !window.__celebrated?.has(at)) {
-        (window.__celebrated = window.__celebrated || new Set()).add(at);
-        window.celebrate(el);
+  function updateOneProgress(el, total) {
+    const stops = stopsOf(el);
+    el.__crossed = [];
+    if (!stops.length) return;
+
+    const pct = fillFor(total, stops);
+    const fill = el.querySelector("[data-cart-progress-fill]");
+    if (fill) fill.style.width = pct + "%";
+    const track = el.querySelector(".cart-progress_track");
+    if (track) track.setAttribute("aria-valuenow", Math.round(pct));
+    el.classList.toggle("is-complete", total >= stops[stops.length - 1].at);
+
+    // Mark whichever milestones the cart has passed, and note the ones crossed
+    // just now — re-opening the drawer should not re-fire the celebration, and
+    // neither should the second copy of the same drawer.
+    const seen = (window.__celebrated = window.__celebrated || new Set());
+    stops.forEach((s) => {
+      const reached = total >= s.at;
+      const was = s.el.classList.contains("is-reached");
+      s.el.classList.toggle("is-reached", reached);
+      const node = el.querySelector('[data-node="' + s.at + '"]');
+      if (node) node.classList.toggle("is-reached", reached);
+      if (reached && !was && !seen.has(s.at)) {
+        seen.add(s.at);
+        el.__crossed.push(s.at);
       }
     });
 
@@ -835,27 +891,22 @@ function globalScripts() {
     // whichever comes first. Naming every unreached tier at once reads as noise.
     const text = el.querySelector("[data-cart-progress-text]");
     if (!text) return;
-    let nextAt = null, nextMsg = null;
-    if (ship > 0 && total < ship) {
-      nextAt = ship;
-      nextMsg = el.getAttribute("data-prefix") + " " + formatMoney(ship - total) + " " + el.getAttribute("data-suffix");
+    const next = stops.find((s) => total < s.at);
+    if (next) {
+      const away = formatMoney(next.at - total);
+      text.textContent =
+        next.kind === "ship"
+          ? el.getAttribute("data-prefix") + " " + away + " " + el.getAttribute("data-suffix")
+          : el.getAttribute("data-tier-prefix") + " " + away + " " +
+            el.getAttribute("data-tier-suffix") + " " + next.label +
+            (next.code ? " with code " + next.code : "");
+      return;
     }
-    tiers.forEach((amt, i) => {
-      if (total >= amt) return;
-      if (nextAt !== null && amt >= nextAt) return;
-      const code = (codes[i] || "").trim();
-      nextAt = amt;
-      nextMsg =
-        el.getAttribute("data-tier-prefix") + " " + formatMoney(amt - total) + " " +
-        el.getAttribute("data-tier-suffix") + " " + (labels[i] || "").trim() +
-        (code ? " with code " + code : "");
-    });
-    if (nextMsg) { text.textContent = nextMsg; return; }
     // Nothing left ahead: say what was unlocked rather than going blank.
-    const lastTier = tiers.length ? (labels[tiers.length - 1] || "").trim() : "";
-    text.textContent = ship > 0 && total >= ship
-      ? el.getAttribute("data-reached") + (lastTier ? " · " + lastTier : "")
-      : lastTier;
+    text.textContent = stops
+      .map((s) => (s.kind === "ship" ? el.getAttribute("data-reached") : s.label))
+      .filter(Boolean)
+      .join(" · ");
   }
 
   // "You may also like" — Shopify's own recommendations, keyed on what is
@@ -1994,10 +2045,31 @@ function reinitUdeslyCart() {
 }
 reinitUdeslyCart();
 
+// How far down the page the container sits once it is back in normal flow.
+// The announcement bar is outside the Barba container, in flow above it, so a
+// container pinned to top: 0 during the transition is sitting exactly one
+// banner higher than where it will land — and every page dropped by that much
+// the moment the transition released it. That is the lurch: the hero "moving
+// down after loading" on every page. Measure the banner and start there.
+function flowOffset(current) {
+  // The outgoing container is still sitting in flow at exactly the spot the
+  // incoming one will take, so measure that rather than adding up whatever
+  // happens to be above it. window.scrollY turns the viewport rect back into a
+  // document position — the visitor may well have scrolled before clicking.
+  if (current) {
+    const box = current.getBoundingClientRect();
+    // Not rounded: the banner's height is a rem value that rarely lands on a
+    // whole pixel, and rounding it left half a pixel of movement behind.
+    if (box.height > 0) return Math.max(0, box.top + window.scrollY);
+  }
+  const bar = document.querySelector(".announcement-bar");
+  return bar ? bar.offsetHeight || 0 : 0;
+}
+
 barba.hooks.enter((data) => {
   gsap.set(data.next.container, {
     position: "fixed",
-    top: 0,
+    top: flowOffset(data.current && data.current.container),
     left: 0,
     width: "100%",
   });
@@ -2058,7 +2130,9 @@ barba.hooks.beforeEnter((data) => {
 barba.hooks.afterEnter(() => {});
 
 barba.hooks.after((data) => {
-  gsap.set(data.next.container, { position: "relative" });
+  // clearProps on the enter tween drops the inline top along with everything
+  // else, so nothing is left over once the container is relative again.
+  gsap.set(data.next.container, { position: "relative", top: "" });
   $(window).scrollTop(0);
   // The previous page's triggers were never killed, so each transition
   // stacked another set measured against a page that no longer exists.

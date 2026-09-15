@@ -43,7 +43,7 @@
       </div>
       <div class="w-commerce-commercecartformwrapper cart-form_wrap">
         {%- comment -%} Above the line items: the goal should be the first thing read. {%- endcomment -%}
-        {% render 'cart-progress', variant: variant %}
+        {% render 'cart-progress' %}
 
         <form style="" class="w-commerce-commercecartform default-state" data-node-type="commerce-cart-form">
           <div class="w-commerce-commercecartlist cart-list" data-wf-collection="database.commerceOrder.userItems" data-wf-template-id="{{ tpl }}" data-lenis-prevent=""></div>
