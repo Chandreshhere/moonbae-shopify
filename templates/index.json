@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "home-hero": {
@@ -56,7 +65,8 @@
       "type": "featured-products",
       "settings": {
         "collection": "",
-        "products_limit": 38,
+        "vendor": "",
+        "products_limit": 15,
         "eyebrow": "<p>( Featured Products )</p>",
         "link_label": "View all products",
         "link_url": "/collections/all",
