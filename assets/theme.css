@@ -723,22 +723,24 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 /* A horizontal rail: three suggestions read as a row of products, where a
    stacked list reads as more cart items. Scrolls rather than wraps. */
 .cart-recs_list {
-  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(6.5rem, 1fr);
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(9.5rem, 1fr);
   gap: .6rem; overflow-x: auto; scroll-snap-type: x proximity;
   scrollbar-width: none; padding-bottom: .2rem;
 }
 .cart-recs_list::-webkit-scrollbar { display: none; }
 .cart-rec { position: relative; scroll-snap-align: start; }
-.cart-rec_link { display: flex; flex-direction: column; gap: .35rem; color: inherit; }
+/* Row rather than column: the rail used to be ~150px tall, which left the
+   item list barely any height inside the drawer. */
+.cart-rec_link { display: flex; align-items: center; gap: .5rem; color: inherit; }
 .cart-rec:hover .cart-rec_title { text-decoration: underline; text-underline-offset: .2em; }
-.cart-rec_img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; }
+.cart-rec_img { width: 2.6rem; height: 3.25rem; object-fit: cover; display: block; flex: none; }
 .cart-rec_info { display: flex; flex-direction: column; gap: .1rem; min-width: 0; }
 .cart-rec_title {
   font-size: .64rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .cart-rec_price { font-size: .62rem; opacity: .6; }
 .cart-rec_add {
-  position: absolute; top: .3rem; right: .3rem;
+  position: absolute; top: 50%; right: .1rem; transform: translateY(-50%);
   width: 1.5rem; height: 1.5rem; display: flex; align-items: center; justify-content: center;
   background: var(--swatch--light); color: var(--swatch--dark);
   border: 1px solid color-mix(in srgb, var(--swatch--dark) 35%, transparent);
@@ -794,3 +796,37 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 
 /* The bar is the first thing in the drawer now, so it needs its own room. */
 .cart-progress { position: relative; padding: 1rem var(--site--gutter); }
+
+/* Size list opened from the + on a recommendation. */
+.cart-rec_picker {
+  position: absolute; right: 0; top: calc(100% + .2rem); z-index: 4;
+  display: flex; flex-wrap: wrap; gap: .2rem; padding: .3rem;
+  background: var(--swatch--light); color: var(--swatch--dark);
+  border: 1px solid color-mix(in srgb, var(--swatch--dark) 30%, transparent);
+  min-width: 100%;
+}
+.cart-rec_size {
+  background: none; border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  color: inherit; font: inherit; font-size: .6rem; padding: .25rem .4rem; cursor: pointer;
+}
+.cart-rec_size:hover { background: var(--swatch--dark); color: var(--swatch--light); }
+
+/* Milestone legend: evenly spread, ends pulled inward so nothing hugs a corner. */
+.cart-milestones {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  margin-top: .5rem; gap: .5rem;
+}
+.cart-milestone {
+  display: flex; flex-direction: column; gap: .05rem;
+  opacity: .4; transition: opacity 400ms ease; white-space: nowrap;
+}
+.cart-milestone:first-child { align-items: flex-start; text-align: left; }
+.cart-milestone:last-child { align-items: flex-end; text-align: right; }
+.cart-milestone:only-child { align-items: center; text-align: center; }
+.cart-milestone.is-reached { opacity: 1; }
+.cart-milestone_amount { font-size: .62rem; }
+.cart-milestone_label { font-size: .6rem; opacity: .7; }
+
+/* The status line reads as a caption for the bar, so centre it with the bar. */
+.cart-progress_text { text-align: center; }
+.cart-promo { text-align: center; }

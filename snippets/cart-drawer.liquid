@@ -52,6 +52,8 @@
           {%- else -%}
             <script type="text/x-wf-template" id="{{ tpl }}"><div data-node-type="cart-item" class="cart-item w-commerce-commercecartitem" template-part-bind="7eb9bb6d-58fe-33f2-b579-11521cae270f"><div class="checkout-img_wrap"><img data-node-type="cart-item-image" class="checkout-img w-commerce-commercecartitemimage" template-part-bind="7eb9bb6d-58fe-33f2-b579-11521cae2710" src="<%= it.image %>"></div><div data-node-type="cart-item-info" class="cart-details_contain w-commerce-commercecartiteminfo" template-part-bind="7eb9bb6d-58fe-33f2-b579-11521cae2711"><div data-node-type="cart-product-name" class="heading_main w-commerce-commercecartproductname" template-part-bind="7eb9bb6d-58fe-33f2-b579-11521cae2712"><%= it.title %></div><div class="cart-item_price"><div class="body-upper" template-part-bind="7eb9bb6d-58fe-33f2-b579-11521cae2713"><%= it.price %></div></div><ul template-part-bind="7eb9bb6d-58fe-33f2-b579-11521cae2717" class="w-commerce-commercecartoptionlist"><% Object.entries(it.properties).forEach( data =>  { %><li data-node-type="cart-option-list-item" class="field_copy"><span data-node-type="cart-option-list-item-label" template-part-bind="7eb9bb6d-58fe-33f2-b579-11521cae2719"><%= data[0] %></span><span data-node-type="span">: </span><span data-node-type="cart-option-list-item-value" template-part-bind="7eb9bb6d-58fe-33f2-b579-11521cae271c"><%= data[1] %></span></li><% }) %></ul><a data-node-type="cart-remove-link" class="remove_contain" href="#" role="button" template-part-bind="7eb9bb6d-58fe-33f2-b579-11521cae2714" data-product-id="<%= it.id %>"><div class="field_copy">{{ settings.cart_remove_nav_label }}</div></a></div><input class="w-commerce-commercecartquantity" name="<%= it.id %>" type="number" min="0" value="<%= it.quantity %>" data-node-type="cart-quantity"></div></script>
           {%- endif -%}
+          {% render 'cart-recommendations' %}
+
           <div class="w-commerce-commercecartfooter cart-footer">
             <div aria-atomic="true" aria-live="polite" class="w-commerce-commercecartlineitem cart-line_item">
               <div class="field_copy">{{ settings.cart_subtotal_label }}</div>
@@ -61,7 +63,6 @@
               <div class="field_copy">{{ settings.cart_shipping_label }}</div>
               <div class="{% if variant == 'menu' %} {% endif %}body-upper">{{ settings.cart_shipping_note }}</div>
             </div>
-            {% render 'cart-recommendations' %}
             <div class="checkout-actions">
               <div data-node-type="commerce-cart-quick-checkout-actions" class="web-payments"></div>
               <a href="/checkout" data-barba-prevent="self" value="Checkout" class="w-commerce-commercecartcheckoutbutton checkout-button body-upper" data-loading-text="Hang Tight..." data-node-type="cart-checkout-button">{{ settings.cart_checkout_label }}</a>

@@ -95,20 +95,24 @@
       {%- endfor -%}
     </div>
 
-    {%- if tier_amounts.size > 0 -%}
-      {%- comment -%}
-        Each label is placed at its own milestone's position on the track, not
-        spread evenly — with one tier a spread row just parks it in the corner
-        with nothing to relate it to.
-      {%- endcomment -%}
-      <div class="cart-tiers">
+    {%- comment -%}
+      One legend under the track carrying every milestone, free shipping
+      included. Two entries or more always read as a balanced row; a single
+      tier on its own had nothing to sit against and landed in the corner.
+    {%- endcomment -%}
+    {%- if tier_amounts.size > 0 or ship_threshold > 0 -%}
+      <div class="cart-milestones">
+        {%- if ship_threshold > 0 -%}
+          <span class="cart-milestone{% if cart.total_price >= ship_threshold %} is-reached{% endif %}" data-tier="{{ ship_threshold }}">
+            <span class="cart-milestone_amount body-upper">{{ ship_threshold | money }}</span>
+            <span class="cart-milestone_label body-upper">{{ settings.free_shipping_short | default: 'Free shipping' }}</span>
+          </span>
+        {%- endif -%}
         {%- for a in tier_amounts -%}
           {%- assign cents = a | times: 100 -%}
-          {%- assign at = cents | times: 100 | divided_by: top_goal -%}
-          <span class="cart-tier{% if cart.total_price >= cents %} is-reached{% endif %}"
-                data-tier="{{ cents }}" style="left: {{ at }}%">
-            <span class="cart-tier_amount body-upper">{{ cents | money }}</span>
-            <span class="cart-tier_label body-upper">{{ tier_labels[forloop.index0] }}</span>
+          <span class="cart-milestone{% if cart.total_price >= cents %} is-reached{% endif %}" data-tier="{{ cents }}">
+            <span class="cart-milestone_amount body-upper">{{ cents | money }}</span>
+            <span class="cart-milestone_label body-upper">{{ tier_labels[forloop.index0] }}</span>
           </span>
         {%- endfor -%}
       </div>

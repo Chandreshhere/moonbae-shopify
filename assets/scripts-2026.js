@@ -820,6 +820,7 @@ function globalScripts() {
       p.classList.toggle("is-reached", total >= parseInt(p.getAttribute("data-pip"), 10))
     );
     el.querySelectorAll("[data-tier]").forEach((t) => {
+      // covers both the pips on the track and the legend entries below it
       const at = parseInt(t.getAttribute("data-tier"), 10);
       const reached = total >= at;
       const was = t.classList.contains("is-reached");
@@ -886,13 +887,27 @@ function globalScripts() {
               '<span class="cart-rec_title body-upper">' + p.title + "</span>" +
               '<span class="cart-rec_price body-upper">' + formatMoney(p.price) + "</span>" +
               "</span></a>" +
-              // Only offer one-tap add when there is a single variant to add;
-              // anything with sizes has to be chosen on the product page.
-              (p.__variantId
-                ? '<button type="button" class="cart-rec_add" data-add-variant="' + p.__variantId +
-                  '" aria-label="Add ' + p.title.replace(/"/g, "&quot;") + ' to cart">+</button>'
-                : '<a class="cart-rec_add" href="' + p.url + '" aria-label="Choose options for ' +
-                  p.title.replace(/"/g, "&quot;") + '">+</a>') +
+              // One variant adds straight away. Several opens a size list on
+              // the card itself — adding without asking would pick someone's
+              // size for them, and leaving the cart to choose it loses the sale.
+              (function () {
+                const vs = p.__variants || [];
+                if (!vs.length) return "";
+                if (vs.length === 1) {
+                  return '<button type="button" class="cart-rec_add" data-add-variant="' + vs[0].id +
+                    '" aria-label="Add ' + p.title.replace(/"/g, "&quot;") + ' to cart">+</button>';
+                }
+                return (
+                  '<button type="button" class="cart-rec_add" data-pick-variant aria-expanded="false"' +
+                  ' aria-label="Choose a size for ' + p.title.replace(/"/g, "&quot;") + '">+</button>' +
+                  '<div class="cart-rec_picker" hidden>' +
+                  vs.map((v) =>
+                    '<button type="button" class="cart-rec_size body-upper" data-add-variant="' + v.id + '">' +
+                    (v.title || "").replace(/</g, "&lt;") + "</button>"
+                  ).join("") +
+                  "</div>"
+                );
+              })() +
               "</div>"
             );
           })
@@ -917,7 +932,7 @@ function globalScripts() {
                 // are integer paise. Normalise to paise.
                 price: Math.round(parseFloat((p.variants[0] || {}).price || "0") * 100),
                 featured_image: (p.images[0] || {}).src || "",
-                __variantId: (p.variants || []).length === 1 ? p.variants[0].id : null,
+                __variants: (p.variants || []).filter((v) => v.available !== false),
               }))
           )
         )
@@ -930,8 +945,7 @@ function globalScripts() {
       .then((data) => {
         const picks = (data.products || []).filter((p) => !inCart.has(p.id)).slice(0, 3);
         picks.forEach((p) => {
-          const vs = p.variants || [];
-          p.__variantId = vs.length === 1 && vs[0].available !== false ? vs[0].id : null;
+          p.__variants = (p.variants || []).filter((v) => v.available !== false);
         });
         if (picks.length) render(picks);
         else fromCatalogue();
@@ -964,6 +978,24 @@ function globalScripts() {
     if (e.target.closest('[data-node-type="cart-quantity"]')) refreshCartProgress();
   });
 
+  // Open the size list on the card rather than navigating away.
+  document.addEventListener("click", (e) => {
+    const pick = e.target.closest("[data-pick-variant]");
+    if (pick) {
+      e.preventDefault();
+      const card = pick.closest(".cart-rec");
+      const picker = card && card.querySelector(".cart-rec_picker");
+      if (!picker) return;
+      document.querySelectorAll(".cart-rec_picker").forEach((p) => { if (p !== picker) p.hidden = true; });
+      picker.hidden = !picker.hidden;
+      pick.setAttribute("aria-expanded", picker.hidden ? "false" : "true");
+      return;
+    }
+    if (!e.target.closest(".cart-rec")) {
+      document.querySelectorAll(".cart-rec_picker").forEach((p) => (p.hidden = true));
+    }
+  });
+
   // Quick add from a recommendation.
   document.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-add-variant]");
@@ -979,9 +1011,12 @@ function globalScripts() {
       .then(() => {
         recsFor = null; // the cart changed, so the suggestions should too
         refreshCartProgress();
-        // The drawer renders its line items from the cart bridge; nudge it.
-        const open = document.querySelector('[data-node-type="commerce-cart-open-link"]');
-        if (open) open.click();
+        document.querySelectorAll(".cart-rec_picker").forEach((p) => (p.hidden = true));
+        // Ask the cart bridge to re-render its line items where it stands. The
+        // drawer is already open — clicking the open link again would toggle it
+        // shut, which is why adding appeared to navigate away.
+        document.dispatchEvent(new CustomEvent("cart:updated"));
+        if (window.Shopify && window.Shopify.onCartUpdate) window.Shopify.onCartUpdate();
       })
       .catch(() => {})
       .finally(() => { btn.disabled = false; });
