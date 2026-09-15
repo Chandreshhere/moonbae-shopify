@@ -766,11 +766,16 @@ function globalScripts() {
       .replace(/\{\{\s*amount_no_decimals_with_comma_separator\s*\}\}/g, lakh);
   }
 
+  // The drawer is rendered twice — once for the nav, once for the menu — and
+  // the cart page has its own copy, so every one of these must be updated or
+  // whichever the visitor opens second shows a stale number.
   window.updateCartProgress = function (cart) {
-    const el = document.querySelector("[data-cart-progress]");
-    if (!el) return;
     const total = cart && typeof cart.total_price === "number" ? cart.total_price : null;
     if (total === null) return;
+    document.querySelectorAll("[data-cart-progress]").forEach((el) => updateOneProgress(el, total));
+  };
+
+  function updateOneProgress(el, total) {
 
     const ship = parseInt(el.getAttribute("data-threshold"), 10) || 0;
     const topGoal = parseInt(el.getAttribute("data-top-goal"), 10) || ship;
@@ -820,18 +825,18 @@ function globalScripts() {
     text.textContent = ship > 0 && total >= ship
       ? el.getAttribute("data-reached") + (lastTier ? " · " + lastTier : "")
       : lastTier;
-  };
+  }
 
   // "You may also like" — Shopify's own recommendations, keyed on what is
   // actually in the cart, so the list cannot go stale the way a hand-picked
   // one does.
   let recsFor = null;
   window.updateCartRecs = function (cart) {
-    const wrap = document.querySelector("[data-cart-recs]");
-    const list = document.querySelector("[data-cart-recs-list]");
-    if (!wrap || !list) return;
+    const wraps = [...document.querySelectorAll("[data-cart-recs]")];
+    const lists = [...document.querySelectorAll("[data-cart-recs-list]")];
+    if (!wraps.length || !lists.length) return;
     const first = cart && cart.items && cart.items[0];
-    if (!first) { wrap.hidden = true; return; }
+    if (!first) { wraps.forEach((w) => (w.hidden = true)); return; }
     if (recsFor === first.product_id) return; // already showing these
     recsFor = first.product_id;
     const inCart = new Set((cart.items || []).map((i) => i.product_id));
@@ -839,8 +844,8 @@ function globalScripts() {
     // relationships, so a new store returns none. Fall back to the catalogue
     // itself — still real products, just not yet personalised.
     const render = (picks) => {
-        if (!picks.length) { wrap.hidden = true; return; }
-        list.innerHTML = picks
+        if (!picks.length) { wraps.forEach((w) => (w.hidden = true)); return; }
+        const html = picks
           .map((p) => {
             const img = p.featured_image || (p.images && p.images[0]) || "";
             return (
@@ -853,7 +858,8 @@ function globalScripts() {
             );
           })
           .join("");
-        wrap.hidden = false;
+        lists.forEach((l) => (l.innerHTML = html));
+        wraps.forEach((w) => (w.hidden = false));
     };
 
     const fromCatalogue = () =>
@@ -875,7 +881,7 @@ function globalScripts() {
               }))
           )
         )
-        .catch(() => { wrap.hidden = true; });
+        .catch(() => { wraps.forEach((w) => (w.hidden = true)); });
 
     fetch("/recommendations/products.json?product_id=" + first.product_id + "&limit=6", {
       headers: { Accept: "application/json" },
