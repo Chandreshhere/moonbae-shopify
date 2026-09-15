@@ -56,8 +56,13 @@
                 manual link fields do, so the menu matches the reference on a new store.
               {%- endcomment -%}
               {%- assign menu_links = linklists[section.settings.menu].links -%}
-              {%- if section.blocks.size > 0 -%}
-                {%- for block in section.blocks -%}
+              {%- comment -%}
+                Only 'link' blocks belong in the overlay menu — 'category'
+                blocks are the small shortcuts on the top bar.
+              {%- endcomment -%}
+              {%- assign menu_blocks = section.blocks | where: 'type', 'link' -%}
+              {%- if menu_blocks.size > 0 -%}
+                {%- for block in menu_blocks -%}
                   {%- assign url = block.settings.url | default: '/' -%}
                   <div img-hover_trigger="" class="menu-list-item" {{ block.shopify_attributes }}>
                     <a href="{{ url }}"{% if url == request.path %} aria-current="page"{% endif %} class="menu-link w-inline-block{% if url == request.path %} w--current{% endif %}">
@@ -150,9 +155,40 @@
           </div>
         </div>
         <div h-fadeout="" class="nav-links_layout">
+          {%- comment -%}
+            Category shortcuts, editable as blocks. Anything left blank is not
+            rendered, so a store without an Accessories collection does not get
+            a dead link.
+          {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'category' and block.settings.label != blank and block.settings.url != blank -%}
+              <a h-flip="" href="{{ block.settings.url }}" class="nav-link is-desktop is-category w-inline-block"{% if block.settings.url == request.path %} aria-current="page"{% endif %} {{ block.shopify_attributes }}>
+                <div class="body-upper">{{ block.settings.label }}</div>
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+
           <a h-flip="" href="{{ section.settings.shop_url }}" class="nav-link is-desktop w-inline-block">
             <div class="body-upper">{{ section.settings.shop_label }}</div>
           </a>
+
+          {%- if section.settings.show_search -%}
+            <div class="nav-search" data-nav-search>
+              <button type="button" class="nav-search_toggle nav-link" data-nav-search-toggle
+                      aria-expanded="false" aria-label="{{ 'general.search.placeholder' | t | default: 'Search' }}">
+                <div class="body-upper">{{ section.settings.search_label }}</div>
+              </button>
+              <form action="{{ routes.search_url }}" method="get" role="search" class="nav-search_form">
+                <input type="hidden" name="type" value="product">
+                <label class="u-visually-hidden" for="nav-search-input">{{ 'general.search.placeholder' | t | default: 'Search' }}</label>
+                <input id="nav-search-input" class="nav-search_input body-upper" type="search" name="q"
+                       value="{{ search.terms | escape }}" autocomplete="off"
+                       placeholder="{{ section.settings.search_placeholder | escape }}">
+                <button type="submit" class="nav-search_submit body-upper">{{ section.settings.search_submit }}</button>
+              </form>
+            </div>
+          {%- endif -%}
+
           {% render 'cart-drawer', variant: 'nav' %}
         </div>
       </div>
@@ -268,6 +304,34 @@
       "id": "menu_location",
       "label": "Location",
       "default": "India"
+    },
+    {
+      "type": "header",
+      "content": "Search"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search in the header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "search_label",
+      "label": "Search label",
+      "default": "Search"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Placeholder",
+      "default": "Search products"
+    },
+    {
+      "type": "text",
+      "id": "search_submit",
+      "label": "Submit label",
+      "default": "Go"
     }
   ],
   "default": {
@@ -303,6 +367,27 @@
           "label": "Contact",
           "url": "/pages/contact"
         }
+      },
+      {
+        "type": "category",
+        "settings": {
+          "label": "Men",
+          "url": "/collections/men"
+        }
+      },
+      {
+        "type": "category",
+        "settings": {
+          "label": "Women",
+          "url": "/collections/women"
+        }
+      },
+      {
+        "type": "category",
+        "settings": {
+          "label": "Accessories",
+          "url": "/collections/accessories"
+        }
       }
     ]
   },
@@ -327,6 +412,22 @@
           "id": "image",
           "label": "Hover image",
           "info": "Shown in the menu panel when this link is hovered."
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "name": "Header category link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
         }
       ]
     }

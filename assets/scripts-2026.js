@@ -675,6 +675,22 @@ function globalScripts() {
     }, every);
   });
 
+  // Header search: toggle open, focus the field, close on Escape or outside.
+  $("[data-nav-search]").each(function () {
+    const wrap = this;
+    const btn = wrap.querySelector("[data-nav-search-toggle]");
+    const input = wrap.querySelector(".nav-search_input");
+    const set = (open) => {
+      wrap.setAttribute("data-open", open ? "true" : "false");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open) setTimeout(() => input && input.focus(), 60);
+    };
+    set(false);
+    btn.addEventListener("click", () => set(wrap.getAttribute("data-open") !== "true"));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
+    document.addEventListener("click", (e) => { if (!wrap.contains(e.target)) set(false); });
+  });
+
   // Free shipping progress. Rendered server-side for the first paint, then kept
   // in step with the cart as items are added without a page load.
   // Format paise the way the shop does, so the amount in the sentence matches
