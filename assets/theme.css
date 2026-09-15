@@ -393,3 +393,11 @@ body:not(.show-preloader) .preloader_wrap {
 @media (prefers-reduced-motion: reduce) {
   .hero-slide_visual[data-parallax] > .hero-visual_el.u-cover-absolute { height: 100%; top: 0; }
 }
+
+/* A short catalogue lays out once instead of running as a marquee: no
+   max-content track to drag, and centred rather than left-packed. */
+.product-draggable_el.is-static {
+  width: 100%; justify-content: center; flex-wrap: wrap; overflow: visible;
+  padding-right: 0;
+}
+.product-draggable_el.is-static .product-slider_list { cursor: default; flex-wrap: wrap; justify-content: center; }

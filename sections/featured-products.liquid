@@ -41,16 +41,21 @@
   assign render_count = shown
 
   comment
-    The marquee is two identical tracks and scrolls forever, so a track narrower
-    than the viewport leaves dead space to its right. Repeat the line-up inside
-    each track until there is enough of it to fill the screen.
+    The marquee needs two identical tracks to loop seamlessly, so it shows
+    every product at least twice — fine across a full catalogue, but with a
+    handful it just reads as the same items over and over. Below the threshold
+    the section drops the marquee entirely and lays the products out once.
   endcomment
+  assign is_marquee = false
   assign repeat = 1
-  if render_count > 0 and render_count < 12
-    assign repeat = 12 | divided_by: render_count
-    assign covered = repeat | times: render_count
-    if covered < 12
-      assign repeat = repeat | plus: 1
+  if render_count >= 6
+    assign is_marquee = true
+    if render_count < 12
+      assign repeat = 12 | divided_by: render_count
+      assign covered = repeat | times: render_count
+      if covered < 12
+        assign repeat = repeat | plus: 1
+      endif
     endif
   endif
 -%}
@@ -77,16 +82,28 @@
   </div>
 {%- endif -%}
 
-<div product-slider="" class="product-draggable_el">
-  {%- comment -%} Two identical tracks so the marquee can loop seamlessly. {%- endcomment -%}
-  {%- for pass in (1..2) -%}
-    <div class="product-slider w-dyn-list" udy-collection="product">
-      <div role="list" class="product-slider_list w-dyn-items">
-        {%- for fill in (1..repeat) -%}{{ cards_html }}{%- endfor -%}
+{%- if is_marquee -%}
+  <div product-slider="" class="product-draggable_el">
+    {%- comment -%} Two identical tracks so the marquee can loop seamlessly. {%- endcomment -%}
+    {%- for pass in (1..2) -%}
+      <div class="product-slider w-dyn-list" udy-collection="product">
+        <div role="list" class="product-slider_list w-dyn-items">
+          {%- for fill in (1..repeat) -%}{{ cards_html }}{%- endfor -%}
+        </div>
       </div>
+    {%- endfor -%}
+  </div>
+{%- else -%}
+  {%- comment -%}
+    No [product-slider] attribute here, so the marquee script skips this
+    section entirely and nothing scrolls or duplicates.
+  {%- endcomment -%}
+  <div class="product-draggable_el is-static">
+    <div class="product-slider w-dyn-list" udy-collection="product">
+      <div role="list" class="product-slider_list w-dyn-items">{{ cards_html }}</div>
     </div>
-  {%- endfor -%}
-</div>
+  </div>
+{%- endif -%}
 
 <div class="products-all_wrap">
   {% render 'orgc-detail', url: section.settings.link_url, label: section.settings.link_label, text_class: 'body-upper' %}

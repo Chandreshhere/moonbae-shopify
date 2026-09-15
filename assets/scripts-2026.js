@@ -728,6 +728,10 @@ function globalScripts() {
   $(".product-draggable_wrap").each(function () {
     const sliderEl = $(this);
     const content = sliderEl.find("[product-slider]");
+    // A short catalogue renders without the marquee attribute; with no track
+    // to measure, content.width() is undefined and the wrap maths yields NaN,
+    // which would translate the row off screen.
+    if (!content.length) return;
     const cards = sliderEl.find(".product-card");
     let total = 0;
     const itemValues = [];
