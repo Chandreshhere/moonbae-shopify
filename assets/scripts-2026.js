@@ -83,10 +83,22 @@ $(".date").text(new Date().getFullYear());
   // banner until the first scroll. Re-apply once the document is built.
   document.addEventListener("DOMContentLoaded", apply);
   window.addEventListener("load", apply);
-  if (typeof lenis !== "undefined" && lenis.on) lenis.on("scroll", onScroll);
-  // Barba swaps the container, not the banner, but the nav is inside the
-  // container — so re-apply after a transition or the new nav starts at 0.
-  if (typeof barba !== "undefined" && barba.hooks) barba.hooks.after(apply);
+
+  // lenis and barba are declared with const further down this file. Touching
+  // them from here — even with typeof, which throws for a const in its
+  // temporal dead zone rather than returning "undefined" — aborts the whole
+  // script. Defer to a task that runs after this file has finished executing.
+  setTimeout(function attachScrollSources() {
+    try {
+      if (lenis && lenis.on) lenis.on("scroll", onScroll);
+    } catch (e) {}
+    try {
+      // Barba swaps the container, not the banner, but the nav is inside the
+      // container — so re-apply after a transition or the new nav starts at 0.
+      if (barba && barba.hooks) barba.hooks.after(apply);
+    } catch (e) {}
+  }, 0);
+
   apply();
 })();
 
