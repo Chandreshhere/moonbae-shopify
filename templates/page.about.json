@@ -232,21 +232,21 @@
           "type": "question",
           "settings": {
             "question": "Can I return or exchange it?",
-            "answer": "<p>Each piece is made for you individually, so we can't take returns for change of mind or fit — please check the size guide before ordering, and ask us if you're between sizes. If it arrives damaged, misprinted, wrong, or gets lost in transit, we replace or refund it free. Write to us within 7 days of delivery.</p>"
+            "answer": "<p>Each piece is made for you individually, so we can't take returns for change of mind or fit — please check the size guide before ordering, and ask us if you're between sizes. If it arrives damaged, misprinted or wrong, we replace or refund it free. Write to us within 5 days of delivery.</p>"
           }
         },
         "q-3": {
           "type": "question",
           "settings": {
             "question": "Why do you ask for an unboxing video?",
-            "answer": "<p>One continuous, unedited recording from the sealed parcel to the item coming out. It takes ten seconds and it's the only proof that a fault didn't happen after delivery — without it, our print partner won't accept a claim, so neither can we.</p>"
+            "answer": "<p>One continuous, unedited recording from the sealed parcel to the item coming out. It takes ten seconds and it's the only proof that a fault didn't happen after delivery — without it our printers won't accept a claim, so neither can we.</p>"
           }
         },
         "q-4": {
           "type": "question",
           "settings": {
             "question": "Can I cancel an order?",
-            "answer": "<p>Yes, within 12 hours of placing it, as long as printing hasn't started. Email us as soon as you can. Once it's in production the piece exists only for you and can't be cancelled.</p>"
+            "answer": "<p>Yes, within 1 hour of placing it. Our printers begin production almost immediately, so the window is short — email us the moment you know. After that the piece exists only for you and can't be cancelled.</p>"
           }
         },
         "q-5": {
