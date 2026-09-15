@@ -1,0 +1,30 @@
+{%- comment -%}
+  "You're ₹X away from free shipping" — the honest kind of nudge: it reads the
+  real cart total and the real threshold, and says so plainly once reached.
+
+  Threshold comes from theme settings and must match the shipping rate set in
+  Shopify admin, or the bar promises something checkout will not honour.
+
+  Params: variant — passed through from the cart drawer for styling only.
+{%- endcomment -%}
+{%- assign threshold = settings.free_shipping_threshold | default: 0 | times: 100 -%}
+{%- if threshold > 0 -%}
+  {%- assign remaining = threshold | minus: cart.total_price -%}
+  {%- if remaining > 0 -%}
+    {%- assign pct = cart.total_price | times: 100 | divided_by: threshold -%}
+  {%- else -%}
+    {%- assign pct = 100 -%}
+  {%- endif -%}
+  <div class="cart-progress" data-cart-progress data-threshold="{{ threshold }}">
+    <p class="cart-progress_text body-upper" data-cart-progress-text>
+      {%- if remaining > 0 -%}
+        {{ settings.free_shipping_away_text | default: "You're" }} {{ remaining | money }} {{ settings.free_shipping_away_suffix | default: 'away from free shipping' }}
+      {%- else -%}
+        {{ settings.free_shipping_reached_text | default: 'Free shipping unlocked' }}
+      {%- endif -%}
+    </p>
+    <div class="cart-progress_track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ pct }}">
+      <span class="cart-progress_fill" data-cart-progress-fill style="width: {{ pct }}%"></span>
+    </div>
+  </div>
+{%- endif -%}

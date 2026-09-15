@@ -22,6 +22,8 @@
     "site_gutter": 10,
     "site_columns": 12,
     "social_instagram": "https://www.instagram.com/moonbae.stores",
-    "brand_name": "Moonbae"
+    "brand_name": "Moonbae",
+    "free_shipping_threshold": 1599,
+    "tab_away_text": "Come back — your cart is waiting"
   }
 }

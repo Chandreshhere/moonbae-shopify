@@ -330,6 +330,13 @@
         "id": "show_preloader",
         "label": "Show preloader",
         "default": true
+      },
+      {
+        "type": "text",
+        "id": "tab_away_text",
+        "label": "Tab message when someone switches away",
+        "default": "Come back — your cart is waiting",
+        "info": "Shown in the browser tab while the visitor is on another tab. Leave empty to turn off."
       }
     ]
   },
@@ -430,6 +437,35 @@
         "id": "cart_error_text",
         "label": "Error message",
         "default": "Product is not available in this quantity."
+      },
+      {
+        "type": "header",
+        "content": "Free shipping bar"
+      },
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping over",
+        "default": 1599,
+        "info": "In rupees. Must match the free-shipping rate in Settings > Shipping, or the bar promises what checkout will not honour. 0 hides the bar."
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_away_text",
+        "label": "Prefix",
+        "default": "You're"
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_away_suffix",
+        "label": "Suffix",
+        "default": "away from free shipping"
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_reached_text",
+        "label": "When reached",
+        "default": "Free shipping unlocked"
       }
     ]
   }

@@ -57,6 +57,31 @@ function addLenisPreventAttribute() {
 
 $(".date").text(new Date().getFullYear());
 
+// Tab-away message. Swaps the document title while the tab is in the
+// background and restores the real one on return — including whatever the
+// Barba transition set it to, so it never restores a stale page's title.
+(function tabAwayMessage() {
+  const away = document.documentElement.getAttribute("data-tab-away-text");
+  if (!away) return;
+  let realTitle = document.title;
+  let timer;
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      realTitle = document.title;
+      let flip = false;
+      // Alternate so it reads as a message rather than a stuck title.
+      timer = setInterval(() => {
+        document.title = flip ? realTitle : away;
+        flip = !flip;
+      }, 1500);
+      document.title = away;
+    } else {
+      clearInterval(timer);
+      document.title = realTitle;
+    }
+  });
+})();
+
 const lenis = new Lenis();
 
 lenis.on("scroll", ScrollTrigger.update);
@@ -634,6 +659,46 @@ function globalScripts() {
       },
       "<"
     );
+  });
+
+  // Announcement bar: rotate only when there is more than one message.
+  $("[data-announcement-rotate]").each(function () {
+    const bar = this;
+    const items = [...bar.querySelectorAll(".announcement-bar_item")];
+    if (items.length < 2) return;
+    const every = (parseInt(bar.getAttribute("data-announcement-rotate"), 10) || 5) * 1000;
+    let i = 0;
+    setInterval(() => {
+      items[i].classList.remove("is-active");
+      i = (i + 1) % items.length;
+      items[i].classList.add("is-active");
+    }, every);
+  });
+
+  // Free shipping progress. Rendered server-side for the first paint, then kept
+  // in step with the cart as items are added without a page load.
+  window.updateCartProgress = function (cart) {
+    const el = document.querySelector("[data-cart-progress]");
+    if (!el) return;
+    const threshold = parseInt(el.getAttribute("data-threshold"), 10);
+    if (!threshold) return;
+    const total = cart && typeof cart.total_price === "number" ? cart.total_price : null;
+    if (total === null) return;
+    const pct = Math.min(100, Math.round((total / threshold) * 100));
+    const fill = el.querySelector("[data-cart-progress-fill]");
+    if (fill) fill.style.width = pct + "%";
+    const track = el.querySelector(".cart-progress_track");
+    if (track) track.setAttribute("aria-valuenow", pct);
+  };
+  // The cart bridge has no event we can hook, so refresh the bar whenever the
+  // drawer is opened — the only moment the number is actually on screen.
+  $("[data-node-type='commerce-cart-open-link']").on("click", function () {
+    setTimeout(() => {
+      fetch("/cart.js", { headers: { Accept: "application/json" } })
+        .then((r) => r.json())
+        .then(window.updateCartProgress)
+        .catch(() => {});
+    }, 400);
   });
 
   // Collection filters. The form is a real GET to the collection URL, so it

@@ -1,0 +1,55 @@
+{%- comment -%}
+  Site-wide announcement bar. Rendered above the header in the layout, outside
+  the Barba container, so it does not reload or flicker between pages.
+
+  Rotates between messages only when there is more than one.
+{%- endcomment -%}
+{%- assign messages = section.blocks | where: 'type', 'message' -%}
+{%- if messages.size > 0 and section.settings.enabled -%}
+  <div class="announcement-bar body-upper"
+       style="--announcement-bg: {{ section.settings.bg }}; --announcement-fg: {{ section.settings.fg }};"
+       data-announcement{% if messages.size > 1 %} data-announcement-rotate="{{ section.settings.rotate_seconds }}"{% endif %}>
+    <div class="announcement-bar_track">
+      {%- for block in messages -%}
+        <div class="announcement-bar_item{% if forloop.first %} is-active{% endif %}" {{ block.shopify_attributes }}>
+          {%- if block.settings.url != blank -%}
+            <a href="{{ block.settings.url }}">{{ block.settings.text }}</a>
+          {%- else -%}
+            <span>{{ block.settings.text }}</span>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Show the bar", "default": true },
+    { "type": "range", "id": "rotate_seconds", "label": "Seconds per message", "min": 3, "max": 12, "step": 1, "default": 5,
+      "info": "Only applies when there is more than one message." },
+    { "type": "color", "id": "bg", "label": "Background", "default": "#000000" },
+    { "type": "color", "id": "fg", "label": "Text", "default": "#ffffff" }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Free shipping on orders over ₹1,599" },
+        { "type": "url", "id": "url", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "default": {
+    "settings": {},
+    "blocks": [
+      { "type": "message", "settings": { "text": "Free shipping on orders over ₹1,599" } },
+      { "type": "message", "settings": { "text": "Made to order in India — dispatched in 2–4 business days" } }
+    ]
+  }
+}
+{% endschema %}

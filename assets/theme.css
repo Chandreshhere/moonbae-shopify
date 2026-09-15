@@ -486,3 +486,41 @@ body:not(.show-preloader) .preloader_wrap {
   }
   .collection-filters[data-open="true"] .collection-filters_form { display: block; }
 }
+
+/* ---- Announcement bar ---------------------------------------------------
+   Sits above the fixed nav, so the nav is offset by its height and the
+   page-template clearance accounts for both. */
+.announcement-bar {
+  position: relative; z-index: 11;
+  background: var(--announcement-bg, #000); color: var(--announcement-fg, #fff);
+  text-align: center; padding: .55rem var(--site--margin);
+  font-size: .72rem; letter-spacing: .06em;
+}
+.announcement-bar a { color: inherit; text-decoration: underline; text-underline-offset: .2em; }
+.announcement-bar_track { position: relative; display: grid; }
+.announcement-bar_item {
+  grid-area: 1 / 1; opacity: 0; visibility: hidden;
+  transition: opacity 400ms cubic-bezier(.25,1,.5,1);
+}
+.announcement-bar_item.is-active { opacity: 1; visibility: visible; }
+
+/* The nav is fixed to the top of the viewport, so it would sit over the bar.
+   Push it down by the bar's height and give page templates the same extra. */
+body:has(.announcement-bar) .orgc-nav { top: var(--announcement-height, 2.1rem); }
+body:has(.announcement-bar) .template-page .page-main,
+body:has(.announcement-bar).template-page .page-main {
+  padding-top: calc(var(--nav--clearance) + var(--announcement-height, 2.1rem));
+}
+
+/* ---- Free shipping progress --------------------------------------------- */
+.cart-progress { display: flex; flex-direction: column; gap: .5rem; padding: .9rem 0; }
+.cart-progress_text { font-size: .72rem; letter-spacing: .06em; }
+.cart-progress_track {
+  position: relative; height: 2px; width: 100%;
+  background: currentColor; opacity: .25; overflow: hidden;
+}
+.cart-progress_fill {
+  position: absolute; inset: 0 auto 0 0; display: block; height: 100%;
+  background: currentColor; opacity: 1;
+  transition: width 500ms cubic-bezier(.25,1,.5,1);
+}

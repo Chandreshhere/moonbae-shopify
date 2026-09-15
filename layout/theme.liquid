@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ request.locale.iso_code }}" data-money-format="{{ shop.money_format | escape }}">
+<html lang="{{ request.locale.iso_code }}" data-money-format="{{ shop.money_format | escape }}"{% if settings.tab_away_text != blank %} data-tab-away-text="{{ settings.tab_away_text | escape }}"{% endif %}>
   <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
@@ -143,6 +143,12 @@ families: ["Instrument Serif:regular,italic"]
   {%- assign body_theme = '' -%}
   {%- if template.name == 'product' -%}{%- assign body_theme = 'u-theme-light ' -%}{%- endif -%}
   <body data-barba="wrapper" class="{{ body_theme }}{% if settings.show_preloader %}show-preloader {% endif %}template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
+    {%- comment -%}
+      Outside the Barba container on purpose: a bar that reloads on every page
+      transition flickers, and this one has nothing page-specific in it.
+    {%- endcomment -%}
+    {% section 'announcement-bar' %}
+
     <div class="page_wrap">
       <div class="page_code_wrap">
         <div class="page_code_base w-embed"></div>
