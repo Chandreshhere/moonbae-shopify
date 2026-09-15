@@ -13,7 +13,12 @@
     those and leaves the rest of the catalogue out.
   endcomment
   assign limit = section.settings.products_limit
+  comment
+    A comma separated list, so a store fed by more than one print-on-demand
+    supplier can show both and still leave anything else out.
+  endcomment
   assign vendor_filter = section.settings.vendor | strip | downcase
+  assign vendor_list = vendor_filter | split: ','
 
   if section.settings.collection != blank
     assign products_list = section.settings.collection.products
@@ -31,7 +36,14 @@
   {%- for product in products_list -%}
     {%- if shown >= limit -%}{%- break -%}{%- endif -%}
     {%- assign this_vendor = product.vendor | strip | downcase -%}
-    {%- if vendor_filter != blank and this_vendor != vendor_filter -%}{%- continue -%}{%- endif -%}
+    {%- if vendor_filter != blank -%}
+      {%- assign vendor_match = false -%}
+      {%- for v in vendor_list -%}
+        {%- assign v = v | strip -%}
+        {%- if v != blank and this_vendor == v -%}{%- assign vendor_match = true -%}{%- break -%}{%- endif -%}
+      {%- endfor -%}
+      {%- unless vendor_match -%}{%- continue -%}{%- endunless -%}
+    {%- endif -%}
     {% render 'product-card', product: product %}
     {%- assign shown = shown | plus: 1 -%}
   {%- endfor -%}
@@ -126,7 +138,7 @@
       "type": "text",
       "id": "vendor",
       "label": "Only this vendor",
-      "info": "Optional. Shows only products whose Vendor matches, so a print-on-demand app's products can be shown on their own. Leave empty for every product."
+      "info": "Optional. Shows only products whose Vendor matches. Separate several with commas — useful when more than one print-on-demand supplier feeds the store. Leave empty for every product."
     },
     {
       "type": "range",
