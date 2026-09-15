@@ -507,13 +507,14 @@ body:not(.show-preloader) .preloader_wrap {
 }
 .announcement-bar_item.is-active { opacity: 1; visibility: visible; }
 
-/* The nav is fixed to the top of the viewport, so it would sit over the bar.
-   Push it down by the bar's height and give page templates the same extra. */
-body:has(.announcement-bar) .orgc-nav { top: var(--announcement-height, 2.1rem); }
-body:has(.announcement-bar) .template-page .page-main,
-body:has(.announcement-bar).template-page .page-main {
-  padding-top: calc(var(--nav--clearance) + var(--announcement-height, 2.1rem));
-}
+/* The nav is fixed, the banner is in normal flow. At the top of the page the
+   nav has to clear the banner; once the banner has scrolled away it should sit
+   flush at 0, or the offset is left behind as a gap. scripts-2026.js tracks the
+   banner's real position into --announcement-offset each frame it changes.
+
+   No extra padding is needed on page templates: the banner is in flow, so it
+   already pushes the content down by its own height. */
+body:has(.announcement-bar) .orgc-nav { top: var(--announcement-offset, 0px); }
 
 /* ---- Free shipping progress --------------------------------------------- */
 .cart-progress { display: flex; flex-direction: column; gap: .5rem; padding: .9rem 0; }

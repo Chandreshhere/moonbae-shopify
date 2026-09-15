@@ -57,6 +57,34 @@ function addLenisPreventAttribute() {
 
 $(".date").text(new Date().getFullYear());
 
+// Keep the fixed nav sitting directly under the announcement banner while the
+// banner is on screen, and flush to the top once it has scrolled away. Reads
+// the banner's own rect rather than assuming a height, so a two-line message
+// on a phone is handled the same as one line on desktop.
+(function navFollowsBanner() {
+  const nav = () => document.querySelector(".orgc-nav");
+  let queued = false;
+  function apply() {
+    queued = false;
+    const bar = document.querySelector(".announcement-bar");
+    if (!bar || !nav()) return;
+    const offset = Math.max(0, bar.getBoundingClientRect().bottom);
+    document.documentElement.style.setProperty("--announcement-offset", offset + "px");
+  }
+  function onScroll() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(apply);
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+  if (typeof lenis !== "undefined" && lenis.on) lenis.on("scroll", onScroll);
+  // Barba swaps the container, not the banner, but the nav is inside the
+  // container — so re-apply after a transition or the new nav starts at 0.
+  if (typeof barba !== "undefined" && barba.hooks) barba.hooks.after(apply);
+  apply();
+})();
+
 // Tab-away message. Swaps the document title while the tab is in the
 // background and restores the real one on return — including whatever the
 // Barba transition set it to, so it never restores a stale page's title.
