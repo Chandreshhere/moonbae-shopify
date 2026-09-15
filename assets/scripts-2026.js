@@ -835,12 +835,10 @@ function globalScripts() {
     if (recsFor === first.product_id) return; // already showing these
     recsFor = first.product_id;
     const inCart = new Set((cart.items || []).map((i) => i.product_id));
-    fetch("/recommendations/products.json?product_id=" + first.product_id + "&limit=6", {
-      headers: { Accept: "application/json" },
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        const picks = (data.products || []).filter((p) => !inCart.has(p.id)).slice(0, 3);
+    // Shopify builds recommendations from order history and product
+    // relationships, so a new store returns none. Fall back to the catalogue
+    // itself — still real products, just not yet personalised.
+    const render = (picks) => {
         if (!picks.length) { wrap.hidden = true; return; }
         list.innerHTML = picks
           .map((p) => {
@@ -856,8 +854,39 @@ function globalScripts() {
           })
           .join("");
         wrap.hidden = false;
+    };
+
+    const fromCatalogue = () =>
+      fetch("/products.json?limit=12", { headers: { Accept: "application/json" } })
+        .then((r) => r.json())
+        .then((d) =>
+          render(
+            (d.products || [])
+              .filter((p) => !inCart.has(p.id))
+              .slice(0, 3)
+              .map((p) => ({
+                id: p.id,
+                title: p.title,
+                url: "/products/" + p.handle,
+                // products.json prices are decimal strings; recommendations
+                // are integer paise. Normalise to paise.
+                price: Math.round(parseFloat((p.variants[0] || {}).price || "0") * 100),
+                featured_image: (p.images[0] || {}).src || "",
+              }))
+          )
+        )
+        .catch(() => { wrap.hidden = true; });
+
+    fetch("/recommendations/products.json?product_id=" + first.product_id + "&limit=6", {
+      headers: { Accept: "application/json" },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        const picks = (data.products || []).filter((p) => !inCart.has(p.id)).slice(0, 3);
+        if (picks.length) render(picks);
+        else fromCatalogue();
       })
-      .catch(() => { wrap.hidden = true; });
+      .catch(fromCatalogue);
   };
 
   function refreshCartProgress() {
