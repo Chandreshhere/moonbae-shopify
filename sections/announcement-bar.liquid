@@ -1,11 +1,21 @@
 {%- comment -%}
-  Site-wide announcement bar. Rendered above the header in the layout, outside
-  the Barba container, so it does not reload or flicker between pages.
+  Announcement bar. Rendered first inside the Barba container, above the header,
+  so it arrives and leaves with the page it belongs to — which is what lets it
+  be limited to the home page. Anything outside that container is never swapped,
+  so a bar rendered once would have stayed on screen for the rest of the visit.
 
   Rotates between messages only when there is more than one.
 {%- endcomment -%}
-{%- assign messages = section.blocks | where: 'type', 'message' -%}
-{%- if messages.size > 0 and section.settings.enabled -%}
+{%- liquid
+  assign messages = section.blocks | where: 'type', 'message'
+  assign show_here = false
+  if section.settings.show_on == 'all'
+    assign show_here = true
+  elsif template.name == 'index'
+    assign show_here = true
+  endif
+-%}
+{%- if messages.size > 0 and section.settings.enabled and show_here -%}
   <div class="announcement-bar body-upper"
        style="--announcement-bg: {{ section.settings.bg }}; --announcement-fg: {{ section.settings.fg }};"
        data-announcement{% if section.settings.style == 'marquee' %} data-announcement-marquee{% elsif messages.size > 1 %} data-announcement-rotate="{{ section.settings.rotate_seconds }}"{% endif %}>
@@ -60,6 +70,23 @@
     },
     {
       "type": "select",
+      "id": "show_on",
+      "label": "Show on",
+      "info": "The bar sits above the header and pushes the page down by its own height, so it is worth keeping for the pages it earns its place on.",
+      "default": "home",
+      "options": [
+        {
+          "value": "home",
+          "label": "Home page only"
+        },
+        {
+          "value": "all",
+          "label": "Every page"
+        }
+      ]
+    },
+    {
+      "type": "select",
       "id": "style",
       "label": "Style",
       "default": "marquee",
@@ -88,7 +115,7 @@
       "type": "text",
       "id": "separator",
       "label": "Separator",
-      "default": "◆"
+      "default": "\u25c6"
     },
     {
       "type": "range",
@@ -122,7 +149,7 @@
           "type": "text",
           "id": "text",
           "label": "Text",
-          "default": "Free shipping on orders over ₹1,599"
+          "default": "Free shipping on orders over \u20b91,599"
         },
         {
           "type": "url",
@@ -139,13 +166,13 @@
       {
         "type": "message",
         "settings": {
-          "text": "Free shipping over ₹1,599"
+          "text": "Free shipping over \u20b91,599"
         }
       },
       {
         "type": "message",
         "settings": {
-          "text": "Made to order in India — dispatched in 2–4 business days"
+          "text": "Made to order in India \u2014 dispatched in 2\u20134 business days"
         }
       },
       {

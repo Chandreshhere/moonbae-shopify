@@ -143,12 +143,6 @@ families: ["Instrument Serif:regular,italic"]
   {%- assign body_theme = '' -%}
   {%- if template.name == 'product' -%}{%- assign body_theme = 'u-theme-light ' -%}{%- endif -%}
   <body data-barba="wrapper" class="{{ body_theme }}{% if settings.show_preloader %}show-preloader {% endif %}template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
-    {%- comment -%}
-      Outside the Barba container on purpose: a bar that reloads on every page
-      transition flickers, and this one has nothing page-specific in it.
-    {%- endcomment -%}
-    {% section 'announcement-bar' %}
-
     <div class="page_wrap">
       <div class="page_code_wrap">
         <div class="page_code_base w-embed"></div>
@@ -161,6 +155,19 @@ families: ["Instrument Serif:regular,italic"]
         container carries its own copy and scripts-2026.js copies it across.
       {%- endcomment -%}
       <div data-barba="container" class="page-main" data-template-classes="{{ body_theme | strip }} template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
+        {%- comment -%}
+          Inside the Barba container, and first in it. It used to sit outside on
+          the grounds that it had nothing page-specific in it — but it does now
+          that it can be limited to the home page, and anything outside the
+          container is never swapped, so a bar rendered once would have followed
+          the visitor onto every page it was supposed to be absent from.
+
+          In here it arrives and leaves as part of the page, which also means
+          nothing above the container changes height mid-transition: the
+          container always lands at the top of the page whether or not the page
+          it is carrying has a bar.
+        {%- endcomment -%}
+        {% section 'announcement-bar' %}
         {% render 'preloader' %}
         {% section 'header' %}
 

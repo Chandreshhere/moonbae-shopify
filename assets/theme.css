@@ -493,8 +493,9 @@ body:not(.show-preloader) .preloader_wrap {
 }
 
 /* ---- Announcement bar ---------------------------------------------------
-   Sits above the fixed nav, so the nav is offset by its height and the
-   page-template clearance accounts for both. */
+   Sits above the fixed nav, first inside the Barba container, so the nav is
+   offset by its height and the page-template clearance accounts for both. By
+   default it is on the home page only; the section's Show on setting decides. */
 .announcement-bar {
   /* Deliberately low. The cart drawer, the menu overlay and the preloader all
      sit above it; a banner that paints over the cart is worse than one that
@@ -505,9 +506,9 @@ body:not(.show-preloader) .preloader_wrap {
   font-size: .72rem; letter-spacing: .06em;
 
   /* Height is fixed rather than derived from the text. The bar is the first
-     thing in normal flow, so when the web font swapped in and the line box
-     grew a pixel, every section below it jumped down. A set height and line
-     height means the swap changes nothing. */
+     thing in normal flow on the pages that have it, so when the web font
+     swapped in and the line box grew a pixel, every section below it jumped
+     down. A set height and line height means the swap changes nothing. */
   --announcement-height: 2.1rem;
   height: var(--announcement-height);
   line-height: 1;
@@ -530,7 +531,12 @@ body:not(.show-preloader) .preloader_wrap {
    banner's real position into --announcement-offset each frame it changes.
 
    No extra padding is needed on page templates: the banner is in flow, so it
-   already pushes the content down by its own height. */
+   already pushes the content down by its own height.
+
+   Keyed on the banner actually being present, which is what gets a page
+   without one right on the very first paint: no banner, no match, and the nav
+   falls back to the flush inset it is given anyway. Nothing has to wait for
+   the script to measure something that is not there. */
 /* The fallback matters: the variable is only set once the script runs, and a
    fallback of 0 meant the nav painted over the banner for the first frames of
    every load. One line of banner is ~2.1rem, so start there and let the script
@@ -582,7 +588,6 @@ body:has(.announcement-bar) .orgc-nav { top: var(--announcement-offset, 2.1rem);
    section, and a transform on any ancestor traps it in that stacking context.
    Pin it to the root so nothing above it in the DOM can cover it. */
 .w-commerce-commercecartcontainerwrapper { z-index: 1001; }
-body > .announcement-bar { isolation: auto; }
 
 /* ---- Frosted header ------------------------------------------------------
    The nav sits over photography, so a plain tint would muddy it. A blur with

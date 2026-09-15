@@ -66,9 +66,13 @@ $(".date").text(new Date().getFullYear());
   let queued = false;
   function apply() {
     queued = false;
+    if (!nav()) return;
+    // No banner is a real answer, not a reason to give up: the bar can be set
+    // to the home page only, and bailing out here left the last page's offset
+    // in place, so the header on every other page hung a banner's height below
+    // the top of the screen with nothing above it.
     const bar = document.querySelector(".announcement-bar");
-    if (!bar || !nav()) return;
-    const offset = Math.max(0, bar.getBoundingClientRect().bottom);
+    const offset = bar ? Math.max(0, bar.getBoundingClientRect().bottom) : 0;
     document.documentElement.style.setProperty("--announcement-offset", offset + "px");
   }
   function onScroll() {
@@ -2133,11 +2137,17 @@ barba.hooks.enter((data) => {
     width: "100%",
   });
 
-  // Arriving header: its banner offset would stack on top of the container's
-  // own, putting it one banner too low until the transform clears and it snaps
-  // back. The container already sits at the offset, so the nav wants zero.
+  // Arriving header: measured from its own container rather than the viewport
+  // for the same reason, so it wants the height of whatever sits above it
+  // inside that container. That is the banner on a page that has one and
+  // nothing at all on a page that does not — which is the whole point of the
+  // bar being in here.
+  // The rect's height, not offsetHeight: the bar is sized in rem and lands on
+  // 33.6px, which offsetHeight rounds to 34 and leaves half a pixel of movement
+  // behind at the end of every arrival.
+  const arrivingBar = data.next.container.querySelector(".announcement-bar");
   const nav = data.next.container.querySelector(".orgc-nav");
-  if (nav) gsap.set(nav, { top: 0 });
+  if (nav) gsap.set(nav, { top: arrivingBar ? arrivingBar.getBoundingClientRect().height : 0 });
 
   // Departing header: the same trap, and by far the more visible one, because
   // it happens the instant you click rather than at the end. At the top of a
