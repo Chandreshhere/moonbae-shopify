@@ -900,17 +900,28 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 .cart-rec_add:hover { background: var(--swatch--dark); color: var(--swatch--light); }
 .cart-rec_add[disabled] { opacity: .4; cursor: wait; }
 
-/* Size list opened from the + on a recommendation. */
+/* Size list opened from the + on a recommendation.
+
+   It covers the card rather than dropping below it. The rail is overflow-x:
+   auto, and a box with one axis scrollable clips the other axis too — so a
+   dropdown opened into empty space underneath the rail and was cut off
+   entirely. Tapping + looked like it did nothing, on every product that has
+   sizes, which is most of them. Sitting inside the card it cannot be clipped
+   at any drawer width, and nothing on the page moves to make room for it. */
 .cart-rec_picker {
-  position: absolute; right: 0; top: calc(100% + .2rem); z-index: 4;
-  display: flex; flex-wrap: wrap; gap: .2rem; padding: .3rem;
+  position: absolute; inset: 0; z-index: 4;
+  display: flex; flex-wrap: wrap; gap: .25rem;
+  align-content: center; justify-content: center;
+  padding: .3rem; border-radius: 3px;
   background: var(--swatch--light); color: var(--swatch--dark);
   border: 1px solid color-mix(in srgb, var(--swatch--dark) 30%, transparent);
-  min-width: 100%;
+  overflow: auto; scrollbar-width: none;
 }
+.cart-rec_picker::-webkit-scrollbar { display: none; }
 .cart-rec_size {
   background: none; border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
   color: inherit; font: inherit; font-size: .6rem; padding: .25rem .4rem; cursor: pointer;
+  border-radius: 2px; line-height: 1;
 }
 .cart-rec_size:hover { background: var(--swatch--dark); color: var(--swatch--light); }
 

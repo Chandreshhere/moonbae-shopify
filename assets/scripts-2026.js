@@ -874,6 +874,12 @@ function globalScripts() {
     // Mark whichever milestones the cart has passed, and note the ones crossed
     // just now — re-opening the drawer should not re-fire the celebration, and
     // neither should the second copy of the same drawer.
+    //
+    // A milestone is forgotten again the moment the cart drops back below it,
+    // so stepping the quantity down past a reward and back up celebrates the
+    // second unlock as well as the first. Remembering it forever meant the one
+    // person most likely to look — someone trying the steppers to see what the
+    // bar does — saw the confetti once and never again.
     const seen = (window.__celebrated = window.__celebrated || new Set());
     stops.forEach((s) => {
       const reached = total >= s.at;
@@ -881,7 +887,11 @@ function globalScripts() {
       s.el.classList.toggle("is-reached", reached);
       const node = el.querySelector('[data-node="' + s.at + '"]');
       if (node) node.classList.toggle("is-reached", reached);
-      if (reached && !was && !seen.has(s.at)) {
+      if (!reached) {
+        seen.delete(s.at);
+        return;
+      }
+      if (!was && !seen.has(s.at)) {
         seen.add(s.at);
         el.__crossed.push(s.at);
       }
@@ -912,15 +922,20 @@ function globalScripts() {
   // "You may also like" — Shopify's own recommendations, keyed on what is
   // actually in the cart, so the list cannot go stale the way a hand-picked
   // one does.
-  let recsFor = null;
+  // On window rather than in the closure: globalScripts() re-runs after every
+  // transition and rebuilds these functions, but the click handlers are bound
+  // once and hold the first closure — so a plain local would have the add
+  // handler clearing one copy of this while updateCartRecs read another, and
+  // the suggestions would quietly stop refreshing after the first page change.
+  window.__cartRecsFor = window.__cartRecsFor || null;
   window.updateCartRecs = function (cart) {
     const wraps = [...document.querySelectorAll("[data-cart-recs]")];
     const lists = [...document.querySelectorAll("[data-cart-recs-list]")];
     if (!wraps.length || !lists.length) return;
     const first = cart && cart.items && cart.items[0];
     if (!first) { wraps.forEach((w) => (w.hidden = true)); return; }
-    if (recsFor === first.product_id) return; // already showing these
-    recsFor = first.product_id;
+    if (window.__cartRecsFor === first.product_id) return; // already showing these
+    window.__cartRecsFor = first.product_id;
     const inCart = new Set((cart.items || []).map((i) => i.product_id));
     // Shopify builds recommendations from order history and product
     // relationships, so a new store returns none. Fall back to the catalogue
@@ -1012,6 +1027,14 @@ function globalScripts() {
         .catch(() => {});
     }, 500);
   }
+  // Everything from here to the matching close is delegated on document, so it
+  // wants binding exactly once. globalScripts() runs again after every Barba
+  // transition, and these were re-bound each time — by the third page a single
+  // tap on a recommendation's + posted four adds and put four of the thing in
+  // the cart.
+  if (!window.__cartHandlersBound) {
+    window.__cartHandlersBound = true;
+
   // The cart bridge fires no event we can listen for, so refresh after any
   // interaction that can change the cart: adding, opening the drawer, and
   // changing or removing a line inside it.
@@ -1060,18 +1083,29 @@ function globalScripts() {
     })
       .then((r) => r.json())
       .then(() => {
-        recsFor = null; // the cart changed, so the suggestions should too
+        window.__cartRecsFor = null; // the cart changed, so the suggestions should too
         refreshCartProgress();
         document.querySelectorAll(".cart-rec_picker").forEach((p) => (p.hidden = true));
-        // Ask the cart bridge to re-render its line items where it stands. The
-        // drawer is already open — clicking the open link again would toggle it
-        // shut, which is why adding appeared to navigate away.
-        document.dispatchEvent(new CustomEvent("cart:updated"));
-        if (window.Shopify && window.Shopify.onCartUpdate) window.Shopify.onCartUpdate();
+        // Ask the cart bridge to re-render its line items where it stands.
+        // It renders them from its own copy of the cart and listens on its own
+        // event bus for exactly two names — neither of which is a DOM event on
+        // document. So the item reached Shopify and the drawer went on showing
+        // the cart as it was before the click, which reads as nothing having
+        // happened. cart-should-be-updated re-fetches and re-renders without
+        // touching whether the drawer is open, which matters because it is
+        // already open and toggling it would shut it.
+        if (window.Udesly && window.Udesly.dispatch) {
+          window.Udesly.dispatch("cart-should-be-updated");
+        }
       })
       .catch(() => {})
       .finally(() => { btn.disabled = false; });
   });
+
+  } // end of the bind-once block
+
+  // This one does run on every transition: the bars in the page that just
+  // arrived are rendered from the cart as it was when the page was cached.
   refreshCartProgress();
 
   // Quantity steppers. The number inputs stay exactly where they are — the
@@ -2073,6 +2107,14 @@ barba.hooks.enter((data) => {
     left: 0,
     width: "100%",
   });
+  // The nav is position:fixed, but it lives inside the container and the
+  // container carries a transform for the whole transition — which makes the
+  // container, not the viewport, the nav's containing block. So the nav's own
+  // banner offset stacks on top of the container's and the header sits one
+  // banner too low until the transform clears, then snaps back. Zero it for the
+  // duration; hooks.after hands it back to CSS.
+  const nav = data.next.container.querySelector(".orgc-nav");
+  if (nav) gsap.set(nav, { top: 0 });
 });
 barba.hooks.before((data) => {
   lenis.stop();
@@ -2130,9 +2172,12 @@ barba.hooks.beforeEnter((data) => {
 barba.hooks.afterEnter(() => {});
 
 barba.hooks.after((data) => {
-  // clearProps on the enter tween drops the inline top along with everything
-  // else, so nothing is left over once the container is relative again.
-  gsap.set(data.next.container, { position: "relative", top: "" });
+  // clearProps on the enter tween drops the container's own inline styles, but
+  // it never touched the nav — that one has to be handed back by hand, and in
+  // the same beat, or the header flashes at the top of the screen.
+  gsap.set(data.next.container, { position: "relative" });
+  const nav = data.next.container.querySelector(".orgc-nav");
+  if (nav) gsap.set(nav, { clearProps: "top" });
   $(window).scrollTop(0);
   // The previous page's triggers were never killed, so each transition
   // stacked another set measured against a page that no longer exists.
