@@ -1011,31 +1011,37 @@ function globalScripts() {
       }
     });
   });
+  // Variant options. Every selector here used to be global: .size-variation_btn
+  // is the wrapper around *all* the options, so opening Size opened Colour with
+  // it, and $(".size-selected").text() wrote the chosen value into every
+  // option's label at once. Each option is its own <fieldset class="option">,
+  // so scope everything to that.
   $(".size-toggle").each(function () {
-    let sizeToggle = $(this);
-    let sizeChoice = $(".size-variation_btn");
-    let sizeGroup = $(".size-button_group");
-    let sizeBtn = $(".size-button");
-    let sizeSelected = $(".size-selected");
+    const toggle = $(this);
+    const option = toggle.closest(".option");
+    const group = option.find(".size-button_group");
+    const selected = option.find(".size-selected");
 
-    sizeToggle.on("click", function (e) {
-      e.stopPropagation(); // Prevent the event from bubbling to the document
-      sizeChoice.toggleClass("show");
-    });
-
-    $(".size-button").on("click", function (e) {
+    toggle.on("click", function (e) {
       e.stopPropagation();
-      let selectedSize = $(this).find(".size-choice").text();
-      sizeSelected.text(selectedSize);
-      $(".size-variation_btn").removeClass("show");
+      const wasOpen = group.hasClass("show");
+      // Only one option list open at a time, or they overlap each other.
+      $(".size-button_group").removeClass("show");
+      if (!wasOpen) group.addClass("show");
     });
 
-    // Click outside to close
-    $(document).on("click", function (e) {
-      if (!$(e.target).closest(".size-toggle, .size-variation_btn").length) {
-        sizeChoice.removeClass("show");
-      }
+    option.find(".size-button").on("click", function (e) {
+      e.stopPropagation();
+      selected.text($(this).find(".size-choice").text());
+      group.removeClass("show");
     });
+  });
+
+  // One document-level handler rather than one per option.
+  $(document).on("click.variantOptions", function (e) {
+    if (!$(e.target).closest(".size-toggle, .size-button_group").length) {
+      $(".size-button_group").removeClass("show");
+    }
   });
 
   $(".product-draggable_wrap").each(function () {

@@ -718,3 +718,7 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
   font-size: .68rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .cart-rec_price { font-size: .66rem; opacity: .6; }
+
+/* The open state moved from the shared wrapper to each option's own group, so
+   the icon has to follow it rather than keying off the wrapper. */
+.option:has(.size-button_group.show) .toggle-line.is-vert { transform: scaleY(0); opacity: 0; }
