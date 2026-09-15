@@ -208,7 +208,13 @@ function globalScripts() {
     let pending;
     const refresh = () => {
       clearTimeout(pending);
-      pending = setTimeout(() => ScrollTrigger.refresh(), 150);
+      pending = setTimeout(() => {
+        // Lenis clamps scrolling to a limit it measured when the page was
+        // still short, so re-measure that too or the page cannot be scrolled
+        // to its new bottom until Lenis notices on its own.
+        lenis.resize();
+        ScrollTrigger.refresh();
+      }, 150);
     };
     window.addEventListener("load", refresh, { once: true });
     document.querySelectorAll("img").forEach((img) => {
