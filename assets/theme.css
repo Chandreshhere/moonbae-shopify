@@ -372,3 +372,14 @@ body:not(.show-preloader) .preloader_wrap {
   }
   .nav[data-nav="open"] ~ * .sticky-atc, body.show-preloader .sticky-atc { transform: translateY(100%); }
 }
+
+/* Scroll parallax on gallery slides. The frame clips; the image is 20% taller
+   than it and is driven from -8% to +8% by a scrubbed ScrollTrigger in
+   globalScripts, so there is always image behind the edge at both extremes. */
+.hero-slide_visual[data-parallax] { overflow: hidden; }
+.hero-slide_visual[data-parallax] > .hero-visual_el.u-cover-absolute {
+  height: 120%; top: -10%; will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide_visual[data-parallax] > .hero-visual_el.u-cover-absolute { height: 100%; top: 0; }
+}

@@ -23,7 +23,7 @@
     {%- for block in section.blocks -%}
       {%- assign i = forloop.index0 | modulo: 7 -%}
       <div class="hero-slider_item" style="display: {% if forloop.first %}flex{% else %}none{% endif %};" {{ block.shopify_attributes }}>
-        <div class="hero-slide_visual u-cover-absolute is-large">
+        <div class="hero-slide_visual u-cover-absolute is-large" data-parallax>
           {% render 'img', image: block.settings.image, fallback: gallery_fallbacks[i], class: 'hero-visual_el u-cover-absolute' %}
         </div>
       </div>

@@ -619,6 +619,33 @@ function globalScripts() {
     );
   });
 
+  // Scroll parallax for [data-parallax] frames (the gallery slides). Scrubbed
+  // to scroll so it runs off native scroll on mobile and Lenis on desktop
+  // alike. Slides that are display:none simply have nothing to move until the
+  // slider shows them; invalidateOnRefresh re-measures when that happens.
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    $("[data-parallax]").each(function () {
+      const frame = this;
+      const img = frame.querySelector("img");
+      if (!img) return;
+      gsap.fromTo(
+        img,
+        { yPercent: -8 },
+        {
+          yPercent: 8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: frame.closest(".hero-slider_wrap") || frame,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        }
+      );
+    });
+  }
+
   // Sticky mobile add-to-cart: show the bar while the real button is off
   // screen, and route its click to the real button so the one form and the
   // cart drawer handle everything. Price follows the real price element,

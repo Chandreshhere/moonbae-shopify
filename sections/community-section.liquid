@@ -3,12 +3,6 @@
 {%- assign community_fallbacks = 'or-community-1.jpg,or-community-2.jpg,or-community-3.jpg,or-community-4.jpg' | split: ',' -%}
 
 <div class="community-contain u-container" nav-dark="">
-  <div class="section-intro_wrap">
-    <div class="split-grid u-grid-desktop">
-      <div class="split-col u-column-6">{%- if settings.logo_community != blank -%}<img src="{{ settings.logo_community | image_url: width: 1200 }}" alt="{{ settings.brand_name | default: shop.name | escape }}" class="brand-mark" width="{{ settings.logo_community.width }}" height="{{ settings.logo_community.height }}">{%- else -%}{% render 'brand-logo', variant: 'dark' %}{%- endif -%}</div>
-    </div>
-  </div>
-
   <div class="split-grid u-grid-desktop"></div>
 
   <div class="split-grid u-grid-desktop is-giving">

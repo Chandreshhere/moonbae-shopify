@@ -256,11 +256,6 @@
       },
       {
         "type": "image_picker",
-        "id": "logo_community",
-        "label": "Community heading artwork"
-      },
-      {
-        "type": "image_picker",
         "id": "logo_easter",
         "label": "Easter-egg icon"
       }
