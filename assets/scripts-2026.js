@@ -61,20 +61,31 @@ $(".date").text(new Date().getFullYear());
 // background and restores the real one on return — including whatever the
 // Barba transition set it to, so it never restores a stale page's title.
 (function tabAwayMessage() {
-  const away = document.documentElement.getAttribute("data-tab-away-text");
-  if (!away) return;
+  const raw = document.documentElement.getAttribute("data-tab-away-text");
+  if (!raw) return;
+  // Pipe-separated in theme settings so a merchant can write as many as they
+  // like without touching this file.
+  const lines = raw.split("|").map((s) => s.trim()).filter(Boolean);
+  if (!lines.length) return;
+
   let realTitle = document.title;
   let timer;
+  let i = -1;
+
+  // Start somewhere random, then walk the list — so someone who tabs away
+  // twice does not get the same line both times.
+  const next = () => {
+    if (lines.length === 1) return lines[0];
+    i = i < 0 ? Math.floor(Math.random() * lines.length) : (i + 1) % lines.length;
+    return lines[i];
+  };
+
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       realTitle = document.title;
-      let flip = false;
-      // Alternate so it reads as a message rather than a stuck title.
-      timer = setInterval(() => {
-        document.title = flip ? realTitle : away;
-        flip = !flip;
-      }, 1500);
-      document.title = away;
+      document.title = next();
+      // Cycle slowly: a title that changes too fast reads as a glitch.
+      timer = setInterval(() => { document.title = next(); }, 4000);
     } else {
       clearInterval(timer);
       document.title = realTitle;

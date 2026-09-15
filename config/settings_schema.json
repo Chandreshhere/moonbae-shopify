@@ -334,9 +334,9 @@
       {
         "type": "text",
         "id": "tab_away_text",
-        "label": "Tab message when someone switches away",
-        "default": "Come back — your cart is waiting",
-        "info": "Shown in the browser tab while the visitor is on another tab. Leave empty to turn off."
+        "label": "Tab messages when someone switches away",
+        "default": "Come back — your cart is waiting | We miss you already | The moon is still up. So is your cart. | Still here. Still your size. | Psst… you left something behind | Your tee is getting lonely | Don't make us count the stars alone | Free shipping doesn't wait up",
+        "info": "Shown in the browser tab while the visitor is on another tab. Separate several with a | and they cycle. Leave empty to turn off."
       }
     ]
   },
