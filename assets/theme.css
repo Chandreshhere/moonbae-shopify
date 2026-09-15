@@ -491,7 +491,10 @@ body:not(.show-preloader) .preloader_wrap {
    Sits above the fixed nav, so the nav is offset by its height and the
    page-template clearance accounts for both. */
 .announcement-bar {
-  position: relative; z-index: 11;
+  /* Deliberately low. The cart drawer, the menu overlay and the preloader all
+     sit above it; a banner that paints over the cart is worse than one that
+     scrolls under it. */
+  position: relative; z-index: 2;
   background: var(--announcement-bg, #000); color: var(--announcement-fg, #fff);
   text-align: center; padding: .55rem var(--site--margin);
   font-size: .72rem; letter-spacing: .06em;
@@ -562,3 +565,34 @@ body:has(.announcement-bar).template-page .page-main {
 }
 .nav-search_input:focus { outline: none; }
 .nav-search_submit { background: none; border: 0; color: inherit; font: inherit; cursor: pointer; padding: .35rem .5rem; }
+
+/* The drawer already carries z-index 1001, but it lives inside the header
+   section, and a transform on any ancestor traps it in that stacking context.
+   Pin it to the root so nothing above it in the DOM can cover it. */
+.w-commerce-commercecartcontainerwrapper { z-index: 1001; }
+body > .announcement-bar { isolation: auto; }
+
+/* ---- Frosted header ------------------------------------------------------
+   The nav sits over photography, so a plain tint would muddy it. A blur with
+   a light wash keeps the links legible without hiding what is behind. The
+   colour follows the nav's own theme: .dark means dark type on a light
+   ground, so it frosts white, and the default frosts dark. */
+.orgc-nav {
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  background-color: color-mix(in srgb, var(--swatch--dark) 28%, transparent);
+  transition: background-color 400ms ease, backdrop-filter 400ms ease;
+}
+.nav-component.dark .orgc-nav {
+  background-color: color-mix(in srgb, var(--swatch--light) 55%, transparent);
+}
+/* No blur support (older Firefox, some in-app browsers): fall back to a
+   slightly stronger tint so the links never sit unreadable on a photo. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .orgc-nav { background-color: color-mix(in srgb, var(--swatch--dark) 55%, transparent); }
+  .nav-component.dark .orgc-nav { background-color: color-mix(in srgb, var(--swatch--light) 80%, transparent); }
+}
+/* The overlay menu paints its own full-screen background, so the frost would
+   only double up behind it. */
+.nav[data-nav="open"] ~ .orgc-nav,
+body:has(.nav[data-nav="open"]) .orgc-nav { backdrop-filter: none; -webkit-backdrop-filter: none; }

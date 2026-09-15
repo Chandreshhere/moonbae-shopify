@@ -1765,7 +1765,10 @@ barba.init({
     if (el.getAttribute("target") === "_blank") return true;
     var href = data.href || el.getAttribute("href") || "";
     if (/^(mailto:|tel:|#)/.test(href)) return true;
-    return /\/(checkout|account|orders|tools|challenge|services|apps|policies)(\/|$|\?)/.test(href);
+    // "checkouts" (plural) is the real Shopify checkout host path — matching
+    // only "checkout" let /checkouts/cn/... fall through to Barba, which has no
+    // container to swap on those pages.
+    return /\/(checkouts?|cart|account|orders|tools|challenge|services|apps|policies|wallets|pay)(\/|$|\?)/.test(href);
   },
   transitions: [
     {
