@@ -1,34 +1,110 @@
 {%- comment -%}
-  "You're ₹X away from free shipping" — the honest kind of nudge: it reads the
-  real cart total and the real threshold, and says so plainly once reached.
+  Cart progress toward free shipping and up to three discount tiers.
 
-  Threshold comes from theme settings and must match the shipping rate set in
-  Shopify admin, or the bar promises something checkout will not honour.
+  Everything here is computed from the real cart total against thresholds the
+  merchant sets. The discount codes named must actually exist in Shopify —
+  Liquid cannot verify that, so the setting says so plainly. A bar that
+  promises a code checkout rejects is worse than no bar at all.
 
-  Params: variant — passed through from the cart drawer for styling only.
+  Params: variant — passed through from the drawer, styling only.
 {%- endcomment -%}
-{%- assign threshold = settings.free_shipping_threshold | default: 0 | times: 100 -%}
-{%- if threshold > 0 -%}
-  {%- assign remaining = threshold | minus: cart.total_price -%}
-  {%- if remaining > 0 -%}
-    {%- assign pct = cart.total_price | times: 100 | divided_by: threshold -%}
-  {%- else -%}
-    {%- assign pct = 100 -%}
-  {%- endif -%}
+
+{%- liquid
+  assign ship_threshold = settings.free_shipping_threshold | default: 0 | times: 100
+
+  comment
+    Build the tier list, skipping any left blank so a store can run one tier
+    or three without the markup changing.
+  endcomment
+  assign tier_amounts = ''
+  assign tier_labels = ''
+  assign tier_codes = ''
+  for i in (1..3)
+    case i
+      when 1
+        assign amt = settings.tier_1_amount
+        assign lbl = settings.tier_1_label
+        assign cde = settings.tier_1_code
+      when 2
+        assign amt = settings.tier_2_amount
+        assign lbl = settings.tier_2_label
+        assign cde = settings.tier_2_code
+      when 3
+        assign amt = settings.tier_3_amount
+        assign lbl = settings.tier_3_label
+        assign cde = settings.tier_3_code
+    endcase
+    if amt != blank and amt > 0
+      assign tier_amounts = tier_amounts | append: amt | append: ','
+      assign tier_labels = tier_labels | append: lbl | append: '|'
+      assign tier_codes = tier_codes | append: cde | append: '|'
+    endif
+  endfor
+  assign tier_amounts = tier_amounts | split: ','
+  assign tier_labels = tier_labels | split: '|'
+  assign tier_codes = tier_codes | split: '|'
+-%}
+
+{%- if settings.cart_promo_text != blank -%}
+  <p class="cart-promo body-upper">{{ settings.cart_promo_text }}</p>
+{%- endif -%}
+
+{%- if ship_threshold > 0 or tier_amounts.size > 0 -%}
+  {%- liquid
+    comment
+      The bar is scaled to the furthest goal, so one track can carry the
+      shipping threshold and every tier without them fighting for space.
+    endcomment
+    assign top_goal = ship_threshold
+    for a in tier_amounts
+      assign cents = a | times: 100
+      if cents > top_goal
+        assign top_goal = cents
+      endif
+    endfor
+    assign pct = 0
+    if top_goal > 0
+      assign pct = cart.total_price | times: 100 | divided_by: top_goal
+      if pct > 100
+        assign pct = 100
+      endif
+    endif
+  -%}
+
   <div class="cart-progress" data-cart-progress
-       data-threshold="{{ threshold }}"
+       data-threshold="{{ ship_threshold }}"
+       data-top-goal="{{ top_goal }}"
+       data-tiers="{{ tier_amounts | join: ',' }}"
+       data-tier-labels="{{ tier_labels | join: '|' | escape }}"
+       data-tier-codes="{{ tier_codes | join: '|' | escape }}"
        data-prefix="{{ settings.free_shipping_away_text | default: "You're" | escape }}"
        data-suffix="{{ settings.free_shipping_away_suffix | default: 'away from free shipping' | escape }}"
-       data-reached="{{ settings.free_shipping_reached_text | default: 'Free shipping unlocked' | escape }}">
-    <p class="cart-progress_text body-upper" data-cart-progress-text>
-      {%- if remaining > 0 -%}
-        {{ settings.free_shipping_away_text | default: "You're" }} {{ remaining | money }} {{ settings.free_shipping_away_suffix | default: 'away from free shipping' }}
-      {%- else -%}
-        {{ settings.free_shipping_reached_text | default: 'Free shipping unlocked' }}
-      {%- endif -%}
-    </p>
+       data-reached="{{ settings.free_shipping_reached_text | default: 'Free shipping unlocked' | escape }}"
+       data-tier-prefix="{{ settings.tier_away_text | default: 'Add' | escape }}"
+       data-tier-suffix="{{ settings.tier_away_suffix | default: 'more to unlock' | escape }}">
+
+    <p class="cart-progress_text body-upper" data-cart-progress-text></p>
+
     <div class="cart-progress_track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ pct }}">
       <span class="cart-progress_fill" data-cart-progress-fill style="width: {{ pct }}%"></span>
+      {%- for a in tier_amounts -%}
+        {%- assign cents = a | times: 100 -%}
+        {%- assign at = cents | times: 100 | divided_by: top_goal -%}
+        <span class="cart-progress_pip{% if cart.total_price >= cents %} is-reached{% endif %}"
+              style="left: {{ at }}%" data-pip="{{ cents }}" aria-hidden="true"></span>
+      {%- endfor -%}
     </div>
+
+    {%- if tier_amounts.size > 0 -%}
+      <ul class="cart-tiers" role="list">
+        {%- for a in tier_amounts -%}
+          {%- assign cents = a | times: 100 -%}
+          <li class="cart-tier{% if cart.total_price >= cents %} is-reached{% endif %}" data-tier="{{ cents }}">
+            <span class="cart-tier_amount body-upper">{{ cents | money }}</span>
+            <span class="cart-tier_label body-upper">{{ tier_labels[forloop.index0] }}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
   </div>
 {%- endif -%}

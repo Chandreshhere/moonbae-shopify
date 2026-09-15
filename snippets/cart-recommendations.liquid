@@ -1,0 +1,12 @@
+{%- comment -%}
+  "You may also like" inside the cart drawer.
+
+  Populated by scripts-2026.js from Shopify's own recommendations endpoint,
+  keyed on what is actually in the cart — so these are real related products,
+  not a hand-picked list that goes stale. Renders nothing until there is
+  something to show, so an empty cart shows no empty heading.
+{%- endcomment -%}
+<div class="cart-recs" data-cart-recs hidden>
+  <p class="cart-recs_heading body-upper">{{ settings.cart_recs_heading | default: 'You may also like' }}</p>
+  <div class="cart-recs_list" data-cart-recs-list></div>
+</div>

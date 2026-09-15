@@ -769,29 +769,102 @@ function globalScripts() {
   window.updateCartProgress = function (cart) {
     const el = document.querySelector("[data-cart-progress]");
     if (!el) return;
-    const threshold = parseInt(el.getAttribute("data-threshold"), 10);
-    if (!threshold) return;
     const total = cart && typeof cart.total_price === "number" ? cart.total_price : null;
     if (total === null) return;
-    const remaining = threshold - total;
-    const pct = Math.min(100, Math.round((total / threshold) * 100));
-    const fill = el.querySelector("[data-cart-progress-fill]");
-    if (fill) fill.style.width = pct + "%";
-    const track = el.querySelector(".cart-progress_track");
-    if (track) track.setAttribute("aria-valuenow", pct);
+
+    const ship = parseInt(el.getAttribute("data-threshold"), 10) || 0;
+    const topGoal = parseInt(el.getAttribute("data-top-goal"), 10) || ship;
+    const tiers = (el.getAttribute("data-tiers") || "")
+      .split(",").filter(Boolean).map((n) => parseInt(n, 10) * 100);
+    const labels = (el.getAttribute("data-tier-labels") || "").split("|");
+    const codes = (el.getAttribute("data-tier-codes") || "").split("|");
+
+    if (topGoal > 0) {
+      const pct = Math.min(100, Math.round((total / topGoal) * 100));
+      const fill = el.querySelector("[data-cart-progress-fill]");
+      if (fill) fill.style.width = pct + "%";
+      const track = el.querySelector(".cart-progress_track");
+      if (track) track.setAttribute("aria-valuenow", pct);
+    }
+
+    // Mark whichever milestones the cart has passed.
+    el.querySelectorAll("[data-pip]").forEach((p) =>
+      p.classList.toggle("is-reached", total >= parseInt(p.getAttribute("data-pip"), 10))
+    );
+    el.querySelectorAll("[data-tier]").forEach((t) =>
+      t.classList.toggle("is-reached", total >= parseInt(t.getAttribute("data-tier"), 10))
+    );
+
+    // One sentence, about the nearest goal still ahead — shipping or a tier,
+    // whichever comes first. Naming every unreached tier at once reads as noise.
     const text = el.querySelector("[data-cart-progress-text]");
     if (!text) return;
-    text.textContent =
-      remaining > 0
-        ? el.getAttribute("data-prefix") + " " + formatMoney(remaining) + " " + el.getAttribute("data-suffix")
-        : el.getAttribute("data-reached");
+    let nextAt = null, nextMsg = null;
+    if (ship > 0 && total < ship) {
+      nextAt = ship;
+      nextMsg = el.getAttribute("data-prefix") + " " + formatMoney(ship - total) + " " + el.getAttribute("data-suffix");
+    }
+    tiers.forEach((amt, i) => {
+      if (total >= amt) return;
+      if (nextAt !== null && amt >= nextAt) return;
+      const code = (codes[i] || "").trim();
+      nextAt = amt;
+      nextMsg =
+        el.getAttribute("data-tier-prefix") + " " + formatMoney(amt - total) + " " +
+        el.getAttribute("data-tier-suffix") + " " + (labels[i] || "").trim() +
+        (code ? " with code " + code : "");
+    });
+    if (nextMsg) { text.textContent = nextMsg; return; }
+    // Nothing left ahead: say what was unlocked rather than going blank.
+    const lastTier = tiers.length ? (labels[tiers.length - 1] || "").trim() : "";
+    text.textContent = ship > 0 && total >= ship
+      ? el.getAttribute("data-reached") + (lastTier ? " · " + lastTier : "")
+      : lastTier;
+  };
+
+  // "You may also like" — Shopify's own recommendations, keyed on what is
+  // actually in the cart, so the list cannot go stale the way a hand-picked
+  // one does.
+  let recsFor = null;
+  window.updateCartRecs = function (cart) {
+    const wrap = document.querySelector("[data-cart-recs]");
+    const list = document.querySelector("[data-cart-recs-list]");
+    if (!wrap || !list) return;
+    const first = cart && cart.items && cart.items[0];
+    if (!first) { wrap.hidden = true; return; }
+    if (recsFor === first.product_id) return; // already showing these
+    recsFor = first.product_id;
+    const inCart = new Set((cart.items || []).map((i) => i.product_id));
+    fetch("/recommendations/products.json?product_id=" + first.product_id + "&limit=6", {
+      headers: { Accept: "application/json" },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        const picks = (data.products || []).filter((p) => !inCart.has(p.id)).slice(0, 3);
+        if (!picks.length) { wrap.hidden = true; return; }
+        list.innerHTML = picks
+          .map((p) => {
+            const img = p.featured_image || (p.images && p.images[0]) || "";
+            return (
+              '<a class="cart-rec" href="' + p.url + '">' +
+              (img ? '<img class="cart-rec_img" src="' + img + '" alt="" loading="lazy" decoding="async">' : "") +
+              '<span class="cart-rec_info">' +
+              '<span class="cart-rec_title body-upper">' + p.title + "</span>" +
+              '<span class="cart-rec_price body-upper">' + formatMoney(p.price) + "</span>" +
+              "</span></a>"
+            );
+          })
+          .join("");
+        wrap.hidden = false;
+      })
+      .catch(() => { wrap.hidden = true; });
   };
 
   function refreshCartProgress() {
     setTimeout(() => {
       fetch("/cart.js", { headers: { Accept: "application/json" } })
         .then((r) => r.json())
-        .then(window.updateCartProgress)
+        .then((cart) => { window.updateCartProgress(cart); window.updateCartRecs(cart); })
         .catch(() => {});
     }, 500);
   }

@@ -466,6 +466,92 @@
         "id": "free_shipping_reached_text",
         "label": "When reached",
         "default": "Free shipping unlocked"
+      },
+      {
+        "type": "text",
+        "id": "cart_promo_text",
+        "label": "Promo line",
+        "info": "Shown at the top of the cart. Name a discount code only if it exists in Discounts — the cart cannot check."
+      },
+      {
+        "type": "text",
+        "id": "cart_recs_heading",
+        "label": "Recommendations heading",
+        "default": "You may also like"
+      },
+      {
+        "type": "header",
+        "content": "Discount tiers"
+      },
+      {
+        "type": "paragraph",
+        "content": "Each tier shows a milestone on the cart's progress bar. The codes must exist in Shopify Discounts; nothing here creates or applies them."
+      },
+      {
+        "type": "number",
+        "id": "tier_1_amount",
+        "label": "Tier 1 — spend",
+        "default": 2000,
+        "info": "In rupees. Leave 0 to skip this tier."
+      },
+      {
+        "type": "text",
+        "id": "tier_1_label",
+        "label": "Tier 1 — reward",
+        "default": "10% off"
+      },
+      {
+        "type": "text",
+        "id": "tier_1_code",
+        "label": "Tier 1 — code"
+      },
+      {
+        "type": "number",
+        "id": "tier_2_amount",
+        "label": "Tier 2 — spend",
+        "default": 3500,
+        "info": "In rupees. Leave 0 to skip this tier."
+      },
+      {
+        "type": "text",
+        "id": "tier_2_label",
+        "label": "Tier 2 — reward",
+        "default": "15% off"
+      },
+      {
+        "type": "text",
+        "id": "tier_2_code",
+        "label": "Tier 2 — code"
+      },
+      {
+        "type": "number",
+        "id": "tier_3_amount",
+        "label": "Tier 3 — spend",
+        "default": 5000,
+        "info": "In rupees. Leave 0 to skip this tier."
+      },
+      {
+        "type": "text",
+        "id": "tier_3_label",
+        "label": "Tier 3 — reward",
+        "default": "20% off"
+      },
+      {
+        "type": "text",
+        "id": "tier_3_code",
+        "label": "Tier 3 — code"
+      },
+      {
+        "type": "text",
+        "id": "tier_away_text",
+        "label": "Tier prefix",
+        "default": "Add"
+      },
+      {
+        "type": "text",
+        "id": "tier_away_suffix",
+        "label": "Tier suffix",
+        "default": "more to unlock"
       }
     ]
   }

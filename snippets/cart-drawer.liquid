@@ -59,6 +59,7 @@
               <div class="{% if variant == 'menu' %} {% endif %}body-upper">{{ settings.cart_shipping_note }}</div>
             </div>
             {% render 'cart-progress', variant: variant %}
+            {% render 'cart-recommendations' %}
             <div class="checkout-actions">
               <div data-node-type="commerce-cart-quick-checkout-actions" class="web-payments"></div>
               <a href="/checkout" data-barba-prevent="self" value="Checkout" class="w-commerce-commercecartcheckoutbutton checkout-button body-upper" data-loading-text="Hang Tight..." data-node-type="cart-checkout-button">{{ settings.cart_checkout_label }}</a>
