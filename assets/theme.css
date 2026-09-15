@@ -918,6 +918,12 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
   overflow: auto; scrollbar-width: none;
 }
 .cart-rec_picker::-webkit-scrollbar { display: none; }
+/* An author display beats the browser's own [hidden] { display: none }, so
+   without this the picker is painted from the moment the card renders — which
+   with inset: 0 means every suggestion shows nothing but its size chips. It
+   was wrong before this too; the picker was simply clipped out of sight
+   instead of covering the card, so nobody could tell. */
+.cart-rec_picker[hidden] { display: none; }
 .cart-rec_size {
   background: none; border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
   color: inherit; font: inherit; font-size: .6rem; padding: .25rem .4rem; cursor: pointer;
