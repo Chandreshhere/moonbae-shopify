@@ -677,6 +677,23 @@ function globalScripts() {
 
   // Free shipping progress. Rendered server-side for the first paint, then kept
   // in step with the cart as items are added without a page load.
+  // Format paise the way the shop does, so the amount in the sentence matches
+  // every other price on the page.
+  function formatMoney(cents) {
+    const fmt = document.documentElement.getAttribute("data-money-format") || "Rs. {{amount}}";
+    const n = (cents / 100).toFixed(2);
+    const [whole, dec] = n.split(".");
+    // Indian grouping: last three digits, then pairs.
+    const lakh = whole.length > 3
+      ? whole.slice(0, -3).replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + whole.slice(-3)
+      : whole;
+    return fmt
+      .replace(/\{\{\s*amount\s*\}\}/g, lakh + "." + dec)
+      .replace(/\{\{\s*amount_no_decimals\s*\}\}/g, lakh)
+      .replace(/\{\{\s*amount_with_comma_separator\s*\}\}/g, lakh + "," + dec)
+      .replace(/\{\{\s*amount_no_decimals_with_comma_separator\s*\}\}/g, lakh);
+  }
+
   window.updateCartProgress = function (cart) {
     const el = document.querySelector("[data-cart-progress]");
     if (!el) return;
@@ -684,22 +701,45 @@ function globalScripts() {
     if (!threshold) return;
     const total = cart && typeof cart.total_price === "number" ? cart.total_price : null;
     if (total === null) return;
+    const remaining = threshold - total;
     const pct = Math.min(100, Math.round((total / threshold) * 100));
     const fill = el.querySelector("[data-cart-progress-fill]");
     if (fill) fill.style.width = pct + "%";
     const track = el.querySelector(".cart-progress_track");
     if (track) track.setAttribute("aria-valuenow", pct);
+    const text = el.querySelector("[data-cart-progress-text]");
+    if (!text) return;
+    text.textContent =
+      remaining > 0
+        ? el.getAttribute("data-prefix") + " " + formatMoney(remaining) + " " + el.getAttribute("data-suffix")
+        : el.getAttribute("data-reached");
   };
-  // The cart bridge has no event we can hook, so refresh the bar whenever the
-  // drawer is opened — the only moment the number is actually on screen.
-  $("[data-node-type='commerce-cart-open-link']").on("click", function () {
+
+  function refreshCartProgress() {
     setTimeout(() => {
       fetch("/cart.js", { headers: { Accept: "application/json" } })
         .then((r) => r.json())
         .then(window.updateCartProgress)
         .catch(() => {});
-    }, 400);
+    }, 500);
+  }
+  // The cart bridge fires no event we can listen for, so refresh after any
+  // interaction that can change the cart: adding, opening the drawer, and
+  // changing or removing a line inside it.
+  document.addEventListener("click", (e) => {
+    if (
+      e.target.closest('[data-node-type="commerce-add-to-cart-button"]') ||
+      e.target.closest('[data-node-type="commerce-cart-open-link"]') ||
+      e.target.closest('[data-node-type="cart-remove-link"]') ||
+      e.target.closest("[data-sticky-atc-btn]")
+    ) {
+      refreshCartProgress();
+    }
   });
+  document.addEventListener("change", (e) => {
+    if (e.target.closest('[data-node-type="cart-quantity"]')) refreshCartProgress();
+  });
+  refreshCartProgress();
 
   // Collection filters. The form is a real GET to the collection URL, so it
   // works without any of this; the script only submits on change so a filter
