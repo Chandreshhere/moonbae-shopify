@@ -989,10 +989,14 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 /* Without u-container on the wrapper, the padding it used to contribute has to
    be stated: 8rem below, matching what every other collection page gets, and
    nothing above, because the hero starts at the top of the page. */
-.page-collection.has-hero {
+.page-collection.has-hero,
+.page-cart.has-hero {
   padding-top: 0;
   padding-bottom: var(--size--8rem);
 }
+/* The cart page's own content is not inside a u-container the way a collection
+   page's grid is, so it keeps its centring here instead. */
+.page-cart.has-hero .page-intro { padding-top: clamp(2.5rem, 6vw, 5rem); }
 
 .collection-hero_visual { position: absolute; inset: 0; }
 .collection-hero_img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -1030,8 +1034,32 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 }
 .collection-hero_count { margin: 0; font-size: .72rem; flex: none; }
 
+/* The cart is somewhere you pass through, so it gets the hero turned down
+   rather than a full screen of photograph between a shopper and their basket. */
+.collection-hero.is-compact { min-height: 30svh; }
+.collection-hero.is-centered { align-items: center; }
+.collection-hero.is-centered .collection-hero_inner {
+  align-items: center; text-align: center;
+  padding-top: clamp(1.5rem, 4vw, 3rem);
+  padding-bottom: clamp(1.5rem, 4vw, 3rem);
+}
+
+/* The cart page is not a 480px drawer: its recommendations sit in half a page
+   and looked like the drawer's rail shrunk into a corner. Give them the room
+   they have. */
+@media only screen and (min-width: 992px) {
+  .page-cart .cart-recs_list { grid-auto-columns: minmax(15rem, 1fr); gap: var(--site--gutter); }
+  .page-cart .cart-rec { padding: .5rem; gap: .7rem; }
+  .page-cart .cart-rec_img { width: 4.5rem; height: 5.6rem; }
+  .page-cart .cart-rec_title { font-size: .8rem; }
+  .page-cart .cart-rec_price { font-size: .75rem; }
+  .page-cart .cart-rec_add { width: 2.1rem; height: 2.1rem; font-size: 1.1rem; }
+  .page-cart .cart-recs_heading { font-size: .78rem; margin-bottom: .9rem; }
+}
+
 @media only screen and (max-width: 767px) {
   .collection-hero { min-height: 60svh; }
+  .collection-hero.is-compact { min-height: 26svh; }
   .collection-hero_meta { flex-direction: column; align-items: flex-start; gap: .45rem; }
   .collection-hero_text { max-width: none; }
 }

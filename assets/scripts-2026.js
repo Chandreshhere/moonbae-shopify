@@ -755,8 +755,11 @@ function globalScripts() {
   // in step with the cart as items are added without a page load.
   // Format paise the way the shop does, so the amount in the sentence matches
   // every other price on the page.
-  function formatMoney(cents) {
-    const fmt = document.documentElement.getAttribute("data-money-format") || "Rs. {{amount}}";
+  function formatMoney(cents, withCurrency) {
+    const attr = withCurrency ? "data-money-currency-format" : "data-money-format";
+    const fmt = document.documentElement.getAttribute(attr)
+      || document.documentElement.getAttribute("data-money-format")
+      || "Rs. {{amount}}";
     const n = (cents / 100).toFixed(2);
     const [whole, dec] = n.split(".");
     // Indian grouping: last three digits, then pairs.
@@ -1013,11 +1016,24 @@ function globalScripts() {
       .catch(fromCatalogue);
   };
 
-  function refreshCartProgress() {
+  // The cart bridge posts its own change and tells us nothing about when it
+  // lands, so a single fetch on a fixed timer is a race we lose often enough to
+  // notice: /cart.js answers with the total from before the change, the bar
+  // snaps back to where it was, and nothing comes along afterwards to correct
+  // it. That is the drawer bar glitching. When a nudge has told us what the
+  // total should be, keep asking until the server agrees.
+  function refreshCartProgress(tries) {
+    const left = typeof tries === "number" ? tries : 4;
     setTimeout(() => {
       fetch("/cart.js", { headers: { Accept: "application/json" } })
         .then((r) => r.json())
         .then((cart) => {
+          const expected = window.__expectedTotal;
+          if (typeof expected === "number" && cart.total_price !== expected && left > 0) {
+            refreshCartProgress(left - 1);
+            return; // the answer is stale; leave the bar where the tap put it
+          }
+          window.__expectedTotal = null;
           // Kept so the rows can be rebuilt after the bridge re-renders them
           // without paying for another round trip to say the same thing.
           window.__lastCart = cart;
@@ -1026,7 +1042,7 @@ function globalScripts() {
           window.updateCartVariants(cart);
         })
         .catch(() => {});
-    }, 500);
+    }, left === 4 ? 450 : 350);
   }
   // Everything from here to the matching close is delegated on document, so it
   // wants binding exactly once. globalScripts() runs again after every Barba
@@ -1197,6 +1213,11 @@ function globalScripts() {
   // What one of a line costs, read off the cart we last fetched. final_price is
   // the per-unit price after line discounts, which is what the total moves by.
   function unitPriceOf(input) {
+    // The cart page says so on the input itself. Its name is updates[], which
+    // is what the no-JavaScript Update button posts and tells us nothing about
+    // which line it is — so the bar there never moved at all.
+    const stated = parseInt(input.getAttribute("data-unit-price"), 10);
+    if (!isNaN(stated)) return stated;
     const cart = window.__lastCart;
     const id = parseInt(input.getAttribute("name"), 10);
     const line = cart && (cart.items || []).find((i) => i.variant_id === id || i.id === id);
@@ -1213,8 +1234,64 @@ function globalScripts() {
     const cart = window.__lastCart;
     if (!cart || typeof cart.total_price !== "number" || !deltaCents) return;
     cart.total_price = Math.max(0, cart.total_price + deltaCents);
+    // What the reconcile has to see before it is allowed to overwrite this.
+    window.__expectedTotal = cart.total_price;
     window.updateCartProgress(cart);
   };
+
+  // The cart page changes its own lines.
+  //
+  // Its quantity inputs are all called updates[], which is a form post waiting
+  // on the Update button — so pressing + moved a number and left the price, the
+  // subtotal, the count and the bar all saying what they said before, until you
+  // found a second button and pressed that too. The name stays for anyone
+  // without JavaScript; with it, the line changes where it stands.
+  // The subtotal is rendered with money_with_currency, so rewriting it with the
+  // plain format quietly dropped the INR off the end of it.
+  function money(cents, withCurrency) { return formatMoney(cents, withCurrency); }
+
+  document.addEventListener("change", (e) => {
+    const input = e.target.closest("[data-cart-line]");
+    if (!input) return;
+    const line = parseInt(input.getAttribute("data-cart-line"), 10);
+    const quantity = Math.max(0, parseInt(input.value, 10) || 0);
+    if (!line) return;
+    input.disabled = true;
+    fetch("/cart/change.js", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ line: line, quantity: quantity }),
+    })
+      .then((r) => r.json())
+      .then((cart) => {
+        // change.js answers with the whole cart, so this is the authoritative
+        // total rather than something to be reconciled later.
+        window.__expectedTotal = null;
+        window.__lastCart = cart;
+        window.__cartRecsFor = null;
+        window.updateCartProgress(cart);
+        window.updateCartRecs(cart);
+
+        const el = document.querySelector("[data-cart-subtotal]");
+        if (el) el.textContent = money(cart.total_price, true);
+        const count = document.querySelector("[data-cart-count]");
+        if (count) count.textContent = cart.item_count;
+        (cart.items || []).forEach((item, i) => {
+          const total = document.querySelector('[data-line-total="' + (i + 1) + '"]');
+          if (total) total.textContent = money(item.final_line_price);
+          const qty = document.querySelector('[data-cart-line="' + (i + 1) + '"]');
+          if (qty) {
+            qty.value = item.quantity;
+            qty.setAttribute("data-unit-price", item.final_price);
+          }
+        });
+        // A line removed outright renumbers everything after it, and patching
+        // that up in place is more ways to be wrong than it is worth.
+        if (quantity === 0) window.location.reload();
+      })
+      .catch(() => {})
+      .finally(() => { input.disabled = false; });
+  });
 
   // Quantity steppers. The number inputs stay exactly where they are — the
   // cart bridge listens for their change event and the cart page posts them as

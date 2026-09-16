@@ -42,45 +42,18 @@
       nav-light so the header turns white while it is over the photograph; the
       dark-section_wrap below carries nav-dark and takes it back for the grid.
     {%- endcomment -%}
-    <div class="collection-hero" nav-light="">
-      <div class="collection-hero_visual">
-        {%- if hero_image != blank -%}
-          <img src="{{ hero_image | image_url: width: 2400 }}"
-               srcset="{{ hero_image | image_url: width: 800 }} 800w,
-                       {{ hero_image | image_url: width: 1200 }} 1200w,
-                       {{ hero_image | image_url: width: 1800 }} 1800w,
-                       {{ hero_image | image_url: width: 2400 }} 2400w"
-               sizes="100vw"
-               width="{{ hero_image.width }}" height="{{ hero_image.height }}"
-               alt="{{ hero_image.alt | default: collection.title | escape }}"
-               class="collection-hero_img"
-               loading="eager" fetchpriority="high" decoding="async">
-        {%- else -%}
-          {%- comment -%}
-            A bundled asset has no image object behind it, so no srcset and no
-            intrinsic size to declare — the hero is a fixed-height box that
-            crops to fill, so nothing shifts for the want of them.
-          {%- endcomment -%}
-          <img src="{{ 'or-hero-2.jpg' | asset_url }}"
-               alt="{{ collection.title | escape }}"
-               class="collection-hero_img"
-               loading="eager" fetchpriority="high" decoding="async">
-        {%- endif -%}
-        <div class="collection-hero_scrim" aria-hidden="true"></div>
-      </div>
-      <div class="collection-hero_inner u-container">
-        {%- if section.settings.eyebrow != blank -%}
-          <p class="collection-hero_eyebrow body-upper">{{ section.settings.eyebrow }}</p>
-        {%- endif -%}
-        <h2 class="collection-hero_title">{{ collection.title | default: section.settings.fallback_title }}</h2>
-        <div class="collection-hero_meta">
-          {%- if collection.description != blank -%}
-            <p class="collection-hero_text">{{ collection.description | strip_html | truncatewords: 26 }}</p>
-          {%- endif -%}
-          <p class="collection-hero_count body-upper">(&nbsp;<span count-items="total">{{ collection.products_count }}</span>&nbsp;)</p>
-        </div>
-      </div>
-    </div>
+    {%- capture hero_text -%}
+      {%- if collection.description != blank -%}
+        {{- collection.description | strip_html | truncatewords: 26 -}}
+      {%- endif -%}
+    {%- endcapture -%}
+    {% render 'page-hero',
+        image: hero_image,
+        title: collection.title | default: section.settings.fallback_title,
+        eyebrow: section.settings.eyebrow,
+        text: hero_text,
+        count: collection.products_count,
+        count_attr: 'count-items="total"' %}
   {%- endif -%}
 
   <div nav-dark="" class="{{ below_hero_classes }}">

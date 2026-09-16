@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ request.locale.iso_code }}" data-money-format="{{ shop.money_format | escape }}"{% if settings.tab_away_text != blank %} data-tab-away-text="{{ settings.tab_away_text | escape }}"{% endif %}>
+<html lang="{{ request.locale.iso_code }}" data-money-format="{{ shop.money_format | escape }}" data-money-currency-format="{{ shop.money_with_currency_format | escape }}"{% if settings.tab_away_text != blank %} data-tab-away-text="{{ settings.tab_away_text | escape }}"{% endif %}>
   <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">

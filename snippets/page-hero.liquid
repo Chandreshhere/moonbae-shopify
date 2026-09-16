@@ -1,0 +1,60 @@
+{%- comment -%}
+  The full-bleed hero shared by the category pages and the cart.
+
+  Params:
+    image      — an image object (collection.image, a setting); optional
+    fallback   — bundled asset filename used when image is blank
+    title      — the big line
+    eyebrow    — small line above it; optional
+    text       — a sentence under the title; optional
+    count      — bracketed number on the right; optional
+    count_attr — raw attributes for the count span (count-items="total")
+    modifier   — extra classes, e.g. 'is-compact is-centered'
+
+  It is a snippet rather than two copies because the cart and a collection want
+  the same thing at different sizes, and two copies of a hero drift the moment
+  one of them is adjusted.
+{%- endcomment -%}
+<div class="collection-hero {{ modifier }}" nav-light="">
+  <div class="collection-hero_visual">
+    {%- if image != blank -%}
+      <img src="{{ image | image_url: width: 2400 }}"
+           srcset="{{ image | image_url: width: 800 }} 800w,
+                   {{ image | image_url: width: 1200 }} 1200w,
+                   {{ image | image_url: width: 1800 }} 1800w,
+                   {{ image | image_url: width: 2400 }} 2400w"
+           sizes="100vw"
+           width="{{ image.width }}" height="{{ image.height }}"
+           alt="{{ image.alt | default: title | escape }}"
+           class="collection-hero_img"
+           loading="eager" fetchpriority="high" decoding="async">
+    {%- else -%}
+      {%- comment -%}
+        A bundled asset has no image object behind it, so no srcset and no
+        intrinsic size to declare — the hero is a fixed-height box that crops to
+        fill, so nothing shifts for the want of them.
+      {%- endcomment -%}
+      <img src="{{ fallback | default: 'or-hero-2.jpg' | asset_url }}"
+           alt="{{ title | escape }}"
+           class="collection-hero_img"
+           loading="eager" fetchpriority="high" decoding="async">
+    {%- endif -%}
+    <div class="collection-hero_scrim" aria-hidden="true"></div>
+  </div>
+  <div class="collection-hero_inner u-container">
+    {%- if eyebrow != blank -%}
+      <p class="collection-hero_eyebrow body-upper">{{ eyebrow }}</p>
+    {%- endif -%}
+    <h2 class="collection-hero_title">{{ title }}</h2>
+    {%- if text != blank or count != blank -%}
+      <div class="collection-hero_meta">
+        {%- if text != blank -%}
+          <p class="collection-hero_text">{{ text }}</p>
+        {%- endif -%}
+        {%- if count != blank -%}
+          <p class="collection-hero_count body-upper">(&nbsp;<span {{ count_attr }}>{{ count }}</span>&nbsp;)</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
