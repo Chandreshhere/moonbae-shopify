@@ -1,20 +1,21 @@
 {%- comment -%}
-  A category page gets a full-bleed hero built from the collection's own image,
-  so Men, Women and Accessories each arrive with a face of their own rather than
-  as three identical grids with a different word at the top. It is the
-  collection image from Shopify admin, which means a new category is designed by
-  uploading a picture to it and nothing else.
+  A category page gets a full-bleed hero, so Men, Women and Accessories each
+  arrive with a face rather than as three identical grids with a different word
+  at the top.
 
-  No image, no hero: the page falls back to the typographic intro row it has
-  always had. That matters — a collection a merchant has not got round to
-  photographing yet should look plain, never broken.
+  Three places it looks for the picture, in order: the collection's own image
+  from Shopify admin, which is how a category gets a face of its own; the
+  section's shared fallback, which dresses every category at once; and a bundled
+  asset, so a page is never bare while a shop is still being built. Every
+  collection has a hero — waiting on the merchant to upload something meant the
+  categories sat empty, which is the one state worth designing out.
 {%- endcomment -%}
 {%- liquid
   assign hero_image = collection.image
-  assign has_hero = false
-  if hero_image != blank
-    assign has_hero = true
+  if hero_image == blank
+    assign hero_image = section.settings.hero_fallback_image
   endif
+  assign has_hero = true
   comment
     A hero page drops u-container from the section wrapper and hands it to the
     block below the hero instead. The alternative was leaving the wrapper
@@ -43,16 +44,28 @@
     {%- endcomment -%}
     <div class="collection-hero" nav-light="">
       <div class="collection-hero_visual">
-        <img src="{{ hero_image | image_url: width: 2400 }}"
-             srcset="{{ hero_image | image_url: width: 800 }} 800w,
-                     {{ hero_image | image_url: width: 1200 }} 1200w,
-                     {{ hero_image | image_url: width: 1800 }} 1800w,
-                     {{ hero_image | image_url: width: 2400 }} 2400w"
-             sizes="100vw"
-             width="{{ hero_image.width }}" height="{{ hero_image.height }}"
-             alt="{{ hero_image.alt | default: collection.title | escape }}"
-             class="collection-hero_img"
-             loading="eager" fetchpriority="high" decoding="async">
+        {%- if hero_image != blank -%}
+          <img src="{{ hero_image | image_url: width: 2400 }}"
+               srcset="{{ hero_image | image_url: width: 800 }} 800w,
+                       {{ hero_image | image_url: width: 1200 }} 1200w,
+                       {{ hero_image | image_url: width: 1800 }} 1800w,
+                       {{ hero_image | image_url: width: 2400 }} 2400w"
+               sizes="100vw"
+               width="{{ hero_image.width }}" height="{{ hero_image.height }}"
+               alt="{{ hero_image.alt | default: collection.title | escape }}"
+               class="collection-hero_img"
+               loading="eager" fetchpriority="high" decoding="async">
+        {%- else -%}
+          {%- comment -%}
+            A bundled asset has no image object behind it, so no srcset and no
+            intrinsic size to declare — the hero is a fixed-height box that
+            crops to fill, so nothing shifts for the want of them.
+          {%- endcomment -%}
+          <img src="{{ 'or-hero-2.jpg' | asset_url }}"
+               alt="{{ collection.title | escape }}"
+               class="collection-hero_img"
+               loading="eager" fetchpriority="high" decoding="async">
+        {%- endif -%}
         <div class="collection-hero_scrim" aria-hidden="true"></div>
       </div>
       <div class="collection-hero_inner u-container">
@@ -135,6 +148,12 @@
   "class": "page-collection u-container",
   "settings": [
     {
+      "type": "image_picker",
+      "id": "hero_fallback_image",
+      "label": "Fallback hero image",
+      "info": "Used on any collection that has no Collection image of its own. Set a Collection image in admin to give a category its own picture."
+    },
+    {
       "type": "text",
       "id": "fallback_title",
       "label": "Title when none set",
@@ -144,7 +163,7 @@
       "type": "richtext",
       "id": "eyebrow",
       "label": "Eyebrow",
-      "default": "<p>COLLECTION 01 & 02<br/>moonbae ©️2026</p>"
+      "default": "<p>COLLECTION 01 & 02<br/>moonbae \u00a9\ufe0f2026</p>"
     },
     {
       "type": "text",

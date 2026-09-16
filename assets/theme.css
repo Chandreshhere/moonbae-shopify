@@ -978,7 +978,7 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
      instead. See main-collection.liquid for why that beats escaping a capped
      container with vw. */
   width: 100%;
-  min-height: 62svh;
+  min-height: 60svh;
   display: flex;
   align-items: flex-end;
   overflow: clip;
@@ -1031,7 +1031,7 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 .collection-hero_count { margin: 0; font-size: .72rem; flex: none; }
 
 @media only screen and (max-width: 767px) {
-  .collection-hero { min-height: 46svh; }
+  .collection-hero { min-height: 60svh; }
   .collection-hero_meta { flex-direction: column; align-items: flex-start; gap: .45rem; }
   .collection-hero_text { max-width: none; }
 }

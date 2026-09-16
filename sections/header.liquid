@@ -9,12 +9,12 @@
   {%- assign nav_classes = 'nav-component dark' -%}
 {%- endif -%}
 {%- comment -%}
-  Except a collection that opens on its own photograph: that first screen is
-  not a light ground at all, and the dark nav painted black on black until the
-  first scroll told it otherwise. The hero is rendered on exactly this
-  condition — see main-collection.liquid.
+  Except a collection, which always opens on a photograph now: that first screen
+  is not a light ground at all, and the dark nav painted black on black until
+  the first scroll told it otherwise. Every collection page renders a hero — see
+  main-collection.liquid for the three places it looks for the picture.
 {%- endcomment -%}
-{%- if template.name == 'collection' and collection.image != blank -%}
+{%- if template.name == 'collection' -%}
   {%- assign nav_classes = 'nav-component' -%}
 {%- endif -%}
 {% render 'section-class', classes: nav_classes %}

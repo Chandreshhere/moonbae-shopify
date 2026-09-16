@@ -1040,10 +1040,19 @@ function globalScripts() {
   // interaction that can change the cart: adding, opening the drawer, and
   // changing or removing a line inside it.
   document.addEventListener("click", (e) => {
+    const removing = e.target.closest('[data-node-type="cart-remove-link"]');
+    if (removing) {
+      // Same reasoning as the steppers: take the whole line off the bar now
+      // rather than letting it sit at the old total until the cart answers.
+      const id = parseInt(removing.getAttribute("data-product-id"), 10);
+      const cart = window.__lastCart;
+      const line = cart && (cart.items || []).find((i) => i.variant_id === id || i.id === id);
+      if (line) window.nudgeCartProgress(-(line.final_line_price || line.line_price || 0));
+    }
     if (
+      removing ||
       e.target.closest('[data-node-type="commerce-add-to-cart-button"]') ||
       e.target.closest('[data-node-type="commerce-cart-open-link"]') ||
-      e.target.closest('[data-node-type="cart-remove-link"]') ||
       e.target.closest("[data-sticky-atc-btn]")
     ) {
       refreshCartProgress();
@@ -1185,6 +1194,28 @@ function globalScripts() {
   // arrived are rendered from the cart as it was when the page was cached.
   refreshCartProgress();
 
+  // What one of a line costs, read off the cart we last fetched. final_price is
+  // the per-unit price after line discounts, which is what the total moves by.
+  function unitPriceOf(input) {
+    const cart = window.__lastCart;
+    const id = parseInt(input.getAttribute("name"), 10);
+    const line = cart && (cart.items || []).find((i) => i.variant_id === id || i.id === id);
+    if (!line) return 0;
+    if (typeof line.final_price === "number") return line.final_price;
+    if (typeof line.price === "number") return line.price;
+    return line.quantity ? Math.round((line.final_line_price || line.line_price || 0) / line.quantity) : 0;
+  }
+
+  // Move the bar by a known amount now, and keep the running total in step so
+  // three taps in a row add up instead of each one starting from the same
+  // stale number.
+  window.nudgeCartProgress = function (deltaCents) {
+    const cart = window.__lastCart;
+    if (!cart || typeof cart.total_price !== "number" || !deltaCents) return;
+    cart.total_price = Math.max(0, cart.total_price + deltaCents);
+    window.updateCartProgress(cart);
+  };
+
   // Quantity steppers. The number inputs stay exactly where they are — the
   // cart bridge listens for their change event and the cart page posts them as
   // updates[] — so the buttons drive the real input and fire the same event a
@@ -1207,8 +1238,17 @@ function globalScripts() {
           const min = parseInt(input.getAttribute("min"), 10);
           const floor = isNaN(min) ? 0 : min;
           const next = Math.max(floor, (parseInt(input.value, 10) || 0) + dir);
-          if (next === (parseInt(input.value, 10) || 0)) return;
+          const was = parseInt(input.value, 10) || 0;
+          if (next === was) return;
           input.value = next;
+          // The bar moves on the tap, not on the answer. Nothing here can know
+          // the new total for certain — the cart lives on the server — but it
+          // can know the price of the line being stepped, and that is enough to
+          // be right about the arithmetic. The reconcile a moment later comes
+          // back to the same number, so the correction is invisible; without
+          // this the bar sat still for a beat and then jumped, which reads as
+          // the button not having worked.
+          window.nudgeCartProgress((next - was) * unitPriceOf(input));
           // Both, because the bridge and the cart form listen for different ones.
           input.dispatchEvent(new Event("input", { bubbles: true }));
           input.dispatchEvent(new Event("change", { bubbles: true }));
