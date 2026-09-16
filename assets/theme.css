@@ -1066,3 +1066,11 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
   .collection-hero_meta { flex-direction: column; align-items: flex-start; gap: .45rem; }
   .collection-hero_text { max-width: none; }
 }
+
+/* The "more products" row under a product page had no heading at all, so it
+   read as the page having simply continued into another grid. */
+.single-product-heading {
+  padding: 0 var(--site--margin);
+  margin-bottom: var(--size--1-25rem, 1.25rem);
+}
+.single-product-heading p { margin: 0; opacity: .55; }

@@ -281,7 +281,23 @@ function footerImgFollow() {
 }
 
 //Home Slider
+
+// globalScripts() runs on load and again after every Barba transition, and
+// until now it only ever built things. ScrollTriggers were killed between runs;
+// GSAP Observers, Hammer instances, ticker callbacks and document listeners
+// were not, so every page you visited left another live copy of itself behind.
+// Anything that wants undoing registers it here and the next run does it first.
+const teardowns = [];
+function onTeardown(fn) { teardowns.push(fn); }
+function runTeardowns() {
+  while (teardowns.length) {
+    const fn = teardowns.pop();
+    try { fn(); } catch (e) {}
+  }
+}
+
 function globalScripts() {
+  runTeardowns();
   lenis.resize();
   lenis.start();
   addLenisPreventAttribute();
@@ -643,6 +659,7 @@ function globalScripts() {
     });
 
     let hammer = new Hammer(this);
+    onTeardown(() => hammer.destroy());
     hammer.on("swipeleft", function () {
       let nextIndex = activeIndex + 1;
       if (nextIndex >= totalSlides) {
@@ -748,7 +765,9 @@ function globalScripts() {
     set(false);
     btn.addEventListener("click", () => set(wrap.getAttribute("data-open") !== "true"));
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
-    document.addEventListener("click", (e) => { if (!wrap.contains(e.target)) set(false); });
+    const closeOnOutside = (e) => { if (!wrap.contains(e.target)) set(false); };
+    document.addEventListener("click", closeOnOutside);
+    onTeardown(() => document.removeEventListener("click", closeOnOutside));
   });
 
   // Free shipping progress. Rendered server-side for the first paint, then kept
@@ -1520,9 +1539,22 @@ function globalScripts() {
       delay: 0.1,
     });
 
-    Observer.create({
+    // Past a click, well short of a deliberate drag.
+    const DRAG_SLOP = 6;
+
+    const observer = Observer.create({
       target: content[0],
       type: "pointer,touch", // detect both pointer and touch events
+      // The row treated any movement at all as a drag, and a drag puts
+      // .dragging on it, which turns pointer-events off on the cards. A mouse
+      // almost always travels a pixel or two between press and release, so an
+      // ordinary click on a product landed on a card that had just been made
+      // untouchable and did nothing — and the second click, held still, worked.
+      // That is the two clicks.
+      //
+      // Below this distance Observer reports no drag at all, so the class is
+      // never applied and the card stays clickable.
+      dragMinimum: DRAG_SLOP,
       onPress: function () {
         tl.play();
       },
@@ -1540,10 +1572,18 @@ function globalScripts() {
       onStop: function (self) {
         tl.reverse();
         self.target.classList.remove("dragging");
+        // Was missing here. A drag that ended without a release left the page
+        // unable to scroll at all until something else started lenis again.
+        lenis.start();
       },
     });
 
     gsap.ticker.add(tick);
+    onTeardown(() => {
+      observer.kill();
+      gsap.ticker.remove(tick);
+      content[0].classList.remove("dragging");
+    });
 
     function tick(time, deltaTime) {
       total -= deltaTime / 20; // Adjust the speed of automatic scrolling

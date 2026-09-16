@@ -277,10 +277,42 @@
   </div>
 {%- endif -%}
 
-{%- comment -%} Related products, exactly as the reference laid them out. {%- endcomment -%}
-{%- assign related = collections[section.settings.related_collection].products | default: product.collections.first.products -%}
-{%- if related.size > 0 -%}
+{%- comment -%}
+  More products, under the one being looked at.
+
+  Three sources, in order: a collection the merchant picks, the collection this
+  product is in, and failing both, the catalogue. The last one matters — the
+  row used to render nothing at all for a product that had not been put in a
+  collection yet, which is every product on a shop that is still being set up,
+  and a dead end under a product page is a lost sale rather than a tidy blank.
+{%- endcomment -%}
+{%- liquid
+  assign related = collections[section.settings.related_collection].products
+  if related.size == 0
+    assign related = product.collections.first.products
+  endif
+  if related.size == 0
+    assign related = collections.all.products
+  endif
+
+  comment
+    Counted before rendering, because a row that turns out to hold only the
+    product you are already looking at should not print a heading over nothing.
+  endcomment
+  assign available = 0
+  for item in related
+    if item.id != product.id
+      assign available = available | plus: 1
+    endif
+  endfor
+-%}
+{%- if available > 0 -%}
   <div class="single-product-col_wrap w-dyn-list" udy-collection="product">
+    {%- if section.settings.related_heading != blank -%}
+      <div class="single-product-heading u-container">
+        <p class="body-upper">{{ section.settings.related_heading }}</p>
+      </div>
+    {%- endif -%}
     <div role="list" class="single-product-col_list u-grid-desktop w-dyn-items">
       {%- assign shown = 0 -%}
       {%- for item in related -%}
@@ -350,6 +382,12 @@
     {
       "type": "header",
       "content": "Related products"
+    },
+    {
+      "type": "text",
+      "id": "related_heading",
+      "label": "More products heading",
+      "default": "You may also like"
     },
     {
       "type": "collection",
@@ -466,7 +504,7 @@
           "type": "text",
           "id": "text",
           "label": "Detail",
-          "default": "Dispatched in 2–4 business days"
+          "default": "Dispatched in 2\u20134 business days"
         }
       ]
     }
@@ -479,7 +517,7 @@
           "title": "Garment Details",
           "metafield_namespace": "custom",
           "metafield_key": "garment_details",
-          "text": "<p>• Outer: 100% cotton twill (230gsm)<br/>• Relaxed fit<br/>• Embroidered chest branding<br/>• Designed to age beautifully</p>"
+          "text": "<p>\u2022 Outer: 100% cotton twill (230gsm)<br/>\u2022 Relaxed fit<br/>\u2022 Embroidered chest branding<br/>\u2022 Designed to age beautifully</p>"
         }
       },
       {
@@ -488,7 +526,7 @@
           "title": "Wash Care",
           "metafield_namespace": "custom",
           "metafield_key": "wash_care",
-          "text": "<p>Washing:<br/>• Machine wash cold with like colors<br/>• Gentle cycle<br/>• Do not bleach<br/><br/>Drying:<br/>• Tumble dry low / hang to dry<br/>• Do not dry clean</p>"
+          "text": "<p>Washing:<br/>\u2022 Machine wash cold with like colors<br/>\u2022 Gentle cycle<br/>\u2022 Do not bleach<br/><br/>Drying:<br/>\u2022 Tumble dry low / hang to dry<br/>\u2022 Do not dry clean</p>"
         }
       },
       {
