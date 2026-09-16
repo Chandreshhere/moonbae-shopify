@@ -10,12 +10,13 @@
     count      — bracketed number on the right; optional
     count_attr — raw attributes for the count span (count-items="total")
     modifier   — extra classes, e.g. 'is-compact is-centered'
+    height     — height in svh; optional, falls back to the CSS default
 
   It is a snippet rather than two copies because the cart and a collection want
   the same thing at different sizes, and two copies of a hero drift the moment
   one of them is adjusted.
 {%- endcomment -%}
-<div class="collection-hero {{ modifier }}" nav-light="">
+<div class="collection-hero {{ modifier }}" nav-light=""{% if height != blank and height > 0 %} style="--hero-height: {{ height }}svh"{% endif %}>
   <div class="collection-hero_visual">
     {%- if image != blank -%}
       <img src="{{ image | image_url: width: 2400 }}"

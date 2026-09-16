@@ -11,7 +11,8 @@
     {% render 'page-hero',
         image: section.settings.hero_image,
         title: section.settings.hero_heading,
-        modifier: 'is-compact is-centered' %}
+        modifier: 'is-compact is-centered',
+        height: section.settings.hero_height %}
     <div class="page-intro">
     <div class="shop-contain u-container">
       <div class="shop-intro_wrap">
@@ -102,6 +103,17 @@
   "tag": "div",
   "class": "page-cart",
   "settings": [
+    {
+      "type": "range",
+      "id": "hero_height",
+      "label": "Hero height",
+      "min": 20,
+      "max": 85,
+      "step": 5,
+      "unit": "%",
+      "default": 45,
+      "info": "Share of the screen the hero fills."
+    },
     {
       "type": "image_picker",
       "id": "hero_image",

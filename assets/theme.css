@@ -978,7 +978,10 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
      instead. See main-collection.liquid for why that beats escaping a capped
      container with vw. */
   width: 100%;
-  min-height: 60svh;
+  /* The height is a theme setting per page — the cart wants less of it than a
+     category does, and where exactly that lands is a judgement about the
+     photograph, not something worth a code change each time. */
+  min-height: var(--hero-height, 60svh);
   display: flex;
   align-items: flex-end;
   overflow: clip;
@@ -1036,7 +1039,7 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 
 /* The cart is somewhere you pass through, so it gets the hero turned down
    rather than a full screen of photograph between a shopper and their basket. */
-.collection-hero.is-compact { min-height: 30svh; }
+.collection-hero.is-compact { min-height: var(--hero-height, 45svh); }
 .collection-hero.is-centered { align-items: center; }
 .collection-hero.is-centered .collection-hero_inner {
   align-items: center; text-align: center;
@@ -1058,8 +1061,8 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
 }
 
 @media only screen and (max-width: 767px) {
-  .collection-hero { min-height: 60svh; }
-  .collection-hero.is-compact { min-height: 26svh; }
+  .collection-hero { min-height: var(--hero-height, 60svh); }
+  .collection-hero.is-compact { min-height: var(--hero-height, 38svh); }
   .collection-hero_meta { flex-direction: column; align-items: flex-start; gap: .45rem; }
   .collection-hero_text { max-width: none; }
 }

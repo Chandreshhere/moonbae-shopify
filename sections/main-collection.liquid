@@ -53,7 +53,8 @@
         eyebrow: section.settings.eyebrow,
         text: hero_text,
         count: collection.products_count,
-        count_attr: 'count-items="total"' %}
+        count_attr: 'count-items="total"',
+        height: section.settings.hero_height %}
   {%- endif -%}
 
   <div nav-dark="" class="{{ below_hero_classes }}">
@@ -120,6 +121,17 @@
   "tag": "div",
   "class": "page-collection u-container",
   "settings": [
+    {
+      "type": "range",
+      "id": "hero_height",
+      "label": "Hero height",
+      "min": 20,
+      "max": 85,
+      "step": 5,
+      "unit": "%",
+      "default": 60,
+      "info": "Share of the screen the hero fills."
+    },
     {
       "type": "image_picker",
       "id": "hero_fallback_image",
