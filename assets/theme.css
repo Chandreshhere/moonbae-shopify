@@ -966,3 +966,72 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
   100% { opacity: 0; transform: translate3d(calc(var(--drift, 0) * 60px), var(--fall, 240px), 0) rotate(var(--spin, 180deg)); }
 }
 @media (prefers-reduced-motion: reduce) { .confetti { display: none; } }
+
+/* ---- Collection: category hero -------------------------------------------
+   Built from the collection's own image, so a new category is designed by
+   uploading a picture to it in admin. main-collection.liquid renders it only
+   when there is one; without it the page keeps its typographic intro. */
+.collection-hero {
+  position: relative;
+  /* Full width because nothing above it is constraining it: on a hero page the
+     section wrapper drops u-container and the block below the hero takes it
+     instead. See main-collection.liquid for why that beats escaping a capped
+     container with vw. */
+  width: 100%;
+  min-height: 62svh;
+  display: flex;
+  align-items: flex-end;
+  overflow: clip;
+  color: var(--swatch--light);
+  background: var(--swatch--dark);
+  margin-bottom: clamp(2.5rem, 7vw, 6rem);
+}
+/* Without u-container on the wrapper, the padding it used to contribute has to
+   be stated: 8rem below, matching what every other collection page gets, and
+   nothing above, because the hero starts at the top of the page. */
+.page-collection.has-hero {
+  padding-top: 0;
+  padding-bottom: var(--size--8rem);
+}
+
+.collection-hero_visual { position: absolute; inset: 0; }
+.collection-hero_img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Photographs are not a background colour: without a scrim the copy is legible
+   over some of them and invisible over the rest, and which one a merchant
+   uploads is not something the theme gets to decide. */
+.collection-hero_scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--swatch--dark) 74%, transparent) 0%,
+    color-mix(in srgb, var(--swatch--dark) 30%, transparent) 46%,
+    transparent 100%);
+}
+
+.collection-hero_inner {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; gap: .55rem;
+  padding: 0 var(--site--margin) clamp(1.75rem, 4vw, 3.25rem);
+}
+.collection-hero_eyebrow { margin: 0; font-size: .72rem; opacity: .75; }
+.collection-hero_title {
+  margin: 0;
+  font-family: var(--_typography---font--secondary-family, inherit);
+  font-size: var(--_typography---font-size--h1, 2.625rem);
+  line-height: 1.02;
+  color: var(--swatch--light);
+}
+.collection-hero_meta {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: var(--site--gutter); margin-top: .35rem;
+}
+.collection-hero_text {
+  margin: 0; max-width: 38ch; font-size: .82rem; line-height: 1.5; opacity: .85;
+}
+.collection-hero_count { margin: 0; font-size: .72rem; flex: none; }
+
+@media only screen and (max-width: 767px) {
+  .collection-hero { min-height: 46svh; }
+  .collection-hero_meta { flex-direction: column; align-items: flex-start; gap: .45rem; }
+  .collection-hero_text { max-width: none; }
+}

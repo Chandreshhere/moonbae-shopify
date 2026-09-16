@@ -1,9 +1,81 @@
-{% render 'section-class', classes: 'page-collection u-container', attrs: 'count-items', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+{%- comment -%}
+  A category page gets a full-bleed hero built from the collection's own image,
+  so Men, Women and Accessories each arrive with a face of their own rather than
+  as three identical grids with a different word at the top. It is the
+  collection image from Shopify admin, which means a new category is designed by
+  uploading a picture to it and nothing else.
+
+  No image, no hero: the page falls back to the typographic intro row it has
+  always had. That matters — a collection a merchant has not got round to
+  photographing yet should look plain, never broken.
+{%- endcomment -%}
+{%- liquid
+  assign hero_image = collection.image
+  assign has_hero = false
+  if hero_image != blank
+    assign has_hero = true
+  endif
+  comment
+    A hero page drops u-container from the section wrapper and hands it to the
+    block below the hero instead. The alternative was leaving the wrapper
+    capped at 90rem and letting the hero escape with width:100vw and negative
+    margins — but vw counts the scrollbar and the container does not, so on
+    every platform with a classic scrollbar the hero sat half a scrollbar to
+    the left of the grid underneath it. Nothing is constraining it now, so
+    there is nothing to escape from.
+  endcomment
+  assign wrapper_classes = 'page-collection u-container'
+  assign below_hero_classes = 'dark-section_wrap'
+  if has_hero
+    assign wrapper_classes = 'page-collection has-hero'
+    assign below_hero_classes = 'dark-section_wrap u-container'
+  endif
+-%}
+{% render 'section-class', classes: wrapper_classes, attrs: 'count-items', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
 <h1 class="u-visually-hidden">{{ collection.title | default: section.settings.fallback_title }}</h1>
 
 {%- paginate collection.products by section.settings.products_per_page -%}
 <div class="page-inner">
-  <div nav-dark="" class="dark-section_wrap">
+  {%- if has_hero -%}
+    {%- comment -%}
+      nav-light so the header turns white while it is over the photograph; the
+      dark-section_wrap below carries nav-dark and takes it back for the grid.
+    {%- endcomment -%}
+    <div class="collection-hero" nav-light="">
+      <div class="collection-hero_visual">
+        <img src="{{ hero_image | image_url: width: 2400 }}"
+             srcset="{{ hero_image | image_url: width: 800 }} 800w,
+                     {{ hero_image | image_url: width: 1200 }} 1200w,
+                     {{ hero_image | image_url: width: 1800 }} 1800w,
+                     {{ hero_image | image_url: width: 2400 }} 2400w"
+             sizes="100vw"
+             width="{{ hero_image.width }}" height="{{ hero_image.height }}"
+             alt="{{ hero_image.alt | default: collection.title | escape }}"
+             class="collection-hero_img"
+             loading="eager" fetchpriority="high" decoding="async">
+        <div class="collection-hero_scrim" aria-hidden="true"></div>
+      </div>
+      <div class="collection-hero_inner u-container">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="collection-hero_eyebrow body-upper">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="collection-hero_title">{{ collection.title | default: section.settings.fallback_title }}</h2>
+        <div class="collection-hero_meta">
+          {%- if collection.description != blank -%}
+            <p class="collection-hero_text">{{ collection.description | strip_html | truncatewords: 26 }}</p>
+          {%- endif -%}
+          <p class="collection-hero_count body-upper">(&nbsp;<span count-items="total">{{ collection.products_count }}</span>&nbsp;)</p>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div nav-dark="" class="{{ below_hero_classes }}">
+    {%- comment -%}
+      The hero already carries the title and the count, so the intro row would
+      only say them a second time.
+    {%- endcomment -%}
+    {%- unless has_hero -%}
     <div class="page-intro">
       <div class="shop-contain u-container">
         <div class="shop-intro_wrap">
@@ -23,6 +95,7 @@
         </div>
       </div>
     </div>
+    {%- endunless -%}
 
     <div class="collection-layout{% if collection.filters.size > 0 %} has-filters{% endif %}">
       {% render 'collection-filters', collection: collection, section: section %}

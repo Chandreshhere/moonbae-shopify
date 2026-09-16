@@ -17,6 +17,7 @@
 /* latin-ext */
 @font-face {
   font-family: 'Instrument Serif';
+  font-display: swap;
   font-style: italic;
   font-weight: 400;
   src: url(https://fonts.gstatic.com/s/instrumentserif/v5/jizHRFtNs2ka5fXjeivQ4LroWlx-6zAjgn7Motmp5r61.woff2) format('woff2');
@@ -25,6 +26,7 @@
 /* latin */
 @font-face {
   font-family: 'Instrument Serif';
+  font-display: swap;
   font-style: italic;
   font-weight: 400;
   src: url(https://fonts.gstatic.com/s/instrumentserif/v5/jizHRFtNs2ka5fXjeivQ4LroWlx-6zAjjH7Motmp5g.woff2) format('woff2');
@@ -33,6 +35,7 @@
 /* latin-ext */
 @font-face {
   font-family: 'Instrument Serif';
+  font-display: swap;
   font-style: normal;
   font-weight: 400;
   src: url(https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-6zsTjnTLgNuZ5w.woff2) format('woff2');
@@ -41,6 +44,7 @@
 /* latin */
 @font-face {
   font-family: 'Instrument Serif';
+  font-display: swap;
   font-style: normal;
   font-weight: 400;
   src: url(https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-6zUTjnTLgNs.woff2) format('woff2');
