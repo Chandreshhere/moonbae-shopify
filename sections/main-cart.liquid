@@ -36,20 +36,22 @@
 
         {%- for item in cart.items -%}
           <div class="cart-page_item u-grid-desktop">
-            <div class="u-column-2">
+            <div class="u-column-2 cart-page_img">
               <a href="{{ item.url }}" class="checkout-img_wrap w-inline-block">
                 {%- if item.image -%}
                   <img src="{{ item.image | image_url: width: 400 }}" alt="{{ item.title | escape }}" class="checkout-img">
                 {%- endif -%}
               </a>
             </div>
-            <div class="u-column-8">
-              <a href="{{ item.url }}" class="footer-link is-alt w-inline-block">
-                <p class="body-upper">{{ item.product.title }}</p>
-              </a>
-              {%- for option in item.options_with_values -%}
-                <p class="body-upper text-grey">{{ option.name }}: {{ option.value }}</p>
-              {%- endfor -%}
+            <div class="u-column-8 cart-page_details">
+              <div class="cart-page_meta">
+                <a href="{{ item.url }}" class="footer-link is-alt w-inline-block">
+                  <p class="body-upper">{{ item.product.title }}</p>
+                </a>
+                {%- for option in item.options_with_values -%}
+                  <p class="body-upper text-grey">{{ option.name }}: {{ option.value }}</p>
+                {%- endfor -%}
+              </div>
               {%- comment -%}
                 name="updates[]" is what the Update button posts, and it stays
                 for anyone without JavaScript. The data attributes are what lets
@@ -63,11 +65,11 @@
                      data-variant-id="{{ item.variant_id }}"
                      data-unit-price="{{ item.final_price }}"
                      aria-label="{{ 'cart.general.quantity' | t }}">
-              <a href="{{ item.url_to_remove }}" class="remove_contain">
+              <a href="{{ item.url_to_remove }}" class="remove_contain" data-barba-prevent="self">
                 <div class="field_copy">{{ settings.cart_remove_nav_label }}</div>
               </a>
             </div>
-            <div class="u-column-2 u-text-align-right">
+            <div class="u-column-2 u-text-align-right cart-page_price">
               <p class="body-upper" data-line-total="{{ forloop.index }}">{{ item.final_line_price | money }}</p>
             </div>
           </div>

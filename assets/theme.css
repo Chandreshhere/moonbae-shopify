@@ -1236,3 +1236,32 @@ body:has(.announcement-bar) .page_wrap {
   padding-top: var(--announcement-offset, 2.1rem);
 }
 .orgc-nav.pull-up { transform: none; }
+
+
+/* --- Cart page lines as cards on phones and tablets -----------------------
+   Under 992px .u-grid-desktop collapses to a column, so every line stacked
+   image, name, size, stepper, Remove and price one under another. A line is
+   a card instead: image on the left; name and size, then the stepper beside
+   the price, then Remove, on the right. */
+@media only screen and (max-width: 991px) {
+  .page-cart .cart-page_item.u-grid-desktop {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+    grid-template-areas:
+      "img meta   meta"
+      "img qty    price"
+      "img remove remove";
+    column-gap: 1rem;
+    row-gap: .6rem;
+    align-items: center;
+  }
+  .page-cart .cart-page_item .cart-page_img { grid-area: img; align-self: start; width: auto; }
+  .page-cart .cart-page_item .cart-page_details { display: contents; }
+  .page-cart .cart-page_item .cart-page_meta { grid-area: meta; }
+  .page-cart .cart-page_item .qty-stepper,
+  .page-cart .cart-page_item .cart-page_details > .w-commerce-commercecartquantity { grid-area: qty; justify-self: start; margin: 0; }
+  .page-cart .cart-page_item .remove_contain { grid-area: remove; }
+  .page-cart .cart-page_item .cart-page_price { grid-area: price; width: auto; text-align: right; }
+  .page-cart .cart-page_item .cart-page_price p { margin: 0; white-space: nowrap; }
+  .page-cart .cart-page_item .checkout-img_wrap { max-width: none; width: 100%; }
+}

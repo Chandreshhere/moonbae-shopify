@@ -1311,14 +1311,65 @@ function globalScripts() {
         // The cart page itself is rendered by the server, so the new line only
         // appears there once the page is rendered again.
         if (document.querySelector(".cart-page_form") && !btn.closest(".w-commerce-commercecartcontainerwrapper")) {
-          try { sessionStorage.setItem("mbScrollRestore", String(scrollYNow())); } catch (e) {}
-          location.reload();
+          window.rerenderCartPage();
         }
       })
       .catch(() => {})
       .finally(() => { btn.disabled = false; });
   });
 
+
+    // The cart page is rendered by the server, so a line that is added or
+    // removed only shows once it is rendered again. Rather than reload the
+    // page, ask Shopify for the cart section alone and swap in just its form:
+    // the hero stays put, the scroll position stays put, and the new line
+    // appears where the shopper is looking.
+    window.rerenderCartPage = function () {
+      const form = document.querySelector(".cart-page_form");
+      if (!form) return Promise.resolve();
+      // section-class rewrites the wrapper's class, so find it by its id.
+      const wrapper = form.closest('[id^="shopify-section-"]');
+      const id = wrapper ? wrapper.id.replace(/^shopify-section-/, "") : null;
+      if (!id) { location.reload(); return Promise.resolve(); }
+      return fetch("/cart?section_id=" + encodeURIComponent(id), { headers: { Accept: "text/html" } })
+        .then((r) => (r.ok ? r.text() : Promise.reject(r.status)))
+        .then((html) => {
+          const doc = new DOMParser().parseFromString(html, "text/html");
+          const next = doc.querySelector(".cart-page_form");
+          // The last line gone: the section renders its empty state instead.
+          if (!next) { location.reload(); return; }
+          const live = document.querySelector(".cart-page_form");
+          if (!live) return;
+          live.replaceWith(next);
+          const count = doc.querySelector("[data-cart-count]");
+          const here = document.querySelector("[data-cart-count]");
+          if (count && here) here.textContent = count.textContent;
+          if (window.enhanceQuantity) window.enhanceQuantity(next);
+          return fetch("/cart.js", { headers: { Accept: "application/json" } })
+            .then((r) => r.json())
+            .then((cart) => {
+              window.__lastCart = cart;
+              window.__cartRecsFor = null;
+              if (window.updateCartProgress) window.updateCartProgress(cart);
+              if (window.updateCartRecs) window.updateCartRecs(cart);
+            });
+        })
+        .catch(() => location.reload());
+    };
+
+    // Remove on the cart page: the same path as stepping a line to 0, instead
+    // of following the link into a page transition. Without JavaScript the
+    // link still works.
+    document.addEventListener("click", (e) => {
+      const rm = e.target.closest(".cart-page_form a.remove_contain");
+      if (!rm) return;
+      const row = rm.closest(".cart-page_item");
+      const input = row && row.querySelector("[data-cart-line]");
+      if (!input) return;
+      e.preventDefault();
+      input.value = 0;
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    });
   } // end of the bind-once block
 
   // This one does run on every transition: the bars in the page that just
@@ -1365,6 +1416,10 @@ function globalScripts() {
   // plain format quietly dropped the INR off the end of it.
   function money(cents, withCurrency) { return formatMoney(cents, withCurrency); }
 
+  // Bound once: this sat after the bind-once guard, so every page transition
+  // added another copy and one tap sent one update per page visited.
+  if (!window.__cartPageChangeBound) {
+  window.__cartPageChangeBound = true;
   document.addEventListener("change", (e) => {
     const input = e.target.closest("[data-cart-line]");
     if (!input) return;
@@ -1402,11 +1457,12 @@ function globalScripts() {
         });
         // A line removed outright renumbers everything after it, and patching
         // that up in place is more ways to be wrong than it is worth.
-        if (quantity === 0) window.location.reload();
+        if (quantity === 0) window.rerenderCartPage();
       })
       .catch(() => {})
       .finally(() => { input.disabled = false; });
   });
+  }
 
   // Quantity steppers. The number inputs stay exactly where they are — the
   // cart bridge listens for their change event and the cart page posts them as
