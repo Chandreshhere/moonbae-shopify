@@ -13,6 +13,67 @@ function scrollYNow() {
   return lockBars ? pageScroller.scrollTop : window.pageYOffset;
 }
 
+// Back with the cart drawer or menu open. Both are overlays, not pages, so
+// they add no history entry and Back skipped straight past them — for someone
+// who came in from Instagram, straight off the site. Opening one now pushes
+// an entry; Back closes the overlay instead, and closing it any other way
+// takes the entry back out. Registered before barba.init so it runs first and
+// can stop Barba starting a page transition on those pops.
+(function overlayBackButton() {
+  function openOverlay() {
+    const nav = document.querySelector(".nav");
+    if (nav && nav.getAttribute("data-nav") === "open") return "menu";
+    for (const w of document.querySelectorAll(".w-commerce-commercecartcontainerwrapper")) {
+      if (getComputedStyle(w).display !== "none") return w;
+    }
+    return null;
+  }
+  function closeOverlay(which) {
+    if (which === "menu") {
+      const t = document.querySelector(".nav .menu-close[data-menu-toggle]") || document.querySelector("[data-menu-toggle]");
+      if (t) t.click();
+    } else if (which) {
+      const c = which.querySelector('[data-node-type="commerce-cart-close-link"]');
+      if (c) c.click();
+    }
+  }
+  let pushed = false;
+  let pushedHref = null;
+  let swallow = 0;
+  window.addEventListener("popstate", (e) => {
+    if (swallow > 0) { swallow--; e.stopImmediatePropagation(); return; }
+    if (!pushed) return;
+    pushed = false;
+    const o = openOverlay();
+    if (o) { e.stopImmediatePropagation(); closeOverlay(o); }
+  });
+  setInterval(() => {
+    const o = openOverlay();
+    if (o && !pushed) {
+      history.pushState(Object.assign({}, history.state, { mbOverlay: true }), "", location.href);
+      pushed = true;
+      pushedHref = location.href;
+    } else if (!o && pushed) {
+      pushed = false;
+      // Closed without Back. If a link inside it navigated, the entry is
+      // already behind the new page and must be left alone.
+      if (location.href === pushedHref && history.state && history.state.mbOverlay) {
+        swallow++;
+        history.back();
+      }
+    }
+  }, 200);
+})();
+
+// Scroll position carried across the cart page's reload after an add.
+(function restoreScrollAfterReload() {
+  let y = null;
+  try { y = sessionStorage.getItem("mbScrollRestore"); sessionStorage.removeItem("mbScrollRestore"); } catch (e) {}
+  if (y === null) return;
+  const go = () => (lockBars ? pageScroller.scrollTo(0, +y) : window.scrollTo(0, +y));
+  window.addEventListener("load", () => setTimeout(go, 50), { once: true });
+})();
+
 let mm = gsap.matchMedia();
 gsap.registerPlugin(Observer);
 // add a media query. When it matches, the associated function will run
@@ -1246,6 +1307,12 @@ function globalScripts() {
         // already open and toggling it would shut it.
         if (window.Udesly && window.Udesly.dispatch) {
           window.Udesly.dispatch("cart-should-be-updated");
+        }
+        // The cart page itself is rendered by the server, so the new line only
+        // appears there once the page is rendered again.
+        if (document.querySelector(".cart-page_form") && !btn.closest(".w-commerce-commercecartcontainerwrapper")) {
+          try { sessionStorage.setItem("mbScrollRestore", String(scrollYNow())); } catch (e) {}
+          location.reload();
         }
       })
       .catch(() => {})
@@ -2518,6 +2585,9 @@ barba.hooks.after((data) => {
   const nav = data.next.container.querySelector(".orgc-nav");
   if (nav) gsap.set(nav, { clearProps: "top" });
   $(window).scrollTop(0);
+  // On phones the page scrolls inside .page_wrap, which the line above does not
+  // touch — so a page opened from low down arrived at the footer.
+  if (lockBars) pageScroller.scrollTop = 0;
   // The previous page's triggers were never killed, so each transition
   // stacked another set measured against a page that no longer exists.
   ScrollTrigger.getAll().forEach((t) => t.kill());

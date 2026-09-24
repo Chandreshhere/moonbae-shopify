@@ -1218,3 +1218,21 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
      to one screen and the white ground would stop there. */
   html.lock-browser-bars .page_wrap > .page-main { flex: 0 0 auto; }
 }
+
+
+/* --- Header stays put on every screen size --------------------------------
+   On desktop the header followed the banner's edge as it scrolled away, so it
+   slid up under it. The banner is fixed everywhere now (it already was on
+   phones), which makes the header's offset a constant, and the pull-up that
+   hid it near the footer is off. */
+body:has(.announcement-bar) .announcement-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 12;
+}
+body:has(.announcement-bar) .page_wrap {
+  padding-top: var(--announcement-offset, 2.1rem);
+}
+.orgc-nav.pull-up { transform: none; }
