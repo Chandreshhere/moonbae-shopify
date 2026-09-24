@@ -65,6 +65,95 @@ function scrollYNow() {
   }, 200);
 })();
 
+// Pull to refresh (phones). With the browser bars fixed, the document no
+// longer scrolls, so the browser's own pull-to-refresh can never fire. This is
+// the replacement: at the top of the page a downward drag moves the whole
+// frame — banner, header and page together, since the transform on the
+// wrapper carries its fixed children with it — over a band in the banner's
+// own colour. Past the threshold it reloads; short of it, it springs back.
+(function pullToRefresh() {
+  if (!lockBars) return;
+  const wrap = pageScroller;
+  const root = document.documentElement;
+  const ind = document.createElement("div");
+  ind.className = "ptr-indicator";
+  ind.setAttribute("aria-hidden", "true");
+  ind.innerHTML = '<span class="ptr-ring"></span>';
+  document.body.insertBefore(ind, document.body.firstChild);
+
+  const THRESHOLD = 72; // px the frame has to travel before letting go reloads
+  const MAX = 130;
+  const RESIST = 0.5; // the frame moves half as far as the finger
+  let startX = 0, startY = 0, tracking = false, engaged = false, pull = 0, busy = false;
+
+  function blocked(t) {
+    if (wrap.style.overflowY === "hidden") return true; // menu or drawer has frozen the page
+    return !!(t && t.closest && t.closest('.nav[data-nav="open"], .w-commerce-commercecartcontainerwrapper, [data-lenis-prevent], .signup-popup, input, textarea, select'));
+  }
+  function bannerColour() {
+    const bar = document.querySelector(".announcement-bar");
+    const c = bar ? getComputedStyle(bar).backgroundColor : "";
+    return c && c !== "rgba(0, 0, 0, 0)" && c !== "transparent" ? c : "";
+  }
+  function set(px) {
+    pull = px;
+    wrap.style.transform = px ? "translate3d(0," + px + "px,0)" : "";
+    root.style.setProperty("--ptr-pull", px + "px");
+    root.style.setProperty("--ptr-rot", Math.round(px * 3) + "deg");
+  }
+
+  wrap.addEventListener("touchstart", (e) => {
+    tracking = false;
+    if (busy || e.touches.length !== 1 || wrap.scrollTop > 0 || blocked(e.target)) return;
+    tracking = true;
+    engaged = false;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    wrap.style.transition = "";
+  }, { passive: true });
+
+  wrap.addEventListener("touchmove", (e) => {
+    if (!tracking || busy) return;
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    if (!engaged) {
+      // Upward, or more sideways than down (the product marquee, the hero
+      // swipe): not a pull, and it is not going to become one.
+      if (dy < 0 || Math.abs(dx) > Math.abs(dy) || wrap.scrollTop > 0) { tracking = false; return; }
+      if (dy === 0) return;
+      engaged = true;
+      const c = bannerColour();
+      if (c) root.style.setProperty("--ptr-bg", c);
+      root.classList.add("is-pulling");
+    }
+    if (e.cancelable) e.preventDefault();
+    set(Math.min(MAX, Math.max(0, dy * RESIST)));
+  }, { passive: false });
+
+  function release() {
+    if (!tracking) return;
+    tracking = false;
+    if (!engaged) return;
+    engaged = false;
+    wrap.style.transition = "transform .3s cubic-bezier(.25, 1, .5, 1)";
+    if (pull >= THRESHOLD) {
+      busy = true;
+      root.classList.add("is-refreshing");
+      set(THRESHOLD);
+      setTimeout(() => location.reload(), 350);
+    } else {
+      set(0);
+      setTimeout(() => {
+        if (busy) return;
+        root.classList.remove("is-pulling");
+        wrap.style.transition = "";
+      }, 320);
+    }
+  }
+  wrap.addEventListener("touchend", release, { passive: true });
+  wrap.addEventListener("touchcancel", release, { passive: true });
+})();
+
 // Scroll position carried across the cart page's reload after an add.
 (function restoreScrollAfterReload() {
   let y = null;

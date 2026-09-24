@@ -1265,3 +1265,45 @@ body:has(.announcement-bar) .page_wrap {
   .page-cart .cart-page_item .cart-page_price p { margin: 0; white-space: nowrap; }
   .page-cart .cart-page_item .checkout-img_wrap { max-width: none; width: 100%; }
 }
+
+
+/* --- Pull to refresh (phones, with the browser bars fixed) ----------------
+   The frame is dragged down by scripts-2026.js; what it uncovers is the body,
+   coloured like the banner while the pull lasts, with a spinner centred in
+   the band. overscroll-behavior none so the frame does not also bounce or
+   show the browser's glow at the top. */
+.ptr-indicator { display: none; }
+@media only screen and (max-width: 767px) {
+  html.lock-browser-bars .page_wrap { overscroll-behavior-y: none; }
+  html.lock-browser-bars .ptr-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--ptr-pull, 0px);
+    z-index: 0;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  html.is-pulling,
+  html.is-pulling body,
+  html.is-refreshing,
+  html.is-refreshing body {
+    background-color: var(--ptr-bg, var(--swatch--brand, #050fff));
+  }
+  html.is-pulling .ptr-indicator,
+  html.is-refreshing .ptr-indicator { visibility: visible; }
+  .ptr-ring {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2.5px solid rgba(255, 255, 255, .35);
+    border-top-color: #fff;
+    transform: rotate(var(--ptr-rot, 0deg));
+  }
+  html.is-refreshing .ptr-ring { animation: ptr-spin .7s linear infinite; }
+}
+@keyframes ptr-spin { to { transform: rotate(360deg); } }
