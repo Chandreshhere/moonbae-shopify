@@ -2711,7 +2711,25 @@ function syncTemplateClasses(container) {
   next.forEach((k) => document.body.classList.add(k));
 }
 
+// The banner marquee runs off the clock, so every copy of it — the one on the
+// page being left and the one arriving — shows the same point in the loop, and
+// returning to a page never starts it over. The duration is read from the
+// inline custom property, which is there whether or not the container is in
+// the document yet. The animation is restarted after the delay is set so its
+// position is exactly the clock's rather than off by however long it had run.
+function syncMarquees(root) {
+  (root || document).querySelectorAll(".announcement-bar_marquee").forEach((m) => {
+    const d = parseFloat(m.style.getPropertyValue("--announcement-speed")) * 1000;
+    if (!(d > 0)) return;
+    m.style.animationDelay = -(Date.now() % d) + "ms";
+    m.style.animationName = "none";
+    void m.offsetWidth;
+    m.style.animationName = "";
+  });
+}
+
 barba.hooks.beforeEnter((data) => {
+  syncMarquees(data.next.container);
   checkPreloader();
   reinitUdeslyCart();
   applySectionClasses(data.next.container);
