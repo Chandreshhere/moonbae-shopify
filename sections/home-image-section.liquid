@@ -1,7 +1,7 @@
 {% render 'section-class', classes: 'page-contain u-container is-section', attrs: 'nav-dark', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
 <div class="split-grid u-grid-desktop">
 
-{%- assign cta_fallbacks = 'moonbae-01.jpg,moonbae-02.jpg,moonbae-03.jpg' | split: ',' -%}
+{%- assign cta_fallbacks = 'moonbae-02.jpg,moonbae-01.jpg,moonbae-03.jpg' | split: ',' -%}
 
 {%- for block in section.blocks -%}
   {%- assign fb = cta_fallbacks[forloop.index0] | default: 'moonbae-01.jpg' -%}
