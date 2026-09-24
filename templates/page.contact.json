@@ -4,7 +4,7 @@
       "type": "intro-section",
       "settings": {
         "mark_size": 0,
-        "text": "<p>A question, an order on its way, or something that turned up wrong? Write to us. A real person reads every message — usually the one who drew the thing you are wearing.</p>",
+        "text": "<p>Questions about a size, an order on its way, or something that arrived wrong? Send us a message and we'll get back to you.</p>",
         "padding_top": 0,
         "padding_bottom": 120
       }
@@ -12,8 +12,8 @@
     "image": {
       "type": "image-section",
       "settings": {
-        "left": "Talk to us",
-        "center": "A real person reads it",
+        "left": "Contact",
+        "center": "moonbae",
         "right": "India",
         "padding_top": 160,
         "padding_bottom": 0
@@ -47,11 +47,11 @@
       ],
       "settings": {
         "mark_size": 0,
-        "heading": "<p>Talk to us</p>",
+        "heading": "<p>Contact</p>",
         "email": "moonstorepod@gmail.com",
-        "social_label": "Follow the cult",
+        "social_label": "Instagram",
         "social_url": "https://www.instagram.com/moonbae.stores",
-        "footnote": "moonbae ©2026 — made after dark",
+        "footnote": "moonbae ©2026",
         "show_form": false,
         "padding_top": 160,
         "padding_bottom": 0
@@ -63,22 +63,22 @@
         "column-1": {
           "type": "column",
           "settings": {
-            "heading": "Around here",
+            "heading": "Shop",
             "hover_images": true,
-            "link_1_label": "The drop",
+            "link_1_label": "All products",
             "link_1_url": "/collections/all",
             "link_2_label": "Home",
             "link_2_url": "/",
-            "link_3_label": "The story",
+            "link_3_label": "About",
             "link_3_url": "/pages/about",
-            "link_4_label": "Talk to us",
+            "link_4_label": "Contact",
             "link_4_url": "/pages/contact"
           }
         },
         "column-2": {
           "type": "column",
           "settings": {
-            "heading": "Follow the cult",
+            "heading": "Social",
             "link_1_label": "Instagram",
             "link_1_url": "https://www.instagram.com/moonbae.stores"
           }
@@ -96,7 +96,7 @@
         "column-4": {
           "type": "column",
           "settings": {
-            "heading": "The fine print",
+            "heading": "Legal",
             "link_1_label": "Privacy Policy",
             "link_1_url": "/policies/privacy-policy",
             "link_2_label": "Refunds",
@@ -136,8 +136,8 @@
       ],
       "settings": {
         "logo_size": 0,
-        "tagline": "<p>moonbae<br/>raw art for the crazy ones</p>",
-        "copyright": "moonbae ©2026 _ made after dark _ all rights reserved",
+        "tagline": "<p>moonbae<br/>original artwork, printed in India</p>",
+        "copyright": "© 2026 moonbae. All rights reserved.",
         "credit_label": "",
         "credit_url": ""
       }

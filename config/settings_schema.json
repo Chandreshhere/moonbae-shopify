@@ -335,7 +335,7 @@
         "type": "text",
         "id": "tab_away_text",
         "label": "Tab messages when someone switches away",
-        "default": "Come back. The art is still here | You left something in the dark | The moon is up. So is your cart",
+        "default": "Your cart is waiting | Come back when you're ready",
         "info": "Shown in the browser tab while the visitor is on another tab. Separate several with a | and they cycle. Leave empty to turn off."
       }
     ]
@@ -419,13 +419,13 @@
         "type": "richtext",
         "id": "cart_empty_text",
         "label": "Empty cart copy",
-        "default": "<p>Nothing in here yet.<br/>That is fixable.</p>"
+        "default": "<p>Your cart is empty.</p>"
       },
       {
         "type": "text",
         "id": "cart_empty_link_label",
         "label": "Empty cart link label",
-        "default": "See the drop"
+        "default": "Shop now"
       },
       {
         "type": "url",
@@ -478,7 +478,7 @@
         "type": "text",
         "id": "cart_recs_heading",
         "label": "Recommendations heading",
-        "default": "More from the cult"
+        "default": "You may also like"
       },
       {
         "type": "header",

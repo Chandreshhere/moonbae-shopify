@@ -6,8 +6,8 @@
         "slide-1": {
           "type": "slide",
           "settings": {
-            "title": "<p>Raw art for the crazy ones</p>",
-            "link_label": "Shop the drop",
+            "title": "<p>Original artwork, printed on streetwear</p>",
+            "link_label": "Shop now",
             "link_url": "/collections/all",
             "new_tab": false
           }
@@ -15,8 +15,8 @@
         "slide-2": {
           "type": "slide",
           "settings": {
-            "title": "<p>Drawn at night.<br/>Printed in India.</p>",
-            "link_label": "The story",
+            "title": "<p>Made to order in India</p>",
+            "link_label": "About us",
             "link_url": "/pages/about",
             "new_tab": false
           }
@@ -24,8 +24,8 @@
         "slide-3": {
           "type": "slide",
           "settings": {
-            "title": "<p>Not for everyone.<br/>Obviously.</p>",
-            "link_label": "Join the cult",
+            "title": "<p>Follow us on Instagram</p>",
+            "link_label": "Instagram",
             "link_url": "https://www.instagram.com/moonbae.stores",
             "new_tab": true
           }
@@ -47,7 +47,7 @@
       "type": "intro-section",
       "settings": {
         "mark_size": 0,
-        "text": "<p>moonbae is a clothing brand for the crazy ones. Raw art — faces, moons, things scratched into notebooks at 3am — printed on tees, hoodies and tops you will actually live in. No polish. No permission. If it makes sense to you, you are already one of us.</p>",
+        "text": "<p>moonbae is a streetwear label from India. We print original artwork by independent artists on tees, hoodies, joggers and tops, made to order and shipped across India.</p>",
         "padding_top": 20,
         "padding_bottom": 0
       }
@@ -57,8 +57,8 @@
       "settings": {
         "collection": "",
         "products_limit": 38,
-        "eyebrow": "<p>( The drop )</p>",
-        "link_label": "See everything",
+        "eyebrow": "<p>( Featured )</p>",
+        "link_label": "View all",
         "link_url": "/collections/all",
         "padding_top": 160,
         "padding_bottom": 0
@@ -70,9 +70,9 @@
         "cta-1": {
           "type": "cta",
           "settings": {
-            "eyebrow": "The drop",
-            "hover_title": "EVERYTHING",
-            "hover_link_label": "Shop the drop",
+            "eyebrow": "Shop",
+            "hover_title": "ALL PRODUCTS",
+            "hover_link_label": "Shop now",
             "link_url": "/collections/all",
             "new_tab": false,
             "width": "6",
@@ -82,8 +82,8 @@
         "cta-2": {
           "type": "cta",
           "settings": {
-            "eyebrow": "For her",
-            "hover_title": "TOPS & THINGS",
+            "eyebrow": "Women",
+            "hover_title": "FOR HER",
             "hover_link_label": "Shop for her",
             "link_url": "/collections/for-her",
             "new_tab": false,
@@ -94,9 +94,9 @@
         "cta-3": {
           "type": "cta",
           "settings": {
-            "eyebrow": "The cult",
-            "hover_title": "LIVE, NIGHTLY",
-            "hover_link_label": "Follow",
+            "eyebrow": "Instagram",
+            "hover_title": "FOLLOW US",
+            "hover_link_label": "Instagram",
             "link_url": "https://www.instagram.com/moonbae.stores",
             "new_tab": true,
             "width": "3",
@@ -118,10 +118,10 @@
       "type": "or-text-section",
       "settings": {
         "mark_size": 0,
-        "eyebrow": "<p>moonbae ©2026<br/>Drawn at night. Printed in India.</p>",
+        "eyebrow": "<p>moonbae ©2026<br/>Designed and printed in India</p>",
         "left_label": "moonbae",
         "right_label": "India",
-        "text": "<p>Every graphic starts as a real drawing from a real hand, and it goes on the shirt looking like it. Printed in India after you order — nothing warehoused, nothing watered down. If it feels like a bit much, good. It was never meant to feel safe.</p>",
+        "text": "<p>Every piece starts as original artwork from an independent artist. We print it on tees, hoodies and joggers in India, to order, and ship it straight to you.</p>",
         "padding_top": 160,
         "padding_bottom": 240
       }
@@ -180,8 +180,8 @@
         "partner-1": {
           "type": "partner",
           "settings": {
-            "title": "Raw, on purpose",
-            "text": "<p>The art goes on the shirt the way it came off the page. No smoothing, no committee. If the line shakes, the line shakes.</p>",
+            "title": "Original artwork",
+            "text": "<p>Every design is drawn by an artist we work with directly. Nothing is stock or licensed.</p>",
             "url": "",
             "link_label": ""
           }
@@ -189,8 +189,8 @@
         "partner-2": {
           "type": "partner",
           "settings": {
-            "title": "Made after dark",
-            "text": "<p>Most of this was drawn at night by people who should have been asleep. That energy is the whole point.</p>",
+            "title": "Made to order",
+            "text": "<p>Each piece is printed in India after you order it. We don't hold stock.</p>",
             "url": "",
             "link_label": ""
           }
@@ -198,8 +198,8 @@
         "partner-3": {
           "type": "partner",
           "settings": {
-            "title": "One at a time",
-            "text": "<p>Printed in India after you order. Nothing sits in a warehouse waiting to be discounted. Each piece exists because you asked for it.</p>",
+            "title": "Artists are paid",
+            "text": "<p>The artist earns a share of every piece sold, and is credited on the product page.</p>",
             "url": "",
             "link_label": ""
           }
@@ -207,8 +207,8 @@
         "partner-4": {
           "type": "partner",
           "settings": {
-            "title": "For the crazy ones",
-            "text": "<p>Artists, misfits, the kid drawing on the back of the exam paper. If you have ever been told to tone it down, this is for you.</p>",
+            "title": "If it arrives wrong",
+            "text": "<p>Damaged, misprinted or incorrect items are replaced or refunded. Details are in the FAQ.</p>",
             "url": "",
             "link_label": ""
           }
@@ -221,9 +221,9 @@
         "partner-4"
       ],
       "settings": {
-        "giving_title": "<p>Art back to artists</p>",
-        "giving_text": "<p>moonbae was never just clothes. It is a way to get raw art out of sketchbooks and onto the street, and to pay the people who make it. Every graphic is credited, and the artist gets a cut of every piece sold. Real money, not exposure.</p>",
-        "list_heading": "What we are about",
+        "giving_title": "<p>Working with artists</p>",
+        "giving_text": "<p>Every design on this site is by an independent artist. They're credited on the product page and earn a share of each sale.</p>",
+        "list_heading": "How we work",
         "padding_top": 0,
         "padding_bottom": 0
       }
@@ -234,23 +234,23 @@
         "column-1": {
           "type": "column",
           "settings": {
-            "heading": "Around here",
+            "heading": "Shop",
             "menu": "",
             "hover_images": true,
-            "link_1_label": "The drop",
+            "link_1_label": "All products",
             "link_1_url": "/collections/all",
             "link_2_label": "Home",
             "link_2_url": "/",
-            "link_3_label": "The story",
+            "link_3_label": "About",
             "link_3_url": "/pages/about",
-            "link_4_label": "Talk to us",
+            "link_4_label": "Contact",
             "link_4_url": "/pages/contact"
           }
         },
         "column-2": {
           "type": "column",
           "settings": {
-            "heading": "Follow the cult",
+            "heading": "Social",
             "menu": "",
             "hover_images": false,
             "link_1_label": "Instagram",
@@ -282,7 +282,7 @@
         "column-4": {
           "type": "column",
           "settings": {
-            "heading": "The fine print",
+            "heading": "Legal",
             "menu": "",
             "hover_images": false,
             "link_1_label": "Privacy Policy",
@@ -304,8 +304,8 @@
       ],
       "settings": {
         "logo_size": 0,
-        "tagline": "<p>moonbae<br/>raw art for the crazy ones</p>",
-        "copyright": "moonbae ©2026 _ made after dark _ all rights reserved",
+        "tagline": "<p>moonbae<br/>original artwork, printed in India</p>",
+        "copyright": "© 2026 moonbae. All rights reserved.",
         "credit_label": "Website by malvah",
         "credit_url": ""
       }

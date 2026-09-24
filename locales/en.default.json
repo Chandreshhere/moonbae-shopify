@@ -5,7 +5,7 @@
       "page": "Page {{ page }}"
     },
     "newsletter_form": {
-      "confirmation": "You are in the cult."
+      "confirmation": "Thanks for signing up."
     },
     "search": {
       "title": "Search",
