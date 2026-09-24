@@ -1579,6 +1579,31 @@ function globalScripts() {
       },
     });
 
+    // Every card carries a full-size overlay link. Pressing on a link or an
+    // image and moving starts the browser's native drag-and-drop — a ghost of
+    // the link — and the pointer sequence is cancelled before Observer sees a
+    // drag, so the row never swiped with a mouse. Refuse the native drag.
+    const stopNativeDrag = (e) => e.preventDefault();
+    content[0].addEventListener("dragstart", stopNativeDrag);
+
+    // Letting go of a swipe over a card must not open the product: the
+    // pointerup that ends the drag is followed by a click on whatever is
+    // under the pointer. Swallow that one click, then forget it happened.
+    let swiped = false;
+    let swipedTimer = null;
+    const swallowClick = (e) => {
+      if (!swiped) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    };
+    content[0].addEventListener("click", swallowClick, true);
+    const armSwipe = () => {
+      swiped = true;
+      clearTimeout(swipedTimer);
+      swipedTimer = setTimeout(() => (swiped = false), 150);
+    };
+    observer.vars.onDrag = ((orig) => (self) => { armSwipe(); orig(self); })(observer.vars.onDrag);
+
     // The auto-scroll never pauses: a drag only adds to `total`, so the row
     // carries on from wherever it was let go.
     gsap.ticker.add(tick);
@@ -1586,6 +1611,9 @@ function globalScripts() {
       observer.kill();
       gsap.ticker.remove(tick);
       ro.disconnect();
+      content[0].removeEventListener("dragstart", stopNativeDrag);
+      content[0].removeEventListener("click", swallowClick, true);
+      clearTimeout(swipedTimer);
       content[0].classList.remove("dragging");
     });
 

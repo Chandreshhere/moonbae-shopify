@@ -1149,3 +1149,16 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
     max-height: 100svh;
   }
 }
+
+
+/* --- Featured marquee: let the swipe reach the Observer -----------------
+   Links and images opt out of the browser's native drag-and-drop (which
+   would otherwise cancel the pointer sequence mid-swipe), and the track
+   claims horizontal touch gestures while leaving vertical page scroll alone. */
+.product-draggable_el { touch-action: pan-y; }
+.product-draggable_el a,
+.product-draggable_el img {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
