@@ -15,14 +15,12 @@
           class="img-contain {{ wrap_class }}"
           data-commerce-type="variation-image">
       {%- else -%}
-        <img src="{{ 'moonbae-01.jpg' | asset_url }}" alt="{{ product.title | escape }}" class="img-contain {{ wrap_class }}" data-commerce-type="variation-image">
+        {%- assign ph_class = 'img-contain ' | append: wrap_class -%}{{ 'product-1' | placeholder_svg_tag: ph_class }}
       {%- endif -%}
 
       {%- assign hover_media = product.media[1] -%}
       {%- if hover_media -%}
         <img src="{{ hover_media | image_url: width: 1200 }}" alt="" class="product-hover_img" loading="lazy">
-      {%- else -%}
-        <img src="{{ 'moonbae-02.jpg' | asset_url }}" alt="" class="product-hover_img" loading="lazy">
       {%- endif -%}
 
       {%- comment -%}

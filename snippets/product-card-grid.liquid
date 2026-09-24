@@ -16,7 +16,7 @@
              srcset="{{ product.featured_media | image_url: width: 500 }} 500w, {{ product.featured_media | image_url: width: 800 }} 800w, {{ product.featured_media | image_url: width: 1200 }} 1200w"
              sizes="(max-width: 767px) 50vw, 32vw">
       {%- else -%}
-        <img src="{{ 'moonbae-01.jpg' | asset_url }}" alt="{{ product.title | escape }}" class="product-img" data-commerce-type="variation-image">
+        {{ 'product-1' | placeholder_svg_tag: 'product-img' }}
       {%- endif -%}
       {%- assign hover_media = product.media[1] -%}
       {%- if hover_media -%}

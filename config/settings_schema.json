@@ -191,7 +191,7 @@
     "settings": [
       {
         "type": "paragraph",
-        "content": "Every slot falls back to the built-in moonbae artwork when left empty. The artwork is fixed-colour, so upload a light version for dark backgrounds and a dark version for light ones. Sizes for the header, menu, footer, intro, about, contact and made-locally marks live in those sections."
+        "content": "Every slot falls back to the built-in moonbae marks when left empty. The marks are fixed-colour, so upload a light version for dark backgrounds and a dark version for light ones. Sizes for the header, menu, footer, intro, about, contact and made-locally marks live in those sections."
       },
       {
         "type": "header",
@@ -201,13 +201,13 @@
         "type": "image_picker",
         "id": "logo_light",
         "label": "Logo — light",
-        "info": "White artwork. Used on the header, preloader and dark footer."
+        "info": "White logo. Used on the header, preloader and dark footer."
       },
       {
         "type": "image_picker",
         "id": "logo_dark",
         "label": "Logo — dark",
-        "info": "Black artwork. Used on light-ground pages and the light footer."
+        "info": "Black logo. Used on light-ground pages and the light footer."
       },
       {
         "type": "header",
@@ -252,7 +252,7 @@
       },
       {
         "type": "header",
-        "content": "Other artwork"
+        "content": "Other images"
       },
       {
         "type": "image_picker",

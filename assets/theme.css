@@ -1162,3 +1162,10 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
   user-select: none;
   -webkit-user-select: none;
 }
+
+
+/* --- Image tiles: the photo fills its box --------------------------------
+   .cta-img_wrap sets the tile's proportion (portrait on phones); the photo
+   inside is absolutely positioned but was never sized, so a landscape photo
+   rendered at its own height and left the rest of the box blank. */
+.cta-img_wrap .g_visual_img.m-absolute { width: 100%; height: 100%; object-fit: cover; }

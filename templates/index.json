@@ -6,7 +6,7 @@
         "slide-1": {
           "type": "slide",
           "settings": {
-            "title": "<p>Original artwork, printed on streetwear</p>",
+            "title": "<p>Streetwear, made to order in India</p>",
             "link_label": "Shop now",
             "link_url": "/collections/all",
             "new_tab": false
@@ -15,7 +15,7 @@
         "slide-2": {
           "type": "slide",
           "settings": {
-            "title": "<p>Made to order in India</p>",
+            "title": "<p>Printed after you order.<br/>Shipped across India.</p>",
             "link_label": "About us",
             "link_url": "/pages/about",
             "new_tab": false
@@ -47,7 +47,7 @@
       "type": "intro-section",
       "settings": {
         "mark_size": 0,
-        "text": "<p>moonbae is a streetwear label from India. We print original artwork by independent artists on tees, hoodies, joggers and tops, made to order and shipped across India.</p>",
+        "text": "<p>moonbae is a streetwear label from India. Tees, hoodies, joggers and tops, printed to order and shipped across India.</p>",
         "padding_top": 20,
         "padding_bottom": 0
       }
@@ -121,7 +121,7 @@
         "eyebrow": "<p>moonbae ©2026<br/>Designed and printed in India</p>",
         "left_label": "moonbae",
         "right_label": "India",
-        "text": "<p>Every piece starts as original artwork from an independent artist. We print it on tees, hoodies and joggers in India, to order, and ship it straight to you.</p>",
+        "text": "<p>Every piece is printed in India after you order it, then shipped straight to you. No stock, no bulk runs.</p>",
         "padding_top": 160,
         "padding_bottom": 240
       }
@@ -180,8 +180,8 @@
         "partner-1": {
           "type": "partner",
           "settings": {
-            "title": "Original artwork",
-            "text": "<p>Every design is drawn by an artist we work with directly. Nothing is stock or licensed.</p>",
+            "title": "Made to order",
+            "text": "<p>Each piece is printed in India after you order it. We don't hold stock.</p>",
             "url": "",
             "link_label": ""
           }
@@ -189,8 +189,8 @@
         "partner-2": {
           "type": "partner",
           "settings": {
-            "title": "Made to order",
-            "text": "<p>Each piece is printed in India after you order it. We don't hold stock.</p>",
+            "title": "Shipped across India",
+            "text": "<p>Dispatched in 2–4 business days and delivered in 5–11 business days.</p>",
             "url": "",
             "link_label": ""
           }
@@ -198,8 +198,8 @@
         "partner-3": {
           "type": "partner",
           "settings": {
-            "title": "Artists are paid",
-            "text": "<p>The artist earns a share of every piece sold, and is credited on the product page.</p>",
+            "title": "Free shipping over ₹1,599",
+            "text": "<p>Flat ₹60 below that.</p>",
             "url": "",
             "link_label": ""
           }
@@ -221,9 +221,9 @@
         "partner-4"
       ],
       "settings": {
-        "giving_title": "<p>Working with artists</p>",
-        "giving_text": "<p>Every design on this site is by an independent artist. They're credited on the product page and earn a share of each sale.</p>",
-        "list_heading": "How we work",
+        "giving_title": "<p>How we work</p>",
+        "giving_text": "<p>Every piece is printed in India after you order it and shipped straight to you. Nothing is made in bulk or left sitting in a warehouse.</p>",
+        "list_heading": "The basics",
         "padding_top": 0,
         "padding_bottom": 0
       }
@@ -304,7 +304,7 @@
       ],
       "settings": {
         "logo_size": 0,
-        "tagline": "<p>moonbae<br/>original artwork, printed in India</p>",
+        "tagline": "<p>moonbae<br/>streetwear, made to order in India</p>",
         "copyright": "© 2026 moonbae. All rights reserved.",
         "credit_label": "Website by malvah",
         "credit_url": ""
