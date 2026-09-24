@@ -4,7 +4,7 @@
       "type": "main-collection",
       "settings": {
         "hero_height": 60,
-        "hero_fit": "cover"
+        "hero_fit": "native"
       }
     },
     "footer": {

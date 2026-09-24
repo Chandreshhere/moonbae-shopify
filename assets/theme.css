@@ -1133,3 +1133,19 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
    the full frame on a black ground instead, chosen per section. */
 .collection-hero.is-contain .collection-hero_visual { background: #000; }
 .collection-hero.is-contain .collection-hero_img { object-fit: contain; }
+
+
+/* --- Category hero: match-the-image mode ---------------------------------
+   The band is min-height based and the image cover-fits it; on a desktop
+   screen the band is wider than a 16:9 photo, so the crop comes off the top
+   and bottom. This mode makes the hero the photo's own proportion instead,
+   capped at the screen height, so the full frame is on screen. Phones keep
+   the band: their box is taller than 16:9, the crop is off the sides, and
+   nothing important is lost. */
+@media only screen and (min-width: 768px) {
+  .collection-hero.is-native {
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+    max-height: 100svh;
+  }
+}

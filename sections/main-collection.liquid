@@ -36,6 +36,8 @@
   assign hero_fit_class = ''
   if section.settings.hero_fit == 'contain'
     assign hero_fit_class = 'is-contain'
+  elsif section.settings.hero_fit == 'native'
+    assign hero_fit_class = 'is-native'
   endif
   assign has_hero = true
   comment
@@ -155,7 +157,7 @@
       "step": 5,
       "unit": "%",
       "default": 60,
-      "info": "Share of the screen the hero fills."
+      "info": "Share of the screen the hero fills — on phones always, and on desktop in the Fill and Letterbox modes."
     },
     {
       "type": "select",
@@ -164,15 +166,19 @@
       "default": "cover",
       "options": [
         {
+          "value": "native",
+          "label": "Match the image (nothing cut off)"
+        },
+        {
           "value": "cover",
-          "label": "Fill the hero (crops to fit)"
+          "label": "Fill the height below (crops to fit)"
         },
         {
           "value": "contain",
-          "label": "Show the whole image"
+          "label": "Letterbox the whole image"
         }
       ],
-      "info": "The bundled images are 16:9. At 60% height, Fill crops their top and bottom; Show the whole image letterboxes instead."
+      "info": "The bundled heroes are 16:9. Match the image sizes the hero to that proportion on desktop, up to full screen, so the whole frame shows; phones keep the height below. Fill uses the height below on every screen and crops."
     },
     {
       "type": "image_picker",
