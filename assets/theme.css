@@ -1214,4 +1214,7 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
   }
+  /* .page_wrap is a flex column; with a fixed height its child would shrink
+     to one screen and the white ground would stop there. */
+  html.lock-browser-bars .page_wrap > .page-main { flex: 0 0 auto; }
 }
