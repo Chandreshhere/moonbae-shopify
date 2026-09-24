@@ -1169,3 +1169,26 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
    inside is absolutely positioned but was never sized, so a landscape photo
    rendered at its own height and left the rest of the box blank. */
 .cta-img_wrap .g_visual_img.m-absolute { width: 100%; height: 100%; object-fit: cover; }
+
+
+/* --- Lock the header on phones -------------------------------------------
+   Two things made the header slide in and out on a phone: the nav pulls up
+   when the footer enters view (and the collapsing address bar near the
+   bottom flips that trigger), and its top tracks the banner's on-screen
+   edge every frame. Here the banner is fixed, so the offset the script
+   computes is a constant, the page is padded by that height, and the
+   pull-up is neutralised. Desktop keeps both behaviours. */
+@media only screen and (max-width: 767px) {
+  body:has(.announcement-bar) .announcement-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 12;
+  }
+  body:has(.announcement-bar) .page_wrap {
+    padding-top: var(--announcement-offset, 2.1rem);
+  }
+  .orgc-nav { transition: none; }
+  .orgc-nav.pull-up { transform: none; }
+}
