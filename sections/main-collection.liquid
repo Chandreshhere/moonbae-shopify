@@ -11,6 +11,11 @@
   categories sat empty, which is the one state worth designing out.
 {%- endcomment -%}
 {%- liquid
+  comment
+    Filters are not allowed inside a render tag's arguments — Liquid rejects
+    the tag, and Shopify then refuses the whole file. Resolve the title here.
+  endcomment
+  assign page_title = collection.title | default: section.settings.fallback_title
   assign hero_image = collection.image
   if hero_image == blank
     assign hero_image = section.settings.hero_fallback_image
@@ -49,7 +54,7 @@
     {%- endcapture -%}
     {% render 'page-hero',
         image: hero_image,
-        title: collection.title | default: section.settings.fallback_title,
+        title: page_title,
         eyebrow: section.settings.eyebrow,
         text: hero_text,
         count: collection.products_count,
