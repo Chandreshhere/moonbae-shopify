@@ -1506,30 +1506,39 @@ function globalScripts() {
     const sliderEl = $(this);
     const content = sliderEl.find("[product-slider]");
     // A short catalogue renders without the marquee attribute; with no track
-    // to measure, content.width() is undefined and the wrap maths yields NaN,
-    // which would translate the row off screen.
+    // to measure there is nothing to loop.
     if (!content.length) return;
     const cards = sliderEl.find(".product-card");
     let total = 0;
-    const itemValues = [];
+    let half = 0;
+    let xTo = null;
 
-    const cardsLength = cards.length / 2;
-    const half = content.width() / 2;
-
-    const wrap = gsap.utils.wrap(-half, 0);
-
-    const xTo = gsap.quickTo(content[0], "x", {
-      duration: 0.5, // transitions over 0.5s
-      ease: "power3", // non-linear easing
-      modifiers: {
-        x: gsap.utils.unitize(wrap),
-      },
-    });
-
-    // Generate an array of random values between -10 and 10
-    for (let i = 0; i < cardsLength; i++) {
-      itemValues.push((Math.random() - 0.5) * 20);
+    // The loop range is baked into both the wrap and the quickTo the moment
+    // they are made. The old code measured once, at init — before images had
+    // laid out, on a phone often at 0 — and a range of (-0, 0) wraps every
+    // position back to x=0: the row sat still, and any drag snapped straight
+    // back. Measure whenever the track's width actually changes instead, and
+    // rebuild the pair each time.
+    function measure() {
+      const w = content.width();
+      if (!w) return false;
+      const next = w / 2;
+      if (next === half && xTo) return true;
+      half = next;
+      const wrap = gsap.utils.wrap(-half, 0);
+      xTo = gsap.quickTo(content[0], "x", {
+        duration: 0.5,
+        ease: "power3",
+        modifiers: { x: gsap.utils.unitize(wrap) },
+      });
+      return true;
     }
+    measure();
+    const ro = new ResizeObserver(() => measure());
+    ro.observe(content[0]);
+    content.find("img").each(function () {
+      if (!this.complete) this.addEventListener("load", measure, { once: true });
+    });
 
     const tl = gsap.timeline({ paused: true });
     tl.to(cards, {
@@ -1544,16 +1553,10 @@ function globalScripts() {
 
     const observer = Observer.create({
       target: content[0],
-      type: "pointer,touch", // detect both pointer and touch events
-      // The row treated any movement at all as a drag, and a drag puts
-      // .dragging on it, which turns pointer-events off on the cards. A mouse
-      // almost always travels a pixel or two between press and release, so an
-      // ordinary click on a product landed on a card that had just been made
-      // untouchable and did nothing — and the second click, held still, worked.
-      // That is the two clicks.
-      //
-      // Below this distance Observer reports no drag at all, so the class is
-      // never applied and the card stays clickable.
+      type: "pointer,touch",
+      // Below this distance Observer reports no drag, so .dragging (which
+      // turns pointer-events off on the cards) is never applied for an
+      // ordinary click, and the product opens on the first tap.
       dragMinimum: DRAG_SLOP,
       onPress: function () {
         tl.play();
@@ -1561,7 +1564,7 @@ function globalScripts() {
       onDrag: (self) => {
         self.target.classList.add("dragging");
         total += self.deltaX;
-        xTo(total);
+        if (xTo) xTo(total);
         lenis.stop();
       },
       onRelease: function (self) {
@@ -1572,21 +1575,23 @@ function globalScripts() {
       onStop: function (self) {
         tl.reverse();
         self.target.classList.remove("dragging");
-        // Was missing here. A drag that ended without a release left the page
-        // unable to scroll at all until something else started lenis again.
         lenis.start();
       },
     });
 
+    // The auto-scroll never pauses: a drag only adds to `total`, so the row
+    // carries on from wherever it was let go.
     gsap.ticker.add(tick);
     onTeardown(() => {
       observer.kill();
       gsap.ticker.remove(tick);
+      ro.disconnect();
       content[0].classList.remove("dragging");
     });
 
     function tick(time, deltaTime) {
-      total -= deltaTime / 20; // Adjust the speed of automatic scrolling
+      if (!xTo && !measure()) return;
+      total -= deltaTime / 20; // speed of the automatic scroll
       xTo(total);
     }
   });

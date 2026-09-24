@@ -14,10 +14,11 @@
 {%- endcomment -%}
 
 {%- if collection.filters.size > 0 -%}
-  <aside class="collection-filters" aria-label="{{ 'collections.filters.title' | t | default: 'Filter' }}">
-    <button type="button" class="collection-filters_toggle body-upper is-mobile" data-filters-toggle aria-expanded="false">
-      {{ section.settings.filter_label | default: 'Filter' }}
-    </button>
+  {%- comment -%}
+    The phone-size open/close button lives in collection-toolbar, so the rail
+    sits in the same row as Sort instead of on a line of its own.
+  {%- endcomment -%}
+  <aside id="CollectionFilters" class="collection-filters" aria-label="{{ 'collections.filters.title' | t | default: 'Filter' }}">
 
     <form method="get" action="{{ collection.url }}" class="collection-filters_form" data-filters-form>
       {%- comment -%} Carry the active sort across a filter change. {%- endcomment -%}

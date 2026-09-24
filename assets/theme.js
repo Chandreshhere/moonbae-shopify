@@ -65,6 +65,26 @@
     update();
   }
 
+  // Collection toolbar. Delegated on document so it survives Barba swapping
+  // the page container, which a per-element bind at init would not.
+  document.addEventListener('change', function (e) {
+    var sel = e.target && e.target.closest ? e.target.closest('[data-sort-select]') : null;
+    if (!sel) return;
+    var url = new URL(window.location.href);
+    url.searchParams.set('sort_by', sel.value);
+    url.searchParams.delete('page');
+    window.location.assign(url.toString());
+  });
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('[data-filters-open]') : null;
+    if (!btn) return;
+    var rail = document.getElementById('CollectionFilters');
+    if (!rail) return;
+    var open = rail.getAttribute('data-open') === 'true';
+    rail.setAttribute('data-open', open ? 'false' : 'true');
+    btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+  });
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {

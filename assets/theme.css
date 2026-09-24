@@ -1074,3 +1074,55 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
   margin-bottom: var(--size--1-25rem, 1.25rem);
 }
 .single-product-heading p { margin: 0; opacity: .55; }
+
+
+/* --- Product cards: hover shows the second image ------------------------
+   styles.css put :hover on the hover image itself, but an overlay link sits
+   above it on both card styles, so the image never received the pointer and
+   the second picture (the back of a tee) never showed. Hover the wrapper —
+   that element does get the pointer. */
+.product-img_wrap:hover .product-hover_img { opacity: 1; }
+
+/* --- Collection grid: two across on phones -------------------------------
+   .u-grid-desktop collapses to a flex column under 992px, which stacked one
+   card per row into a very long scroll. u-column-4 spans four tracks of a
+   twelve-track grid; in a two-track grid that span overflows, so it is reset. */
+@media only screen and (max-width: 991px) {
+  .product-col_list.u-grid-desktop {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--site--gutter);
+    row-gap: calc(var(--site--gutter) * 3);
+  }
+  .product-col_list .product-col_item.u-column-4 { grid-column: auto; width: 100%; }
+}
+
+/* --- Collection toolbar: sort and filter, top right ---------------------- */
+.collection-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0 0 1.25rem;
+}
+.collection-toolbar_sort { display: inline-flex; align-items: center; gap: .5rem; }
+.collection-toolbar_select {
+  font: inherit; color: inherit; background: transparent; cursor: pointer;
+  border: 0; border-bottom: 1px solid currentColor; border-radius: 0;
+  padding: .35rem 0; text-transform: uppercase;
+}
+.collection-toolbar_filter {
+  display: none; font: inherit; color: inherit; background: transparent; cursor: pointer;
+  border: 1px solid currentColor; border-radius: 0; padding: .5rem .9rem;
+}
+/* With the rail on the left, the toolbar takes the full first row above both. */
+@media only screen and (min-width: 992px) {
+  .collection-layout.has-filters .collection-toolbar { grid-column: 1 / -1; }
+}
+@media only screen and (max-width: 991px) {
+  .collection-toolbar { padding: 0 var(--site--margin) 1.25rem; }
+  .collection-toolbar_filter { display: inline-flex; align-items: center; gap: .5rem; }
+  /* Toolbar, then the rail (its form only shows once opened), then the grid —
+     so an opened filter drops in between the controls and the products. */
+  .collection-layout.has-filters { display: flex; flex-direction: column; }
+}

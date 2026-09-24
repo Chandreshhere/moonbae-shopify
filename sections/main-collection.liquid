@@ -85,6 +85,7 @@
     {%- endunless -%}
 
     <div class="collection-layout{% if collection.filters.size > 0 %} has-filters{% endif %}">
+      {% render 'collection-toolbar', collection: collection, section: section %}
       {% render 'collection-filters', collection: collection, section: section %}
 
       <div class="product-col_wrap w-dyn-list" udy-collection="product">
@@ -148,7 +149,7 @@
       "type": "richtext",
       "id": "eyebrow",
       "label": "Eyebrow",
-      "default": "<p>COLLECTION 01 & 02<br/>moonbae \u00a9\ufe0f2026</p>"
+      "default": "<p>COLLECTION 01 & 02<br/>moonbae ©️2026</p>"
     },
     {
       "type": "text",
@@ -156,6 +157,12 @@
       "label": "Filter heading",
       "default": "Filter",
       "info": "The rail only appears once filters are set up in Shopify's Search & Discovery app."
+    },
+    {
+      "type": "text",
+      "id": "sort_label",
+      "label": "Sort label",
+      "default": "Sort"
     },
     {
       "type": "text",

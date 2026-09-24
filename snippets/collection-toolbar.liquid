@@ -1,0 +1,24 @@
+{%- comment -%}
+  Sort, and on phones the filter switch, right-aligned above the grid.
+
+  Sort is a GET form so it works with JavaScript off; theme.js submits it on
+  change and keeps any filter parameters already in the URL when it does. The
+  filter button only exists when Shopify filters are configured, and it opens
+  the same rail the desktop layout shows on the left.
+{%- endcomment -%}
+<div class="collection-toolbar">
+  <form method="get" action="{{ collection.url }}" class="collection-toolbar_sort">
+    <label class="body-upper" for="CollectionSort">{{ section.settings.sort_label | default: 'Sort' }}</label>
+    <select id="CollectionSort" name="sort_by" class="collection-toolbar_select body-upper" data-sort-select>
+      {%- for option in collection.sort_options -%}
+        <option value="{{ option.value | escape }}"{% if option.value == collection.sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
+      {%- endfor -%}
+    </select>
+    <noscript><button type="submit" class="body-upper">{{ 'collections.sorting.apply' | t }}</button></noscript>
+  </form>
+  {%- if collection.filters.size > 0 -%}
+    <button type="button" class="collection-toolbar_filter body-upper" data-filters-open aria-expanded="false" aria-controls="CollectionFilters">
+      {{ section.settings.filter_label | default: 'Filter' }}
+    </button>
+  {%- endif -%}
+</div>

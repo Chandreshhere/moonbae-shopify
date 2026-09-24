@@ -47,6 +47,10 @@
       "apply": "Apply",
       "min": "Minimum price",
       "max": "Maximum price"
+    },
+    "sorting": {
+      "title": "Sort",
+      "apply": "Go"
     }
   },
   "products": {
