@@ -163,11 +163,13 @@ $(".date").text(new Date().getFullYear());
 // the marquee use them for.
 const lenis = lockBars
   ? {
+      get isScrolling() { return false; },
       on() {},
       raf() {},
-      destroy() {},
-      stop() { pageScroller.style.overflowY = "hidden"; },
+      resize() {},
       start() { pageScroller.style.overflowY = ""; },
+      stop() { pageScroller.style.overflowY = "hidden"; },
+      destroy() {},
     }
   : new Lenis();
 
