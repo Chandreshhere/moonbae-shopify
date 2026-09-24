@@ -10,7 +10,7 @@ const lockBars =
 const pageScroller = lockBars ? document.querySelector(".page_wrap") : window;
 if (lockBars) ScrollTrigger.defaults({ scroller: pageScroller });
 function scrollYNow() {
-  return lockBars ? pageScroller.scrollTop : scrollYNow();
+  return lockBars ? pageScroller.scrollTop : window.pageYOffset;
 }
 
 let mm = gsap.matchMedia();
