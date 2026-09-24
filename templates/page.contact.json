@@ -4,7 +4,7 @@
       "type": "intro-section",
       "settings": {
         "mark_size": 0,
-        "text": "<p>Questions about a size, an order on its way, or something that arrived not quite right — write to us and a person will answer. We read everything.</p>",
+        "text": "<p>A question, an order on its way, or something that turned up wrong? Write to us. A real person reads every message — usually the one who drew the thing you are wearing.</p>",
         "padding_top": 0,
         "padding_bottom": 120
       }
@@ -12,8 +12,8 @@
     "image": {
       "type": "image-section",
       "settings": {
-        "left": "Get in touch",
-        "center": "We read everything",
+        "left": "Talk to us",
+        "center": "A real person reads it",
         "right": "India",
         "padding_top": 160,
         "padding_bottom": 0
@@ -47,11 +47,11 @@
       ],
       "settings": {
         "mark_size": 0,
-        "heading": "<p>Contact Us</p>",
+        "heading": "<p>Talk to us</p>",
         "email": "moonstorepod@gmail.com",
-        "social_label": "Instagram",
+        "social_label": "Follow the cult",
         "social_url": "https://www.instagram.com/moonbae.stores",
-        "footnote": "moonbae ©2026",
+        "footnote": "moonbae ©2026 — made after dark",
         "show_form": false,
         "padding_top": 160,
         "padding_bottom": 0
@@ -63,22 +63,22 @@
         "column-1": {
           "type": "column",
           "settings": {
-            "heading": "Site Index",
+            "heading": "Around here",
             "hover_images": true,
-            "link_1_label": "Shop now",
+            "link_1_label": "The drop",
             "link_1_url": "/collections/all",
             "link_2_label": "Home",
             "link_2_url": "/",
-            "link_3_label": "About us",
+            "link_3_label": "The story",
             "link_3_url": "/pages/about",
-            "link_4_label": "Contact Us",
+            "link_4_label": "Talk to us",
             "link_4_url": "/pages/contact"
           }
         },
         "column-2": {
           "type": "column",
           "settings": {
-            "heading": "Social",
+            "heading": "Follow the cult",
             "link_1_label": "Instagram",
             "link_1_url": "https://www.instagram.com/moonbae.stores"
           }
@@ -96,7 +96,7 @@
         "column-4": {
           "type": "column",
           "settings": {
-            "heading": "legal",
+            "heading": "The fine print",
             "link_1_label": "Privacy Policy",
             "link_1_url": "/policies/privacy-policy",
             "link_2_label": "Refunds",
@@ -136,8 +136,8 @@
       ],
       "settings": {
         "logo_size": 0,
-        "tagline": "<p>moonbae<br/>dressed for the quiet hours</p>",
-        "copyright": "All rights reserved _ moonbae ©2026",
+        "tagline": "<p>moonbae<br/>raw art for the crazy ones</p>",
+        "copyright": "moonbae ©2026 _ made after dark _ all rights reserved",
         "credit_label": "",
         "credit_url": ""
       }

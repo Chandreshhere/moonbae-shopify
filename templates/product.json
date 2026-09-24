@@ -69,14 +69,14 @@
         "benefit-1": {
           "type": "benefit",
           "settings": {
-            "title": "Made to order, in India",
-            "text": "Printed and finished after you order — never warehoused"
+            "title": "Made for you, in India",
+            "text": "Printed after you order. Never warehoused, never discounted."
           }
         },
         "benefit-2": {
           "type": "benefit",
           "settings": {
-            "title": "Dispatched in 2–4 business days",
+            "title": "Out the door in 2–4 business days",
             "text": "Delivered in 5–11 business days across India"
           }
         },
@@ -90,7 +90,7 @@
         "benefit-4": {
           "type": "benefit",
           "settings": {
-            "title": "Replaced if it arrives wrong",
+            "title": "Replaced if it turns up wrong",
             "text": "Damaged, misprinted or incorrect — tell us within 5 days"
           }
         }
@@ -119,22 +119,22 @@
         "column-1": {
           "type": "column",
           "settings": {
-            "heading": "Site Index",
+            "heading": "Around here",
             "hover_images": true,
-            "link_1_label": "Shop now",
+            "link_1_label": "The drop",
             "link_1_url": "/collections/all",
             "link_2_label": "Home",
             "link_2_url": "/",
-            "link_3_label": "About us",
+            "link_3_label": "The story",
             "link_3_url": "/pages/about",
-            "link_4_label": "Contact Us",
+            "link_4_label": "Talk to us",
             "link_4_url": "/pages/contact"
           }
         },
         "column-2": {
           "type": "column",
           "settings": {
-            "heading": "Social",
+            "heading": "Follow the cult",
             "link_1_label": "Instagram",
             "link_1_url": "https://www.instagram.com/moonbae.stores"
           }
@@ -152,7 +152,7 @@
         "column-4": {
           "type": "column",
           "settings": {
-            "heading": "legal",
+            "heading": "The fine print",
             "link_1_label": "Privacy Policy",
             "link_1_url": "/policies/privacy-policy",
             "link_2_label": "Refunds",
@@ -189,7 +189,11 @@
         "hover_image-2",
         "hover_image-3",
         "hover_image-4"
-      ]
+      ],
+      "settings": {
+        "tagline": "<p>moonbae<br/>raw art for the crazy ones</p>",
+        "copyright": "moonbae ©2026 _ made after dark _ all rights reserved"
+      }
     }
   },
   "order": [

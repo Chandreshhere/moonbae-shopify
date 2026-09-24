@@ -6,8 +6,8 @@
         "slide-1": {
           "type": "slide",
           "settings": {
-            "title": "<p>Our first collection has landed</p>",
-            "link_label": "Shop Now",
+            "title": "<p>Raw art for the crazy ones</p>",
+            "link_label": "Shop the drop",
             "link_url": "/collections/all",
             "new_tab": false
           }
@@ -15,17 +15,17 @@
         "slide-2": {
           "type": "slide",
           "settings": {
-            "title": "<p>Made slowly, in India</p>",
-            "link_label": "See the collection",
-            "link_url": "/collections/all",
+            "title": "<p>Drawn at night.<br/>Printed in India.</p>",
+            "link_label": "The story",
+            "link_url": "/pages/about",
             "new_tab": false
           }
         },
         "slide-3": {
           "type": "slide",
           "settings": {
-            "title": "<p>Follow along on Instagram<br/>for what comes next</p>",
-            "link_label": "Community",
+            "title": "<p>Not for everyone.<br/>Obviously.</p>",
+            "link_label": "Join the cult",
             "link_url": "https://www.instagram.com/moonbae.stores",
             "new_tab": true
           }
@@ -47,7 +47,7 @@
       "type": "intro-section",
       "settings": {
         "mark_size": 0,
-        "text": "<p>moonbae began with a simple want: clothes that feel like evening. Considered cuts, honest cloth, colour that settles rather than shouts. Made in small runs in India, and made to be worn often — pieces that soften with you instead of wearing out.</p>",
+        "text": "<p>moonbae is a clothing brand for the crazy ones. Raw art — faces, moons, things scratched into notebooks at 3am — printed on tees, hoodies and tops you will actually live in. No polish. No permission. If it makes sense to you, you are already one of us.</p>",
         "padding_top": 20,
         "padding_bottom": 0
       }
@@ -57,8 +57,8 @@
       "settings": {
         "collection": "",
         "products_limit": 38,
-        "eyebrow": "<p>( Featured Products )</p>",
-        "link_label": "View all products",
+        "eyebrow": "<p>( The drop )</p>",
+        "link_label": "See everything",
         "link_url": "/collections/all",
         "padding_top": 160,
         "padding_bottom": 0
@@ -70,9 +70,9 @@
         "cta-1": {
           "type": "cta",
           "settings": {
-            "eyebrow": "Our Products",
-            "hover_title": "COLLECTION 01 & 02",
-            "hover_link_label": "Shop now",
+            "eyebrow": "The drop",
+            "hover_title": "EVERYTHING",
+            "hover_link_label": "Shop the drop",
             "link_url": "/collections/all",
             "new_tab": false,
             "width": "6",
@@ -82,8 +82,8 @@
         "cta-2": {
           "type": "cta",
           "settings": {
-            "eyebrow": "Our Craft",
-            "hover_title": "For Her",
+            "eyebrow": "For her",
+            "hover_title": "TOPS & THINGS",
             "hover_link_label": "Shop for her",
             "link_url": "/collections/for-her",
             "new_tab": false,
@@ -94,9 +94,9 @@
         "cta-3": {
           "type": "cta",
           "settings": {
-            "eyebrow": "Our Community",
-            "hover_title": "Social",
-            "hover_link_label": "Instagram",
+            "eyebrow": "The cult",
+            "hover_title": "LIVE, NIGHTLY",
+            "hover_link_label": "Follow",
             "link_url": "https://www.instagram.com/moonbae.stores",
             "new_tab": true,
             "width": "3",
@@ -118,10 +118,10 @@
       "type": "or-text-section",
       "settings": {
         "mark_size": 0,
-        "eyebrow": "<p>moonbae ©2026<br/>Designed and made in India</p>",
-        "left_label": "Moonbae",
+        "eyebrow": "<p>moonbae ©2026<br/>Drawn at night. Printed in India.</p>",
+        "left_label": "moonbae",
         "right_label": "India",
-        "text": "<p>Everything is cut and sewn in India, close to the people who make it. Small runs, honest hours, cloth chosen by hand. Making it here is how we keep the work truthful — and how we keep home in everything we send out.</p>",
+        "text": "<p>Every graphic starts as a real drawing from a real hand, and it goes on the shirt looking like it. Printed in India after you order — nothing warehoused, nothing watered down. If it feels like a bit much, good. It was never meant to feel safe.</p>",
         "padding_top": 160,
         "padding_bottom": 240
       }
@@ -180,8 +180,8 @@
         "partner-1": {
           "type": "partner",
           "settings": {
-            "title": "Made slowly",
-            "text": "<p>Small runs, cut and sewn in India. We would rather make fewer pieces properly than many of them in a hurry.</p>",
+            "title": "Raw, on purpose",
+            "text": "<p>The art goes on the shirt the way it came off the page. No smoothing, no committee. If the line shakes, the line shakes.</p>",
             "url": "",
             "link_label": ""
           }
@@ -189,8 +189,8 @@
         "partner-2": {
           "type": "partner",
           "settings": {
-            "title": "Chosen by hand",
-            "text": "<p>Cloth picked in person, for how it falls and how it ages. Natural fibres wherever the piece allows it.</p>",
+            "title": "Made after dark",
+            "text": "<p>Most of this was drawn at night by people who should have been asleep. That energy is the whole point.</p>",
             "url": "",
             "link_label": ""
           }
@@ -198,8 +198,8 @@
         "partner-3": {
           "type": "partner",
           "settings": {
-            "title": "Worn often",
-            "text": "<p>Cuts that sit easy and repeat well — made for the wardrobe you reach for, not the one you photograph.</p>",
+            "title": "One at a time",
+            "text": "<p>Printed in India after you order. Nothing sits in a warehouse waiting to be discounted. Each piece exists because you asked for it.</p>",
             "url": "",
             "link_label": ""
           }
@@ -207,8 +207,8 @@
         "partner-4": {
           "type": "partner",
           "settings": {
-            "title": "Kept long",
-            "text": "<p>Finished to last and easy to mend. The best thing a piece of ours can do is soften, and stay.</p>",
+            "title": "For the crazy ones",
+            "text": "<p>Artists, misfits, the kid drawing on the back of the exam paper. If you have ever been told to tone it down, this is for you.</p>",
             "url": "",
             "link_label": ""
           }
@@ -221,9 +221,9 @@
         "partner-4"
       ],
       "settings": {
-        "giving_title": "<p>Giving back</p>",
-        "giving_text": "<p>moonbae was never only about clothes. It is the hands that cut and sew, the people who wear it, and the place it is made. We are building the giving side of this deliberately — small, local, and in the open.</p>",
-        "list_heading": "What we stand for",
+        "giving_title": "<p>Art back to artists</p>",
+        "giving_text": "<p>moonbae was never just clothes. It is a way to get raw art out of sketchbooks and onto the street, and to pay the people who make it. Every graphic is credited, and the artist gets a cut of every piece sold. Real money, not exposure.</p>",
+        "list_heading": "What we are about",
         "padding_top": 0,
         "padding_bottom": 0
       }
@@ -234,23 +234,23 @@
         "column-1": {
           "type": "column",
           "settings": {
-            "heading": "Site Index",
+            "heading": "Around here",
             "menu": "",
             "hover_images": true,
-            "link_1_label": "Shop now",
+            "link_1_label": "The drop",
             "link_1_url": "/collections/all",
             "link_2_label": "Home",
             "link_2_url": "/",
-            "link_3_label": "About us",
+            "link_3_label": "The story",
             "link_3_url": "/pages/about",
-            "link_4_label": "Contact Us",
+            "link_4_label": "Talk to us",
             "link_4_url": "/pages/contact"
           }
         },
         "column-2": {
           "type": "column",
           "settings": {
-            "heading": "Social",
+            "heading": "Follow the cult",
             "menu": "",
             "hover_images": false,
             "link_1_label": "Instagram",
@@ -282,7 +282,7 @@
         "column-4": {
           "type": "column",
           "settings": {
-            "heading": "legal",
+            "heading": "The fine print",
             "menu": "",
             "hover_images": false,
             "link_1_label": "Privacy Policy",
@@ -304,10 +304,11 @@
       ],
       "settings": {
         "logo_size": 0,
-        "tagline": "<p>moonbae<br/>dressed for the quiet hours</p>",
-        "copyright": "All rights reserved _ moonbae ©2026",
+        "tagline": "<p>moonbae<br/>raw art for the crazy ones</p>",
+        "copyright": "moonbae ©2026 _ made after dark _ all rights reserved",
         "credit_label": "Website by malvah",
-        "credit_url": ""
+        "credit_url": "",
+        "signup_heading": "<p>Join the cult</p>"
       }
     }
   },

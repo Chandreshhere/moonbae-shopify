@@ -335,7 +335,7 @@
         "type": "text",
         "id": "tab_away_text",
         "label": "Tab messages when someone switches away",
-        "default": "Come back — your cart is waiting | We miss you already | The moon is still up. So is your cart. | Still here. Still your size. | Psst… you left something behind | Your tee is getting lonely | Don't make us count the stars alone | Free shipping doesn't wait up",
+        "default": "Come back. The art is still here | You left something in the dark | The moon is up. So is your cart",
         "info": "Shown in the browser tab while the visitor is on another tab. Separate several with a | and they cycle. Leave empty to turn off."
       }
     ]
@@ -419,18 +419,19 @@
         "type": "richtext",
         "id": "cart_empty_text",
         "label": "Empty cart copy",
-        "default": "<p>Come on, treat yourself.<br/>You deserve it</p>"
+        "default": "<p>Nothing in here yet.<br/>That is fixable.</p>"
       },
       {
         "type": "text",
         "id": "cart_empty_link_label",
         "label": "Empty cart link label",
-        "default": "Shop now"
+        "default": "See the drop"
       },
       {
         "type": "url",
         "id": "cart_empty_link_url",
-        "label": "Empty cart link URL"
+        "label": "Empty cart link URL",
+        "default": "/collections/all"
       },
       {
         "type": "text",
@@ -477,7 +478,7 @@
         "type": "text",
         "id": "cart_recs_heading",
         "label": "Recommendations heading",
-        "default": "You may also like"
+        "default": "More from the cult"
       },
       {
         "type": "header",
