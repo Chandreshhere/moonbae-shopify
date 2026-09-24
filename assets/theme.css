@@ -565,17 +565,8 @@ body:has(.announcement-bar) .orgc-nav { top: var(--announcement-offset, 2.1rem);
 .nav-link.is-category { margin-right: .25rem; }
 @media only screen and (max-width: 991px) { .nav-link.is-category { display: none; } }
 
-.nav-search { position: relative; display: flex; align-items: center; }
+.nav-search { position: static; display: flex; align-items: center; }
 .nav-search_toggle { background: none; border: 0; color: inherit; font: inherit; cursor: pointer; padding: 0; }
-.nav-search_form {
-  position: absolute; right: 0; top: calc(100% + .6rem);
-  display: flex; align-items: center; gap: .5rem;
-  background: var(--swatch--light); color: var(--swatch--dark);
-  border: 1px solid var(--swatch--dark); padding: .5rem;
-  opacity: 0; visibility: hidden; transform: translateY(-.35rem);
-  transition: opacity 250ms, transform 250ms, visibility 250ms;
-  min-width: min(20rem, 70vw);
-}
 .nav-search[data-open="true"] .nav-search_form { opacity: 1; visibility: visible; transform: translateY(0); }
 .nav-search_input {
   flex: 1; min-width: 0; border: 0; background: transparent; color: inherit;
@@ -1307,3 +1298,38 @@ body:has(.announcement-bar) .page_wrap {
   html.is-refreshing .ptr-ring { animation: ptr-spin .7s linear infinite; }
 }
 @keyframes ptr-spin { to { transform: rotate(360deg); } }
+
+
+/* --- Header search: a full-width bar under the header ---------------------
+   It used to be a small pop-out anchored to the word Search, so it landed
+   wherever that word happened to sit. Now it spans the screen directly
+   below the header; scripts-2026.js measures the header's bottom into
+   --nav-search-top when it opens. */
+.nav-search_form {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--nav-search-top, 6.4rem);
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .85rem var(--site--margin, 20px);
+  background: var(--swatch--light);
+  color: var(--swatch--dark);
+  border-bottom: 1px solid var(--swatch--dark);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-.5rem);
+  transition: opacity 250ms, transform 250ms, visibility 250ms;
+}
+.nav-search_input { font-size: 1rem; padding: .5rem 0; }
+.nav-search_submit { flex: none; border: 1px solid currentColor; padding: .55rem 1rem; }
+.nav-search_icon { display: none; }
+.nav-search_toggle { display: inline-flex; align-items: center; }
+
+@media only screen and (max-width: 767px) {
+  .nav-search_icon { display: inline-flex; }
+  .nav-search_label { display: none; }
+  /* Under 16px iOS zooms the whole page when the field is focused. */
+  .nav-search_input { font-size: 16px; }
+}

@@ -937,16 +937,26 @@ function globalScripts() {
     const btn = wrap.querySelector("[data-nav-search-toggle]");
     const input = wrap.querySelector(".nav-search_input");
     const set = (open) => {
+      // The bar sits directly under the header, full width; measure the
+      // header each time it opens rather than assume its height.
+      if (open) {
+        const nav = wrap.closest(".orgc-nav");
+        if (nav) wrap.style.setProperty("--nav-search-top", Math.round(nav.getBoundingClientRect().bottom) + "px");
+      }
       wrap.setAttribute("data-open", open ? "true" : "false");
       btn.setAttribute("aria-expanded", open ? "true" : "false");
       if (open) setTimeout(() => input && input.focus(), 60);
     };
     set(false);
     btn.addEventListener("click", () => set(wrap.getAttribute("data-open") !== "true"));
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
+    const onKey = (e) => { if (e.key === "Escape") set(false); };
+    document.addEventListener("keydown", onKey);
     const closeOnOutside = (e) => { if (!wrap.contains(e.target)) set(false); };
     document.addEventListener("click", closeOnOutside);
-    onTeardown(() => document.removeEventListener("click", closeOnOutside));
+    onTeardown(() => {
+      document.removeEventListener("click", closeOnOutside);
+      document.removeEventListener("keydown", onKey);
+    });
   });
 
   // Free shipping progress. Rendered server-side for the first paint, then kept
