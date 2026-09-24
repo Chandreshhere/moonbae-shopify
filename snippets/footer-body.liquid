@@ -108,13 +108,13 @@
   {%- for block in section.blocks -%}
     {%- if block.type == 'hover_image' -%}
       {%- assign fb_index = hover_i | modulo: 4 -%}
-      {% render 'img', image: block.settings.image, alt: block.settings.alt, fallback: footer_fallbacks[fb_index], class: 'img-fill', attrs: block.shopify_attributes %}
+      {% render 'img', image: block.settings.image, alt: block.settings.alt, fallback: footer_fallbacks[fb_index], fallback_width: '900x', class: 'img-fill', attrs: block.shopify_attributes %}
       {%- assign hover_i = hover_i | plus: 1 -%}
     {%- endif -%}
   {%- endfor -%}
   {%- if hover_i == 0 -%}
     {%- for file in footer_fallbacks -%}
-      {% render 'img', fallback: file, class: 'img-fill' %}
+      {% render 'img', fallback: file, fallback_width: '900x', class: 'img-fill' %}
     {%- endfor -%}
   {%- endif -%}
 </div>

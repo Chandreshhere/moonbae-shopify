@@ -1192,3 +1192,26 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
   .orgc-nav { transition: none; }
   .orgc-nav.pull-up { transform: none; }
 }
+
+
+/* --- Keep the browser's own bars fixed on phones -------------------------
+   Browsers collapse their address bar and bottom toolbar when the document
+   scrolls. Under 768px the document is frozen and .page_wrap scrolls
+   instead, which they leave alone. scripts-2026.js points ScrollTrigger at
+   the wrapper. Switched by the Behaviour setting that adds the class. */
+@media only screen and (max-width: 767px) {
+  html.lock-browser-bars,
+  html.lock-browser-bars body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  html.lock-browser-bars .page_wrap {
+    height: 100dvh;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+}

@@ -14,7 +14,8 @@
              class="product-img"
              data-commerce-type="variation-image"
              srcset="{{ product.featured_media | image_url: width: 500 }} 500w, {{ product.featured_media | image_url: width: 800 }} 800w, {{ product.featured_media | image_url: width: 1200 }} 1200w"
-             sizes="(max-width: 767px) 50vw, 32vw">
+             sizes="(max-width: 767px) 50vw, 32vw"
+             loading="lazy" decoding="async">
       {%- else -%}
         {{ 'product-1' | placeholder_svg_tag: 'product-img' }}
       {%- endif -%}

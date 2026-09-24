@@ -2,7 +2,8 @@
   Renders an <img> from a section/block image setting, falling back to a bundled
   placeholder asset so the theme looks complete on a brand-new store.
 
-  Params: image, fallback (asset filename), alt, class, sizes, loading, attrs
+  Params: image, fallback (asset filename), alt, class, sizes, loading, attrs,
+          fallback_width ('900x' etc.) to serve the bundled file CDN-resized
   attrs takes raw attributes (e.g. block.shopify_attributes) so blocks stay
   selectable in the editor without a wrapper element disturbing the CSS.
 {%- endcomment -%}
@@ -28,5 +29,6 @@
     height="{{ image.height }}"
     {{ attrs }}>
 {%- else -%}
-  <img src="{{ fallback | asset_url }}" alt="{{ img_alt | escape }}" class="{{ img_class }}" loading="{{ img_loading }}" decoding="async" {{ attrs }}>
+  {%- if fallback_width != blank -%}{%- assign fb_src = fallback | asset_img_url: fallback_width -%}{%- else -%}{%- assign fb_src = fallback | asset_url -%}{%- endif -%}
+  <img src="{{ fb_src }}" alt="{{ img_alt | escape }}" class="{{ img_class }}" loading="{{ img_loading }}" decoding="async" {{ attrs }}>
 {%- endif -%}

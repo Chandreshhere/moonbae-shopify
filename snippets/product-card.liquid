@@ -13,6 +13,7 @@
           sizes="(max-width: 767px) 60vw, 25vw"
           alt="{{ product.featured_media.alt | default: product.title | escape }}"
           class="img-contain {{ wrap_class }}"
+          loading="lazy" decoding="async"
           data-commerce-type="variation-image">
       {%- else -%}
         {%- assign ph_class = 'img-contain ' | append: wrap_class -%}{{ 'product-1' | placeholder_svg_tag: ph_class }}

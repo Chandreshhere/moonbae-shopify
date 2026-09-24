@@ -1,4 +1,12 @@
 {% render 'section-class', id: 'home-hero', classes: 'hero-slider', attrs: 'full-slider,nav-light', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+{%- comment -%}
+  The home page had no H1 — every other template has one. Visually hidden,
+  it names the brand and the tagline for search engines without changing
+  what renders.
+{%- endcomment -%}
+{%- if request.page_type == 'index' -%}
+  <h1 class="u-visually-hidden">{{ settings.brand_name | default: shop.name | escape }} — {{ settings.seo_tagline | default: 'streetwear, made to order in India' | escape }}</h1>
+{%- endif -%}
 
 {%- assign hero_fallbacks = 'hero-1.jpg,hero-2.jpg,hero-3.jpg' | split: ',' -%}
 {%- assign hero_nav_fallbacks = 'hero-1.jpg,hero-2.jpg,hero-3.jpg' | split: ',' -%}
@@ -35,9 +43,9 @@
           <div class="g_visual_background"></div>
           {%- comment -%} The first slide is the LCP element, so it must not be deferred. {%- endcomment -%}
           {%- if forloop.first -%}
-            {% render 'img', image: block.settings.image, fallback: fb, class: 'hero-visual_el u-cover-absolute', loading: 'eager' %}
+            {% render 'img', image: block.settings.image, fallback: fb, class: 'hero-visual_el u-cover-absolute', loading: 'eager', attrs: 'fetchpriority="high"' %}
           {%- else -%}
-            {% render 'img', image: block.settings.image, fallback: fb, class: 'hero-visual_el u-cover-absolute' %}
+            {% render 'img', image: block.settings.image, fallback: fb, class: 'hero-visual_el u-cover-absolute', attrs: 'fetchpriority="low"' %}
           {%- endif -%}
           <div class="hero-visual_el-vid u-cover-absolute">
             {%- if block.settings.video != blank -%}

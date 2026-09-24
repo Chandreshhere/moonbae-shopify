@@ -123,12 +123,12 @@
         {%- if section.blocks.size > 0 -%}
           {%- for block in section.blocks -%}
             {%- assign fb_index = forloop.index0 | modulo: 4 -%}
-            {% render 'img', image: block.settings.image, fallback: menu_fallbacks[fb_index], class: 'img-fill' %}
+            {% render 'img', image: block.settings.image, fallback: menu_fallbacks[fb_index], fallback_width: '900x', class: 'img-fill' %}
           {%- endfor -%}
         {%- elsif section.settings.menu != blank and menu_links.size > 0 -%}
           {%- for link in menu_links -%}
             {%- assign fb_index = forloop.index0 | modulo: 4 -%}
-            {% render 'img', image: nil, fallback: menu_fallbacks[fb_index], class: 'img-fill' %}
+            {% render 'img', image: nil, fallback: menu_fallbacks[fb_index], fallback_width: '900x', class: 'img-fill' %}
           {%- endfor -%}
         {%- endif -%}
       </div>

@@ -6,7 +6,7 @@
       {%- assign preload_imgs = 'moonbae-07.jpg,moonbae-03.jpg,moonbae-09.jpg,moonbae-04.jpg,moonbae-05.jpg,moonbae-06.jpg,moonbae-07.jpg,moonbae-08.jpg' | split: ',' -%}
       {%- for file in preload_imgs -%}
         {%- assign key = 'preloader_image_' | append: forloop.index -%}
-        {% render 'img', image: settings[key], fallback: file, class: 'preloader-img' %}
+        {% render 'img', image: settings[key], fallback: file, fallback_width: '900x', class: 'preloader-img' %}
       {%- endfor -%}
     </div>
   </div>

@@ -1,3 +1,18 @@
+// Browser-bar lock (phones). Mobile browsers hide their address bar and
+// bottom toolbar whenever the document scrolls, and nothing can switch that
+// off. theme.css freezes html/body under 768px and makes .page_wrap the
+// scroller instead, which browsers leave alone — so everything below that
+// watched the window has to watch the wrapper. Driven by a theme setting.
+const lockBars =
+  document.documentElement.classList.contains("lock-browser-bars") &&
+  window.matchMedia("(max-width: 767px)").matches &&
+  !!document.querySelector(".page_wrap");
+const pageScroller = lockBars ? document.querySelector(".page_wrap") : window;
+if (lockBars) ScrollTrigger.defaults({ scroller: pageScroller });
+function scrollYNow() {
+  return lockBars ? pageScroller.scrollTop : scrollYNow();
+}
+
 let mm = gsap.matchMedia();
 gsap.registerPlugin(Observer);
 // add a media query. When it matches, the associated function will run
@@ -142,7 +157,19 @@ $(".date").text(new Date().getFullYear());
   });
 })();
 
-const lenis = new Lenis();
+// With the wrapper scrolling natively on phones there is nothing for Lenis
+// to drive (touch was native already); a stand-in keeps every caller working
+// and turns stop/start into freezing the wrapper, which is what the menu and
+// the marquee use them for.
+const lenis = lockBars
+  ? {
+      on() {},
+      raf() {},
+      destroy() {},
+      stop() { pageScroller.style.overflowY = "hidden"; },
+      start() { pageScroller.style.overflowY = ""; },
+    }
+  : new Lenis();
 
 lenis.on("scroll", ScrollTrigger.update);
 
@@ -2361,13 +2388,13 @@ reinitUdeslyCart();
 function flowOffset(current) {
   // The outgoing container is still sitting in flow at exactly the spot the
   // incoming one will take, so measure that rather than adding up whatever
-  // happens to be above it. window.scrollY turns the viewport rect back into a
+  // happens to be above it. scrollYNow() turns the viewport rect back into a
   // document position — the visitor may well have scrolled before clicking.
   if (current) {
     const box = current.getBoundingClientRect();
     // Not rounded: the banner's height is a rem value that rarely lands on a
     // whole pixel, and rounding it left half a pixel of movement behind.
-    if (box.height > 0) return Math.max(0, box.top + window.scrollY);
+    if (box.height > 0) return Math.max(0, box.top + scrollYNow());
   }
   const bar = document.querySelector(".announcement-bar");
   return bar ? bar.offsetHeight || 0 : 0;

@@ -18,6 +18,13 @@
         "info": "Used as the alt text on every logo and monogram."
       },
       {
+        "type": "text",
+        "id": "seo_tagline",
+        "label": "Tagline",
+        "default": "streetwear, made to order in India",
+        "info": "Follows the brand name in the browser tab, in link previews, and as the home page's heading for search engines."
+      },
+      {
         "type": "image_picker",
         "id": "favicon",
         "label": "Favicon"
@@ -337,6 +344,13 @@
         "label": "Tab messages when someone switches away",
         "default": "Your cart is waiting | Come back when you're ready",
         "info": "Shown in the browser tab while the visitor is on another tab. Separate several with a | and they cycle. Leave empty to turn off."
+      },
+      {
+        "type": "checkbox",
+        "id": "lock_browser_bars",
+        "label": "Keep the browser's bars fixed on phones",
+        "default": true,
+        "info": "Phones hide the address bar and bottom toolbar as the page scrolls. On, the page scrolls inside a frame the browser leaves alone, so its bars stay put. Turn off if scrolling misbehaves on a device."
       }
     ]
   },
