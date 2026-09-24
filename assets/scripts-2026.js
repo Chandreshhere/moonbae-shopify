@@ -237,7 +237,9 @@ $(".date").text(new Date().getFullYear());
     // in place, so the header on every other page hung a banner's height below
     // the top of the screen with nothing above it.
     const bar = document.querySelector(".announcement-bar");
-    const offset = bar ? Math.max(0, bar.getBoundingClientRect().bottom) : 0;
+    // The banner is fixed at the top, so its height is the offset — and unlike
+    // its position, a transform in mid-transition cannot change it.
+    const offset = bar ? bar.getBoundingClientRect().height : 0;
     document.documentElement.style.setProperty("--announcement-offset", offset + "px");
   }
   function onScroll() {
@@ -2603,26 +2605,6 @@ function reinitUdeslyCart() {
 }
 reinitUdeslyCart();
 
-// How far down the page the container sits once it is back in normal flow.
-// The announcement bar is outside the Barba container, in flow above it, so a
-// container pinned to top: 0 during the transition is sitting exactly one
-// banner higher than where it will land — and every page dropped by that much
-// the moment the transition released it. That is the lurch: the hero "moving
-// down after loading" on every page. Measure the banner and start there.
-function flowOffset(current) {
-  // The outgoing container is still sitting in flow at exactly the spot the
-  // incoming one will take, so measure that rather than adding up whatever
-  // happens to be above it. scrollYNow() turns the viewport rect back into a
-  // document position — the visitor may well have scrolled before clicking.
-  if (current) {
-    const box = current.getBoundingClientRect();
-    // Not rounded: the banner's height is a rem value that rarely lands on a
-    // whole pixel, and rounding it left half a pixel of movement behind.
-    if (box.height > 0) return Math.max(0, box.top + scrollYNow());
-  }
-  const bar = document.querySelector(".announcement-bar");
-  return bar ? bar.offsetHeight || 0 : 0;
-}
 
 // The nav is position:fixed, but it lives inside the Barba container, and both
 // containers carry a transform for the length of the transition — which makes
@@ -2650,9 +2632,15 @@ barba.hooks.enter((data) => {
     }
   }
 
+  // Where this page will rest once it is back in flow and scrolled to the top:
+  // just below its own banner (page_wrap is padded by the banner's height), or
+  // at the very top when it has none. Pinning it anywhere else leaves a jump
+  // for the moment the transition lets go.
+  const arrivingBar = data.next.container.querySelector(".announcement-bar");
+  const landing = arrivingBar ? arrivingBar.getBoundingClientRect().height : 0;
   gsap.set(data.next.container, {
     position: "fixed",
-    top: flowOffset(current),
+    top: landing,
     left: 0,
     width: "100%",
   });
@@ -2665,9 +2653,13 @@ barba.hooks.enter((data) => {
   // The rect's height, not offsetHeight: the bar is sized in rem and lands on
   // 33.6px, which offsetHeight rounds to 34 and leaves half a pixel of movement
   // behind at the end of every arrival.
-  const arrivingBar = data.next.container.querySelector(".announcement-bar");
+  // The banner and header are position:fixed, and a transformed container is
+  // what fixed children measure from — so both are placed from the container's
+  // top, which is `landing`. Banner back up to the top of the screen, header
+  // at the container's top, i.e. just under the banner.
   const nav = data.next.container.querySelector(".orgc-nav");
-  if (nav) gsap.set(nav, { top: arrivingBar ? arrivingBar.getBoundingClientRect().height : 0 });
+  if (arrivingBar) gsap.set(arrivingBar, { top: -landing });
+  if (nav) gsap.set(nav, { top: 0 });
 
   // Departing header: the same trap, and by far the more visible one, because
   // it happens the instant you click rather than at the end. At the top of a
@@ -2676,6 +2668,10 @@ barba.hooks.enter((data) => {
   // a single frame on a page scrolled 600. Freeze it where the eye last saw it
   // and let it slide away with the rest of the page.
   if (leaving) gsap.set(leaving, { top: leavingTop });
+  // The outgoing banner, likewise: without this it drops from the top of the
+  // screen to the top of its container and lands on its own header.
+  const leavingBar = current && current.querySelector(".announcement-bar");
+  if (leavingBar && current) gsap.set(leavingBar, { top: -current.getBoundingClientRect().top });
 });
 barba.hooks.before((data) => {
   lenis.stop();
@@ -2739,6 +2735,8 @@ barba.hooks.after((data) => {
   gsap.set(data.next.container, { position: "relative" });
   const nav = data.next.container.querySelector(".orgc-nav");
   if (nav) gsap.set(nav, { clearProps: "top" });
+  const bar = data.next.container.querySelector(".announcement-bar");
+  if (bar) gsap.set(bar, { clearProps: "top" });
   $(window).scrollTop(0);
   // On phones the page scrolls inside .page_wrap, which the line above does not
   // touch — so a page opened from low down arrived at the footer.
