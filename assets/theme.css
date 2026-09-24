@@ -1126,3 +1126,10 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
      so an opened filter drops in between the controls and the products. */
   .collection-layout.has-filters { display: flex; flex-direction: column; }
 }
+
+
+/* --- Category hero: whole-image mode -------------------------------------
+   The bundled heroes are 16:9; a 60%-height band crops them. This mode shows
+   the full frame on a black ground instead, chosen per section. */
+.collection-hero.is-contain .collection-hero_visual { background: #000; }
+.collection-hero.is-contain .collection-hero_img { object-fit: contain; }

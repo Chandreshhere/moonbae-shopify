@@ -26,7 +26,7 @@
     <div class="menu-bg">
       <div class="bg-panel_full">
         <div class="bg-panel_full-img">
-          {% render 'img', image: section.settings.menu_bg_image, fallback: 'or-menu-bg.jpg', class: 'img-fill', sizes: '(max-width: 1440px) 100vw, 1440px' %}
+          {% render 'img', image: section.settings.menu_bg_image, fallback: 'moonbae-06.jpg', class: 'img-fill', sizes: '(max-width: 1440px) 100vw, 1440px' %}
           <div class="menu-extras">
             <div class="bg-panel_contain u-container">
               <div class="menu-bottom_layout u-grid-desktop m-centered">
@@ -119,7 +119,7 @@
         {%- comment -%}
           One image per link, in link order — the hover script pairs them by index.
         {%- endcomment -%}
-        {%- assign menu_fallbacks = 'or-menu-hover-1.jpg,or-menu-hover-2.jpg,or-menu-hover-3.jpg,or-menu-hover-4.jpg' | split: ',' -%}
+        {%- assign menu_fallbacks = 'moonbae-07.jpg,moonbae-08.jpg,moonbae-09.jpg,moonbae-10.jpg' | split: ',' -%}
         {%- if section.blocks.size > 0 -%}
           {%- for block in section.blocks -%}
             {%- assign fb_index = forloop.index0 | modulo: 4 -%}

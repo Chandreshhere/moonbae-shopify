@@ -1,7 +1,11 @@
 {
   "sections": {
     "main": {
-      "type": "main-collection"
+      "type": "main-collection",
+      "settings": {
+        "hero_height": 60,
+        "hero_fit": "cover"
+      }
     },
     "footer": {
       "type": "footer-dark",

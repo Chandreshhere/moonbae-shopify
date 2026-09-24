@@ -20,6 +20,23 @@
   if hero_image == blank
     assign hero_image = section.settings.hero_fallback_image
   endif
+  comment
+    Men and Women ship with a bundled hero of their own, keyed by collection
+    handle, so the category pages are dressed before a Collection image is
+    uploaded in admin. Anything else falls to the shared bundled image.
+  endcomment
+  assign hero_fallback = 'moonbae-07.jpg'
+  assign bundled_heroes = 'men:hero-men.jpg,mens:hero-men.jpg,women:hero-women.jpg,womens:hero-women.jpg,for-her:hero-women.jpg' | split: ','
+  for pair in bundled_heroes
+    assign parts = pair | split: ':'
+    if parts[0] == collection.handle
+      assign hero_fallback = parts[1]
+    endif
+  endfor
+  assign hero_fit_class = ''
+  if section.settings.hero_fit == 'contain'
+    assign hero_fit_class = 'is-contain'
+  endif
   assign has_hero = true
   comment
     A hero page drops u-container from the section wrapper and hands it to the
@@ -59,6 +76,8 @@
         text: hero_text,
         count: collection.products_count,
         count_attr: 'count-items="total"',
+        fallback: hero_fallback,
+        modifier: hero_fit_class,
         height: section.settings.hero_height %}
   {%- endif -%}
 
@@ -137,6 +156,23 @@
       "unit": "%",
       "default": 60,
       "info": "Share of the screen the hero fills."
+    },
+    {
+      "type": "select",
+      "id": "hero_fit",
+      "label": "Hero image",
+      "default": "cover",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Fill the hero (crops to fit)"
+        },
+        {
+          "value": "contain",
+          "label": "Show the whole image"
+        }
+      ],
+      "info": "The bundled images are 16:9. At 60% height, Fill crops their top and bottom; Show the whole image letterboxes instead."
     },
     {
       "type": "image_picker",

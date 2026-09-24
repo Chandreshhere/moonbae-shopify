@@ -1,10 +1,10 @@
 {% render 'section-class', classes: 'page-contain u-container is-section', attrs: 'nav-dark', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
 <div class="split-grid u-grid-desktop">
 
-{%- assign cta_fallbacks = 'or-cta-1.jpg,or-cta-2.jpg,or-cta-3.jpg' | split: ',' -%}
+{%- assign cta_fallbacks = 'moonbae-01.jpg,moonbae-02.jpg,moonbae-03.jpg' | split: ',' -%}
 
 {%- for block in section.blocks -%}
-  {%- assign fb = cta_fallbacks[forloop.index0] | default: 'or-cta-1.jpg' -%}
+  {%- assign fb = cta_fallbacks[forloop.index0] | default: 'moonbae-01.jpg' -%}
   <div class="split-col u-column-{{ block.settings.width }}{% if block.settings.full_height %} is-100{% endif %}" {{ block.shopify_attributes }}>
     <a overlay="trigger" href="{{ block.settings.link_url }}"{% if block.settings.new_tab %} target="_blank"{% endif %} class="cta-block w-inline-block">
       <div class="body-upper is-desktop">

@@ -3,12 +3,12 @@
 <div class="split-grid u-grid-desktop">
   <div class="split-col u-column-6">
     <div img-scroll="" class="about-img_right">
-      {% render 'img', image: section.settings.portrait, fallback: 'or-about-portrait.jpg', class: 'img-fill' %}
+      {% render 'img', image: section.settings.portrait, fallback: 'moonbae-06.jpg', class: 'img-fill' %}
     </div>
   </div>
   <div nav-light="" class="split-col u-column-6">
     <div flickthrough-wrap="" img-scroll="" class="about-img_left">
-      {%- assign flick_fallbacks = 'or-about-flick-1.jpg,or-about-flick-2.jpg,or-about-flick-3.jpg,or-about-flick-4.jpg,or-about-flick-5.jpg,or-about-flick-6.jpg,or-about-flick-7.jpg,or-about-flick-8.jpg' | split: ',' -%}
+      {%- assign flick_fallbacks = 'moonbae-07.jpg,moonbae-08.jpg,moonbae-09.jpg,moonbae-10.jpg,moonbae-01.jpg,moonbae-02.jpg,moonbae-03.jpg,moonbae-04.jpg' | split: ',' -%}
       {%- assign flick_i = 0 -%}
       {%- for block in section.blocks -%}
         {%- if block.type == 'flick' -%}
@@ -59,7 +59,7 @@
       Capped at four blocks: the CSS positions .sticky-item is-1 … is-5, and the
       fifth slot below is the fixed logo panel.
     {%- endcomment -%}
-    {%- assign sticky_fallbacks = 'or-about-sticky-1.jpg,or-about-sticky-2.jpg,or-about-sticky-3.jpg,or-about-sticky-4.jpg' | split: ',' -%}
+    {%- assign sticky_fallbacks = 'moonbae-05.jpg,moonbae-06.jpg,moonbae-07.jpg,moonbae-08.jpg' | split: ',' -%}
     {%- assign sticky_i = 0 -%}
     {%- for block in section.blocks -%}
       {%- if block.type == 'sticky' -%}
@@ -105,7 +105,7 @@
     {%- if section.settings.pillars != blank -%}
       <img src="{{ section.settings.pillars | image_url: width: 1400 }}" alt="" sizes="(max-width: 1400px) 100vw, 1400px" class="orgc-logo" width="{{ section.settings.pillars.width }}" height="{{ section.settings.pillars.height }}">
     {%- else -%}
-      <img src="{{ 'or-about-pillars.png' | asset_url }}" alt="" class="orgc-logo" width="2000" height="708">
+      <img src="{{ 'moonbae-09.jpg' | asset_url }}" alt="" class="orgc-logo" width="1672" height="941">
     {%- endif -%}
   </div>
 </div>

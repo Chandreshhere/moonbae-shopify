@@ -1,13 +1,13 @@
 {% render 'section-class', id: 'home-hero', classes: 'hero-slider', attrs: 'full-slider,nav-light', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
 
-{%- assign hero_fallbacks = 'or-hero-1.jpg,or-hero-2.jpg,or-hero-3.jpg' | split: ',' -%}
-{%- assign hero_nav_fallbacks = 'or-hero-nav-1.jpg,or-hero-nav-2.jpg,or-hero-3.jpg' | split: ',' -%}
+{%- assign hero_fallbacks = 'hero-1.jpg,hero-2.jpg,hero-3.jpg' | split: ',' -%}
+{%- assign hero_nav_fallbacks = 'hero-1.jpg,hero-2.jpg,hero-3.jpg' | split: ',' -%}
 
 <div class="hero-center is-desktop">
   <div class="hero-slider_nav-wrap u-container">
     <div class="hero-slider_nav-list">
       {%- for block in section.blocks -%}
-        {%- assign nav_fb = hero_nav_fallbacks[forloop.index0] | default: 'or-hero-nav-1.jpg' -%}
+        {%- assign nav_fb = hero_nav_fallbacks[forloop.index0] | default: 'hero-1.jpg' -%}
         <div class="hero-slider_nav-item{% if forloop.first %} active{% endif %}" data-slide-nav="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
           <div solo-img_hov="" class="slide-nav_layout">
             <h2 italics="" class="hero-slider_num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</h2>
@@ -29,7 +29,7 @@
 <div class="hero-slider_wrap" nav-light="">
   <div class="hero-slider_list">
     {%- for block in section.blocks -%}
-      {%- assign fb = hero_fallbacks[forloop.index0] | default: 'or-hero-1.jpg' -%}
+      {%- assign fb = hero_fallbacks[forloop.index0] | default: 'hero-1.jpg' -%}
       <div class="hero-slider_item" style="display: {% if forloop.first %}flex{% else %}none{% endif %};">
         <div class="hero-slide_visual u-cover-absolute">
           <div class="g_visual_background"></div>
