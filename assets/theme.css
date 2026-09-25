@@ -248,6 +248,7 @@
    .preloader_wrap is z-index 20 against the nav's 10, so when it is stuck it
    covers the header too, which is why the header disappears on some pages. */
 .page-main {
+  min-height: 100vh;
   min-height: 100svh;
   background-color: #fff;
 }
@@ -1198,6 +1199,7 @@ body:has(.nav[data-nav="open"]) .orgc-nav::before { backdrop-filter: none; -webk
     overscroll-behavior: none;
   }
   html.lock-browser-bars .page_wrap {
+    height: 100vh;
     height: 100dvh;
     min-height: 0;
     overflow-y: auto;
@@ -1333,3 +1335,12 @@ body:has(.announcement-bar) .page_wrap {
   /* Under 16px iOS zooms the whole page when the field is focused. */
   .nav-search_input { font-size: 16px; }
 }
+
+
+/* --- The frame is white too ----------------------------------------------
+   Browsers without svh/dvh (older Android, Samsung Internet) dropped the
+   heights on the page ground and showed the black body through it. The
+   scroll frame carries the ground colour itself, so whatever happens to the
+   units, what is on screen is white. Overlays paint their own grounds and
+   the pull-to-refresh band colours html/body above this. */
+.page_wrap { background-color: var(--swatch--light, #fff); }
