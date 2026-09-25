@@ -21,6 +21,7 @@ function scrollYNow() {
 // can stop Barba starting a page transition on those pops.
 (function overlayBackButton() {
   function openOverlay() {
+    if (window.productLightboxIsOpen && window.productLightboxIsOpen()) return "lightbox";
     const nav = document.querySelector(".nav");
     if (nav && nav.getAttribute("data-nav") === "open") return "menu";
     for (const w of document.querySelectorAll(".w-commerce-commercecartcontainerwrapper")) {
@@ -29,6 +30,7 @@ function scrollYNow() {
     return null;
   }
   function closeOverlay(which) {
+    if (which === "lightbox") { window.productLightboxClose(); return; }
     if (which === "menu") {
       const t = document.querySelector(".nav .menu-close[data-menu-toggle]") || document.querySelector("[data-menu-toggle]");
       if (t) t.click();
@@ -152,6 +154,74 @@ function scrollYNow() {
   }
   wrap.addEventListener("touchend", release, { passive: true });
   wrap.addEventListener("touchcancel", release, { passive: true });
+})();
+
+// Product image viewer. Delegated on document so it works on every product
+// page Barba brings in; the list of images is read from the page each time it
+// opens, so it is always the current page's media in the merchant's order.
+(function productLightbox() {
+  let box = null, imgs = [], i = 0, sx = 0, sy = 0, swiping = false;
+  const q = (s) => box && box.querySelector(s);
+  function show(n) {
+    if (!imgs.length) return;
+    i = (n + imgs.length) % imgs.length;
+    const im = q("[data-lightbox-img]");
+    im.src = imgs[i].getAttribute("data-lightbox-src");
+    im.alt = imgs[i].getAttribute("data-lightbox-alt") || "";
+    q("[data-lightbox-count]").textContent = imgs.length > 1 ? (i + 1) + " / " + imgs.length : "";
+    q("[data-lightbox-prev]").disabled = q("[data-lightbox-next]").disabled = imgs.length < 2;
+  }
+  function open(fromEl) {
+    box = document.querySelector("[data-lightbox]");
+    if (!box) return;
+    const scope = fromEl.closest(".page-main") || document;
+    imgs = [...scope.querySelectorAll("[data-lightbox-src]")];
+    show(Math.max(0, imgs.indexOf(fromEl)));
+    box.hidden = false;
+    requestAnimationFrame(() => box.classList.add("is-open"));
+    lenis.stop();
+    q("[data-lightbox-close]").focus();
+  }
+  function close() {
+    if (!box || box.hidden) return;
+    box.classList.remove("is-open");
+    const b = box;
+    setTimeout(() => { b.hidden = true; }, 200);
+    lenis.start();
+    if (imgs[i]) imgs[i].focus({ preventScroll: true });
+    box = null;
+  }
+  window.productLightboxIsOpen = () => !!(box && !box.hidden);
+  window.productLightboxClose = close;
+
+  document.addEventListener("click", (e) => {
+    const t = e.target;
+    const zoom = t.closest && t.closest("[data-lightbox-src]");
+    if (zoom) { e.preventDefault(); open(zoom); return; }
+    if (!box || box.hidden) return;
+    if (t.closest("[data-lightbox-close]")) return close();
+    if (t.closest("[data-lightbox-prev]")) return show(i - 1);
+    if (t.closest("[data-lightbox-next]")) return show(i + 1);
+    if (!t.closest("[data-lightbox-img]")) close(); // backdrop
+  });
+  document.addEventListener("keydown", (e) => {
+    const zoom = e.target && e.target.closest && e.target.closest("[data-lightbox-src]");
+    if (zoom && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); open(zoom); return; }
+    if (!box || box.hidden) return;
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowLeft") show(i - 1);
+    else if (e.key === "ArrowRight") show(i + 1);
+  });
+  document.addEventListener("touchstart", (e) => {
+    if (!box || box.hidden || e.touches.length !== 1) return;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; swiping = true;
+  }, { passive: true });
+  document.addEventListener("touchend", (e) => {
+    if (!swiping || !box || box.hidden) return;
+    swiping = false;
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(dx < 0 ? i + 1 : i - 1);
+  }, { passive: true });
 })();
 
 // Scroll position carried across the cart page's reload after an add.

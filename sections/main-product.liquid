@@ -21,7 +21,10 @@
             loading="eager"
             fetchpriority="high"
             decoding="async"
-            class="img-contain"
+            class="img-contain product-zoomable"
+            data-lightbox-src="{{ product.featured_media | image_url: width: 2400 }}"
+            data-lightbox-alt="{{ product.featured_media.alt | default: product.title | escape }}"
+            role="button" tabindex="0"
             data-commerce-type="variation-image"
             srcset="{{ product.featured_media | image_url: width: 500 }} 500w, {{ product.featured_media | image_url: width: 800 }} 800w, {{ product.featured_media | image_url: width: 1200 }} 1200w, {{ product.featured_media | image_url: width: 1600 }} 1600w, {{ product.featured_media | image_url: width: 1920 }} 1920w"
             sizes="(max-width: 991px) 100vw, 58vw">
@@ -43,7 +46,9 @@
               <div role="listitem" class="split-col u-column-6 w-dyn-item">
                 <div class="product-img_wrap">
                   <img alt="{{ media.alt | default: product.title | escape }}" src="{{ media | image_url: width: 1200 }}"
-                       width="{{ media.width }}" height="{{ media.height }}" loading="lazy" decoding="async" class="img-contain"
+                       width="{{ media.width }}" height="{{ media.height }}" loading="lazy" decoding="async" class="img-contain product-zoomable"
+                       data-lightbox-src="{{ media | image_url: width: 2400 }}" data-lightbox-alt="{{ media.alt | default: product.title | escape }}"
+                       role="button" tabindex="0"
                        srcset="{{ media | image_url: width: 500 }} 500w, {{ media | image_url: width: 800 }} 800w, {{ media | image_url: width: 1200 }} 1200w"
                        sizes="(max-width: 991px) 50vw, 29vw">
                 </div>
@@ -341,6 +346,20 @@
     <button type="button" class="sticky-atc_btn body-upper" data-sticky-atc-btn tabindex="-1">{{ section.settings.add_label }}</button>
   </div>
 {%- endif -%}
+
+{%- comment -%}
+  Full-screen image viewer. Filled by scripts-2026.js from the page's own
+  data-lightbox-src images, so the merchant's media order is the order here.
+{%- endcomment -%}
+<div class="product-lightbox" data-lightbox hidden aria-modal="true" role="dialog" aria-label="{{ product.title | escape }}">
+  <button type="button" class="product-lightbox_close" data-lightbox-close aria-label="Close">&#215;</button>
+  <button type="button" class="product-lightbox_arrow is-prev" data-lightbox-prev aria-label="Previous image">&#8592;</button>
+  <div class="product-lightbox_stage" data-lightbox-stage>
+    <img class="product-lightbox_img" data-lightbox-img alt="">
+  </div>
+  <button type="button" class="product-lightbox_arrow is-next" data-lightbox-next aria-label="Next image">&#8594;</button>
+  <p class="product-lightbox_count body-upper" data-lightbox-count></p>
+</div>
 
 {% schema %}
 {
