@@ -1025,6 +1025,14 @@ function globalScripts() {
     }, every);
   });
 
+  // Policy pages mark their sections with short paragraphs typed in capitals
+  // (Shopify's policy editor has no heading style). Give those the heading
+  // treatment so the structure is visible.
+  document.querySelectorAll(".shopify-policy__body .rte p").forEach((p) => {
+    const t = p.textContent.trim();
+    if (t && t.length <= 90 && /[A-Z]/.test(t) && t === t.toUpperCase()) p.classList.add("policy-heading");
+  });
+
   // Header search: toggle open, focus the field, close on Escape or outside.
   $("[data-nav-search]").each(function () {
     const wrap = this;
