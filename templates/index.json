@@ -94,11 +94,11 @@
         "cta-3": {
           "type": "cta",
           "settings": {
-            "eyebrow": "Instagram",
-            "hover_title": "FOLLOW US",
-            "hover_link_label": "Instagram",
-            "link_url": "https://www.instagram.com/moonbae.stores",
-            "new_tab": true,
+            "eyebrow": "Men",
+            "hover_title": "FOR HIM",
+            "hover_link_label": "Shop for him",
+            "link_url": "/collections/men",
+            "new_tab": false,
             "width": "3",
             "full_height": true
           }

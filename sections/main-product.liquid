@@ -310,6 +310,18 @@
       assign available = available | plus: 1
     endif
   endfor
+  comment
+    A collection that holds only this product counts as nothing to show, so
+    fall back to the whole catalogue in that case too.
+  endcomment
+  if available == 0
+    assign related = collections.all.products
+    for item in related
+      if item.id != product.id
+        assign available = available | plus: 1
+      endif
+    endfor
+  endif
 -%}
 {%- if available > 0 -%}
   <div class="single-product-col_wrap w-dyn-list" udy-collection="product">

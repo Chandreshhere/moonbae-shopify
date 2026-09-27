@@ -865,8 +865,30 @@ function globalScripts() {
       activeIndex = nextIndex;
     }
 
+    // Auto-advance. Nothing on the hero says the numbers are clickable, so the
+    // slides move on their own: every N seconds (a Hero setting), pausing
+    // while the pointer is over the slider or a finger is on it, and while
+    // the tab is hidden. A manual pick restarts the wait.
+    const autoEl = sliderEl.find("[data-hero-autoplay]");
+    const every = (parseFloat(autoEl.attr("data-hero-autoplay")) || 0) * 1000;
+    let autoTimer = null;
+    let paused = false;
+    const armAuto = () => {
+      clearTimeout(autoTimer);
+      if (!every || totalSlides < 2) return;
+      autoTimer = setTimeout(() => {
+        if (!paused && !document.hidden) slideNumber.eq((activeIndex + 1) % totalSlides).trigger("click", [true]);
+        else armAuto();
+      }, every);
+    };
+    sliderEl.on("mouseenter touchstart", () => { paused = true; });
+    sliderEl.on("mouseleave touchend touchcancel", () => { paused = false; armAuto(); });
+    armAuto();
+    onTeardown(() => clearTimeout(autoTimer));
+
     // CLICK OF DOTS
     slideNumber.on("click", function () {
+      armAuto();
       let dotIndex = $(this).index();
       if ($(this).hasClass("active")) {
         $(this).removeClass("active");
@@ -1302,8 +1324,11 @@ function globalScripts() {
   // snaps back to where it was, and nothing comes along afterwards to correct
   // it. That is the drawer bar glitching. When a nudge has told us what the
   // total should be, keep asking until the server agrees.
-  function refreshCartProgress(tries) {
+  function refreshCartProgress(tries, untilChange, before) {
     const left = typeof tries === "number" ? tries : 4;
+    // After an add, the first answer usually arrives before Shopify has
+    // finished adding, so keep asking until the total actually moves.
+    if (untilChange && before === undefined) before = window.__lastCart ? window.__lastCart.total_price : null;
     setTimeout(() => {
       fetch("/cart.js", { headers: { Accept: "application/json" } })
         .then((r) => r.json())
@@ -1312,6 +1337,10 @@ function globalScripts() {
           if (typeof expected === "number" && cart.total_price !== expected && left > 0) {
             refreshCartProgress(left - 1);
             return; // the answer is stale; leave the bar where the tap put it
+          }
+          if (untilChange && before !== null && cart.total_price === before && left > 0) {
+            refreshCartProgress(left - 1, true, before);
+            return;
           }
           window.__expectedTotal = null;
           // Kept so the rows can be rebuilt after the bridge re-renders them
@@ -1345,13 +1374,9 @@ function globalScripts() {
       const line = cart && (cart.items || []).find((i) => i.variant_id === id || i.id === id);
       if (line) window.nudgeCartProgress(-(line.final_line_price || line.line_price || 0));
     }
-    if (
-      removing ||
-      e.target.closest('[data-node-type="commerce-add-to-cart-button"]') ||
-      e.target.closest('[data-node-type="commerce-cart-open-link"]') ||
-      e.target.closest("[data-sticky-atc-btn]")
-    ) {
-      refreshCartProgress();
+    const adding = e.target.closest('[data-node-type="commerce-add-to-cart-button"]') || e.target.closest("[data-sticky-atc-btn]");
+    if (removing || adding || e.target.closest('[data-node-type="commerce-cart-open-link"]')) {
+      refreshCartProgress(adding ? 8 : 4, !!adding);
     }
   });
   document.addEventListener("change", (e) => {
@@ -1881,10 +1906,15 @@ function globalScripts() {
       // turns pointer-events off on the cards) is never applied for an
       // ordinary click, and the product opens on the first tap.
       dragMinimum: DRAG_SLOP,
+      // A vertical scroll over the row registered as a tiny sideways drag,
+      // and every one froze and released the page — the shaking on phones.
+      // Lock each gesture to its first axis and leave vertical ones alone.
+      lockAxis: true,
       onPress: function () {
         tl.play();
       },
       onDrag: (self) => {
+        if (self.axis !== "x") return;
         self.target.classList.add("dragging");
         total += self.deltaX;
         if (xTo) xTo(total);

@@ -34,7 +34,7 @@
   <h2 italics="" class="hero-slider_scroll is-next slider_btn">{{ section.settings.next_label }}</h2>
 </div>
 
-<div class="hero-slider_wrap" nav-light="">
+<div class="hero-slider_wrap" nav-light="" data-hero-autoplay="{{ section.settings.autoplay_seconds | default: 5 }}">
   <div class="hero-slider_list">
     {%- for block in section.blocks -%}
       {%- assign fb = hero_fallbacks[forloop.index0] | default: 'hero-1.jpg' -%}
@@ -90,6 +90,17 @@
   "class": "hero-slider",
   "max_blocks": 8,
   "settings": [
+    {
+      "type": "range",
+      "id": "autoplay_seconds",
+      "label": "Change slide every",
+      "min": 0,
+      "max": 15,
+      "step": 1,
+      "unit": "s",
+      "default": 5,
+      "info": "0 stops the slides changing on their own."
+    },
     {
       "type": "text",
       "id": "scroll_label",
