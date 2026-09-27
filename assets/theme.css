@@ -1417,3 +1417,17 @@ body:has(.announcement-bar) .page_wrap {
 @media only screen and (max-width: 767px) {
   .shopify-policy__container { padding-bottom: var(--size--5rem, 5rem); }
 }
+
+
+/* Policy pages, continued. styles.css (the original build) sets this
+   container to max-width: unset !important three times, and Shopify's own
+   policy stylesheet loads after the theme's and centres the title with a
+   fixed 20px side padding. A more specific rule wins over all of it. */
+.page-main .shopify-policy__container {
+  max-width: 72ch !important;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--site--margin, 20px);
+  padding-right: var(--site--margin, 20px);
+}
+.page-main .shopify-policy__title { text-align: left; }

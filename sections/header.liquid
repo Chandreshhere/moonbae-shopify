@@ -5,7 +5,7 @@
   {%- endcomment -%}
   {%- assign light_ground_templates = 'product,collection,list-collections,search,blog,cart,page,policy' | split: ',' -%}
 {%- assign nav_classes = 'nav-component' -%}
-{%- if light_ground_templates contains template.name -%}
+{%- if light_ground_templates contains template.name or request.page_type == 'policy' -%}
   {%- assign nav_classes = 'nav-component dark' -%}
 {%- endif -%}
 {%- comment -%}
