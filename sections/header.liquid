@@ -3,7 +3,7 @@
     from the server. The [nav-dark] / [nav-light] attributes only drive ScrollTrigger
     once the visitor scrolls, so without this the nav is white-on-white on load.
   {%- endcomment -%}
-  {%- assign light_ground_templates = 'product,collection,list-collections,search,blog,cart' | split: ',' -%}
+  {%- assign light_ground_templates = 'product,collection,list-collections,search,blog,cart,page,policy' | split: ',' -%}
 {%- assign nav_classes = 'nav-component' -%}
 {%- if light_ground_templates contains template.name -%}
   {%- assign nav_classes = 'nav-component dark' -%}

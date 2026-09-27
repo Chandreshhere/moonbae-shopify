@@ -1374,3 +1374,46 @@ body:has(.announcement-bar) .page_wrap {
   .product-lightbox_arrow { display: none; } /* swipe instead */
   .product-lightbox_stage { padding: 3rem .5rem; }
 }
+
+
+/* --- Policy pages (/policies/*) ----------------------------------------
+   Shopify renders these with its own markup inside the layout — no section,
+   no clearance — so the fixed header covered the first lines and the text
+   ran unstyled at full width. Give it the site's spacing and type. */
+.shopify-policy__container {
+  max-width: 72ch;
+  margin: 0 auto;
+  padding: calc(var(--nav--clearance, 10rem) + var(--announcement-offset, 0px)) var(--site--margin, 20px) var(--size--8rem, 8rem);
+  color: var(--swatch--dark);
+}
+.shopify-policy__title h1 {
+  margin: 0 0 2rem;
+  font-family: var(--_typography---font--secondary-family, inherit);
+  font-weight: 400;
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+.shopify-policy__body .rte { font-size: 1rem; line-height: 1.65; }
+.shopify-policy__body .rte p { margin: 0 0 1.1em; }
+.shopify-policy__body .rte h2,
+.shopify-policy__body .rte h3,
+.shopify-policy__body .rte h4,
+.shopify-policy__body .rte strong:only-child {
+  display: block;
+  margin: 2.25em 0 .6em;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.shopify-policy__body .rte h2:first-child,
+.shopify-policy__body .rte h3:first-child { margin-top: 0; }
+.shopify-policy__body .rte ul,
+.shopify-policy__body .rte ol { margin: 0 0 1.1em; padding-left: 1.25em; }
+.shopify-policy__body .rte li { margin: .35em 0; }
+.shopify-policy__body .rte a { color: inherit; text-decoration: underline; text-underline-offset: .18em; }
+.shopify-policy__body .rte hr { border: 0; border-top: 1px solid currentColor; opacity: .25; margin: 2.5em 0; }
+@media only screen and (max-width: 767px) {
+  .shopify-policy__container { padding-bottom: var(--size--5rem, 5rem); }
+}
