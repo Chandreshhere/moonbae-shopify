@@ -132,6 +132,9 @@
       Google AdSense. Publisher ID from Theme settings → Google AdSense; clear
       it to remove the script. Not loaded inside the theme editor.
     {%- endcomment -%}
+    {%- if settings.adsense_client != blank -%}
+      <meta name="google-adsense-account" content="{{ settings.adsense_client | strip | escape }}">
+    {%- endif -%}
     {%- if settings.adsense_client != blank and request.design_mode == false -%}
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ settings.adsense_client | strip | url_encode }}" crossorigin="anonymous"></script>
     {%- endif -%}
