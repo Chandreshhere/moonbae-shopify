@@ -1,5 +1,20 @@
+{%- liquid
+  comment
+    Ads load on the home page, the About page and the blog only. Keep in step
+    with adsZone() in scripts-2026.js, which decides page changes by path.
+  endcomment
+  assign ads_here = false
+  if template.name == 'index' or template.name == 'blog' or template.name == 'article'
+    assign ads_here = true
+  elsif template.name == 'page' and template.suffix == 'about'
+    assign ads_here = true
+  endif
+  if settings.adsense_client == blank or request.design_mode
+    assign ads_here = false
+  endif
+-%}
 <!DOCTYPE html>
-<html lang="{{ request.locale.iso_code }}"{% if settings.lock_browser_bars %} class="lock-browser-bars"{% endif %} data-money-format="{{ shop.money_format | escape }}" data-money-currency-format="{{ shop.money_with_currency_format | escape }}"{% if settings.tab_away_text != blank %} data-tab-away-text="{{ settings.tab_away_text | escape }}"{% endif %}>
+<html lang="{{ request.locale.iso_code }}"{% if ads_here %} data-ads{% endif %}{% if settings.lock_browser_bars %} class="lock-browser-bars"{% endif %} data-money-format="{{ shop.money_format | escape }}" data-money-currency-format="{{ shop.money_with_currency_format | escape }}"{% if settings.tab_away_text != blank %} data-tab-away-text="{{ settings.tab_away_text | escape }}"{% endif %}>
   <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
@@ -130,12 +145,13 @@
 
     {%- comment -%}
       Google AdSense. Publisher ID from Theme settings → Google AdSense; clear
-      it to remove the script. Not loaded inside the theme editor.
+      it to remove the script. Loaded only where ads_here (top of this file)
+      allows: home, About and the blog. Not loaded inside the theme editor.
     {%- endcomment -%}
     {%- if settings.adsense_client != blank -%}
       <meta name="google-adsense-account" content="{{ settings.adsense_client | strip | escape }}">
     {%- endif -%}
-    {%- if settings.adsense_client != blank and request.design_mode == false -%}
+    {%- if ads_here -%}
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ settings.adsense_client | strip | url_encode }}" crossorigin="anonymous"></script>
     {%- endif -%}
 
