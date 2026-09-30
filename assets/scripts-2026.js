@@ -224,6 +224,25 @@ function scrollYNow() {
   }, { passive: true });
 })();
 
+// Ads run on the home page, the About page and the blog only (the layout
+// decides, and marks <html data-ads>). Page changes here happen without a
+// reload, so an ad script loaded on home would keep running on a product page.
+// Crossing between an ad page and a shop page is therefore a real page load:
+// links through the Barba prevent rule below, Back and Forward here. Must be
+// registered before barba.init so it runs ahead of Barba's own handler.
+const adsHere = document.documentElement.hasAttribute("data-ads");
+function adsZone(path) {
+  const p = (path || "/").replace(/\/+$/, "") || "/";
+  return p === "/" || p === "/pages/about" || p.indexOf("/blogs/") === 0 || p === "/blogs";
+}
+window.addEventListener("popstate", (e) => {
+  if (!document.querySelector('meta[name="google-adsense-account"]')) return; // AdSense off
+  if (adsZone(location.pathname) !== adsHere) {
+    e.stopImmediatePropagation();
+    location.reload();
+  }
+});
+
 // Scroll position carried across the cart page's reload after an add.
 (function restoreScrollAfterReload() {
   let y = null;
@@ -2890,6 +2909,13 @@ barba.init({
     if (el.getAttribute("target") === "_blank") return true;
     var href = data.href || el.getAttribute("href") || "";
     if (/^(mailto:|tel:|#)/.test(href)) return true;
+    // Into or out of the pages that carry ads: a real page load, so the ad
+    // script is loaded or dropped with the page.
+    if (document.querySelector('meta[name="google-adsense-account"]')) {
+      try {
+        if (adsZone(new URL(href, location.href).pathname) !== adsHere) return true;
+      } catch (e) {}
+    }
     // "checkouts" (plural) is the real Shopify checkout host path — matching
     // only "checkout" let /checkouts/cn/... fall through to Barba, which has no
     // container to swap on those pages.
