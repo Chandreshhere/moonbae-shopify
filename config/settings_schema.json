@@ -569,5 +569,17 @@
         "default": "more to unlock"
       }
     ]
+  },
+  {
+    "name": "Google AdSense",
+    "settings": [
+      {
+        "type": "text",
+        "id": "adsense_client",
+        "label": "Publisher ID",
+        "default": "ca-pub-3526335050267960",
+        "info": "Your AdSense publisher ID (ca-pub-…). Loads Google's AdSense script on every page. Clear it to remove AdSense from the site."
+      }
+    ]
   }
 ]

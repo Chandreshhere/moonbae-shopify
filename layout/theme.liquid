@@ -128,6 +128,14 @@
       }
     </style>
 
+    {%- comment -%}
+      Google AdSense. Publisher ID from Theme settings → Google AdSense; clear
+      it to remove the script. Not loaded inside the theme editor.
+    {%- endcomment -%}
+    {%- if settings.adsense_client != blank and request.design_mode == false -%}
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ settings.adsense_client | strip | url_encode }}" crossorigin="anonymous"></script>
+    {%- endif -%}
+
     {{ content_for_header }}
 
     {%- comment -%} Social link previews and structured data, after content_for_header so they win. {%- endcomment -%}
