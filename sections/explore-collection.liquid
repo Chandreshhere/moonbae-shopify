@@ -1,6 +1,6 @@
 {%- comment -%}
-  Explore the collection: one full-screen tile per category, two side by side
-  and the last one full width when the count is odd. Each tile links to its
+  Explore the collection: one screen tall. The first tile fills the left half
+  at full height; the others are stacked on the right. Each tile links to its
   category: a real Shopify collection when one exists with the expected handle
   (hoodies, t-shirts, baby-tees), otherwise the theme's own category view of
   all products (/collections/all?view=hoodies), which sorts products by title
@@ -56,33 +56,42 @@
             assign handles = 'baby-tees,babytees,baby-tee'
         endcase
         assign url = '/collections/all?view=' | append: cat
+        comment
+          A collection that does not exist answers products_count with an
+          empty string, and comparing that with 0 is a Liquid error printed
+          into the grid — so coerce to a number first.
+        endcomment
         assign hl = handles | split: ','
         for h in hl
-          if collections[h].products_count > 0
+          assign found = collections[h].products_count | plus: 0
+          if found > 0
             assign url = collections[h].url
-            assign count = collections[h].products_count
+            assign count = found
             break
           endif
         endfor
         if block.settings.collection != blank
           assign url = block.settings.collection.url
-          assign count = block.settings.collection.products_count
+          assign count = block.settings.collection.products_count | plus: 0
         endif
         if block.settings.link != blank
           assign url = block.settings.link
         endif
-        assign full = false
-        assign odd = forloop.length | modulo: 2
-        if forloop.last and odd == 1
-          assign full = true
+        comment
+          First tile on the left, the height of the whole section; the rest
+          stacked on the right, sharing that height.
+        endcomment
+        assign rest = forloop.length | minus: 1
+        if rest < 1
+          assign rest = 1
         endif
         capture img_attrs
           echo 'style="object-position: ' | append: block.settings.focus | append: '"'
         endcapture
       -%}
-      <a href="{{ url }}" class="explore_tile{% if full %} is-full{% endif %}" {{ block.shopify_attributes }}>
+      <a href="{{ url }}" class="explore_tile{% if forloop.first and forloop.length > 1 %} is-lead{% elsif forloop.length == 1 %} is-only{% endif %}"{% if forloop.first and forloop.length > 1 %} style="grid-row: span {{ rest }};"{% endif %} {{ block.shopify_attributes }}>
         <div class="explore_visual" data-parallax>
-          {% render 'img', image: block.settings.image, fallback: fallback, fallback_width: '1800x', alt: block.settings.title, class: 'explore_img', sizes: '(max-width: 767px) 50vw, 50vw', attrs: img_attrs %}
+          {% render 'img', image: block.settings.image, fallback: fallback, fallback_width: '1800x', alt: block.settings.title, class: 'explore_img', sizes: '50vw', attrs: img_attrs %}
         </div>
         <div class="explore_scrim" aria-hidden="true"></div>
         <div class="explore_label">
@@ -109,8 +118,8 @@
     {"type": "text", "id": "eyebrow", "label": "Small line above the heading", "default": "Curated by Moon"},
     {"type": "text", "id": "heading", "label": "Heading", "default": "Explore the collection"},
     {"type": "checkbox", "id": "show_count", "label": "Show how many products are in each", "default": true},
-    {"type": "range", "id": "tile_height", "label": "Tile height on desktop", "min": 50, "max": 100, "step": 5, "unit": "%", "default": 100, "info": "Share of the screen height."},
-    {"type": "range", "id": "mobile_height", "label": "Tile height on phones", "min": 40, "max": 100, "step": 5, "unit": "%", "default": 75},
+    {"type": "range", "id": "tile_height", "label": "Section height on desktop", "min": 50, "max": 100, "step": 5, "unit": "%", "default": 100, "info": "Share of the screen height. The first tile fills the left at this height; the others share it on the right."},
+    {"type": "range", "id": "mobile_height", "label": "Section height on phones", "min": 40, "max": 100, "step": 5, "unit": "%", "default": 85},
     {"type": "header", "content": "Spacing"},
     {"type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 320, "step": 4, "default": 0, "unit": "px", "info": "0 keeps the design default."},
     {"type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 320, "step": 4, "default": 0, "unit": "px", "info": "0 keeps the design default."}

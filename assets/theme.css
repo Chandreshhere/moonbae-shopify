@@ -1442,8 +1442,9 @@ body:has(.announcement-bar) .page_wrap {
 
 
 /* --- Explore the collection ----------------------------------------------
-   Full-screen category tiles: two side by side, the last full width when the
-   count is odd. Images drift with scroll through [data-parallax]. */
+   One screen tall: the first tile fills the left half at full height, the
+   others are stacked on the right and share it (the section sets the lead
+   tile's row span inline). Images drift with scroll through [data-parallax]. */
 .explore-section { padding-top: var(--size--8rem, 8rem); }
 .explore_head { text-align: center; margin-bottom: clamp(1.5rem, 4vw, 3rem); }
 .explore_eyebrow { margin: 0 0 .6rem; opacity: .6; }
@@ -1455,13 +1456,23 @@ body:has(.announcement-bar) .page_wrap {
   line-height: 1;
   letter-spacing: -0.01em;
 }
-.explore_grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--site--gutter, 10px); }
+.explore_grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  gap: var(--site--gutter, 10px);
+  height: 100vh;
+  height: var(--explore-h, 100svh);
+}
 .explore_tile {
   position: relative; display: block; overflow: hidden;
-  height: var(--explore-h, 100svh); color: #fff; text-decoration: none;
+  min-height: 0; color: #fff; text-decoration: none;
   background: var(--swatch--dark, #000);
 }
-.explore_tile.is-full { grid-column: 1 / -1; }
+.explore_tile.is-lead { grid-column: 1; }
+.explore_tile.is-only { grid-column: 1 / -1; }
+/* The stacked tiles are half as tall, so their titles are smaller. */
+.explore_tile:not(.is-lead):not(.is-only) .explore_title { font-size: clamp(2rem, 4.5vw, 4rem); }
 .explore_visual[data-parallax] { position: absolute; inset: 0; overflow: hidden; transition: transform 900ms cubic-bezier(.25, 1, .5, 1); }
 .explore_visual[data-parallax] > .explore_img {
   position: absolute; left: 0; top: -10%; width: 100%; height: 120%;
@@ -1490,9 +1501,10 @@ body:has(.announcement-bar) .page_wrap {
 }
 @media only screen and (max-width: 767px) {
   .explore-section { padding-top: var(--size--5rem, 5rem); }
-  .explore_tile { height: var(--explore-h-m, 75svh); }
-  .explore_tile:not(.is-full) .explore_title { font-size: clamp(1.6rem, 8vw, 2.5rem); }
-  .explore_tile:not(.is-full) .explore_label { padding: 1rem; }
+  .explore_grid { height: 85vh; height: var(--explore-h-m, 85svh); }
+  .explore_tile .explore_title,
+  .explore_tile:not(.is-lead):not(.is-only) .explore_title { font-size: clamp(1.6rem, 8vw, 2.5rem); }
+  .explore_tile .explore_label { padding: 1rem; }
   /* Phones drift further (14% in JS), so they need more image behind the frame. */
   .explore_visual[data-parallax] > .explore_img { top: -20%; height: 140%; }
 }
