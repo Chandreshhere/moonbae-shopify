@@ -1,20 +1,40 @@
 {%- comment -%}
-  Shop tiles: one row of image tiles, all the same height, each with its title,
-  a small line and a link always visible (the old version only showed them on
-  mouse hover, which phones never do). Desktop widths come from each tile's
-  Width setting on a 12-column row; on phones a Half tile spans the row and the
-  others sit two to a row.
+  Shop tiles: full-bleed image tiles side by side, edge to edge, split by a
+  thin line, each with a large title in its bottom-left corner. Desktop widths
+  come from each tile's Width setting on a 12-column row (two Halves make the
+  split screen). On phones the tiles sit two to a row; with an odd number the
+  first one spans the row.
 {%- endcomment -%}
-{% render 'section-class', classes: 'page-contain u-container is-section shop-tiles-section', attrs: 'nav-dark', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
-<div class="shop-tiles" style="--shop-tiles-h: {{ section.settings.tile_height }}svh; --shop-tiles-h-m: {{ section.settings.mobile_height }}svh;">
+{% render 'section-class', classes: 'page-contain is-section shop-tiles-section', attrs: 'nav-light', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+{%- if section.settings.title_style == 'condensed' -%}
+  {%- assign title_font = section.settings.title_font -%}
+  <style>
+    {{ title_font | font_face: font_display: 'swap' }}
+    .shop-tiles--{{ section.id }} .shop-tile_title {
+      font-family: {{ title_font.family }}, {{ title_font.fallback_families }};
+      font-weight: {{ title_font.weight }};
+    }
+  </style>
+{%- endif -%}
+<div class="shop-tiles shop-tiles--{{ section.id }} is-{{ section.settings.title_style }}" style="--shop-tiles-h: {{ section.settings.tile_height }}svh; --shop-tiles-h-m: {{ section.settings.mobile_height }}svh;">
   {%- if section.settings.heading != blank -%}
-    <h2 class="shop-tiles_heading">{{ section.settings.heading }}</h2>
+    <h2 class="shop-tiles_heading u-container">{{ section.settings.heading }}</h2>
   {%- endif -%}
   <div class="shop-tiles_grid">
     {%- assign tile_fallbacks = 'moonbae-07.jpg,moonbae-04.jpg,hero-men.jpg,moonbae-05.jpg' | split: ',' -%}
     {%- for block in section.blocks -%}
       {%- liquid
         assign fb = tile_fallbacks[forloop.index0] | default: 'moonbae-07.jpg'
+        comment
+          Pick the stand-in photo by where the tile goes, so swapping the
+          order of Men and Women does not swap their pictures.
+        endcomment
+        assign link = block.settings.link_url | downcase
+        if link contains '/women'
+          assign fb = 'moonbae-04.jpg'
+        elsif link contains '/men'
+          assign fb = 'hero-men.jpg'
+        endif
         assign span = block.settings.width | default: '6'
         capture img_attrs
           echo 'style="object-position: ' | append: block.settings.focus | append: '"'
@@ -23,7 +43,7 @@
       <a href="{{ block.settings.link_url | default: '/collections/all' }}"{% if block.settings.new_tab %} target="_blank" rel="noopener"{% endif %}
          class="shop-tile{% if span == '6' %} is-wide{% endif %}" style="--span: {{ span }};" {{ block.shopify_attributes }}>
         <div class="shop-tile_visual">
-          {% render 'img', image: block.settings.image, fallback: fb, fallback_width: '1400x', alt: block.settings.eyebrow, class: 'shop-tile_img', sizes: '(max-width: 767px) 100vw, 50vw', attrs: img_attrs %}
+          {% render 'img', image: block.settings.image, fallback: fb, fallback_width: '1800x', alt: block.settings.eyebrow, class: 'shop-tile_img', sizes: '(max-width: 767px) 50vw, 50vw', attrs: img_attrs %}
         </div>
         <div class="shop-tile_scrim" aria-hidden="true"></div>
         <div class="shop-tile_label">
@@ -44,7 +64,7 @@
 {
   "name": "Shop tiles",
   "tag": "div",
-  "class": "page-contain u-container is-section shop-tiles-section",
+  "class": "page-contain is-section shop-tiles-section",
   "max_blocks": 4,
   "blocks": [
     {
@@ -63,7 +83,9 @@
           "default": "center center",
           "options": [
             { "value": "left center", "label": "Left" },
+            { "value": "30% center", "label": "Left of centre" },
             { "value": "center center", "label": "Centre" },
+            { "value": "70% center", "label": "Right of centre" },
             { "value": "right center", "label": "Right" },
             { "value": "center top", "label": "Top" }
           ],
@@ -79,13 +101,13 @@
           "type": "text",
           "id": "hover_title",
           "label": "Small line above the title",
-          "default": "ALL PRODUCTS"
+          "info": "Optional."
         },
         {
           "type": "text",
           "id": "hover_link_label",
           "label": "Link text",
-          "default": "Shop now"
+          "info": "Optional. Shown under the title with an arrow."
         },
         {
           "type": "url",
@@ -108,7 +130,7 @@
             { "value": "4", "label": "Third" },
             { "value": "6", "label": "Half" }
           ],
-          "info": "On phones a Half tile spans the row; the others sit two to a row."
+          "info": "Two Halves make a split screen. On phones tiles sit two to a row."
         },
         {
           "type": "checkbox",
@@ -128,6 +150,22 @@
       "info": "Optional. Shown above the tiles."
     },
     {
+      "type": "select",
+      "id": "title_style",
+      "label": "Tile title style",
+      "default": "condensed",
+      "options": [
+        { "value": "condensed", "label": "Tall capitals" },
+        { "value": "serif", "label": "Site serif" }
+      ]
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Font for tall capitals",
+      "default": "oswald_n4"
+    },
+    {
       "type": "range",
       "id": "tile_height",
       "label": "Tile height on desktop",
@@ -136,7 +174,7 @@
       "step": 5,
       "unit": "%",
       "default": 75,
-      "info": "Share of the screen height."
+      "info": "Share of the screen height. 100 fills the screen."
     },
     {
       "type": "range",
@@ -146,7 +184,7 @@
       "max": 90,
       "step": 5,
       "unit": "%",
-      "default": 50
+      "default": 60
     },
     {
       "type": "header",
@@ -179,35 +217,24 @@
     {
       "name": "Shop tiles",
       "category": "Home",
+      "settings": {
+        "tile_height": 100
+      },
       "blocks": [
         {
           "type": "cta",
           "settings": {
-            "eyebrow": "Shop",
-            "hover_title": "ALL PRODUCTS",
-            "hover_link_label": "Shop now",
-            "link_url": "/collections/all",
+            "eyebrow": "Shop men",
+            "link_url": "/collections/men",
             "width": "6"
           }
         },
         {
           "type": "cta",
           "settings": {
-            "eyebrow": "Women",
-            "hover_title": "FOR HER",
-            "hover_link_label": "Shop for her",
+            "eyebrow": "Shop women",
             "link_url": "/collections/women",
-            "width": "3"
-          }
-        },
-        {
-          "type": "cta",
-          "settings": {
-            "eyebrow": "Men",
-            "hover_title": "FOR HIM",
-            "hover_link_label": "Shop for him",
-            "link_url": "/collections/men",
-            "width": "3"
+            "width": "6"
           }
         }
       ]

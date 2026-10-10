@@ -1812,6 +1812,76 @@ function globalScripts() {
     });
   }
 
+  // New in carousel. The row is a native sideways scroller, so touch and
+  // trackpads move it on their own; the arrows page it a screenful at a time
+  // and fade out at either end. A sideways trackpad swipe is kept from Lenis,
+  // which listens on window and would cancel it as a page scroll. The arrows
+  // sit on the middle of the photos, whose height is written to --ni-img-h.
+  document.querySelectorAll("[data-new-in]").forEach((root) => {
+    const track = root.querySelector("[data-new-in-track]");
+    if (!track) return;
+    const prev = root.querySelector("[data-new-in-prev]");
+    const next = root.querySelector("[data-new-in-next]");
+    const pageWidth = () => {
+      const card = track.querySelector(".new-in_card");
+      if (!card) return track.clientWidth;
+      const cs = getComputedStyle(track);
+      const gap = parseFloat(cs.columnGap) || 0;
+      const per = card.getBoundingClientRect().width + gap;
+      const inner = track.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+      return Math.max(1, Math.floor((inner + gap) / per)) * per;
+    };
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      root.classList.toggle("is-static", max <= 2);
+      if (prev) prev.disabled = track.scrollLeft <= 2;
+      if (next) next.disabled = track.scrollLeft >= max - 2;
+      const media = track.querySelector(".new-in_media");
+      if (media) root.style.setProperty("--ni-img-h", media.getBoundingClientRect().height + "px");
+    };
+    if (prev) prev.addEventListener("click", () => track.scrollBy({ left: -pageWidth(), behavior: "smooth" }));
+    if (next) next.addEventListener("click", () => track.scrollBy({ left: pageWidth(), behavior: "smooth" }));
+    track.addEventListener("scroll", update, { passive: true });
+    track.addEventListener("wheel", (e) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) e.stopPropagation();
+    }, { passive: true });
+    window.addEventListener("resize", update);
+    onTeardown(() => window.removeEventListener("resize", update));
+    update();
+  });
+
+  // The quick-add bar on a New in card adds through the cart's own
+  // [data-add-variant] handler above, which leaves the drawer shut, so say so
+  // on the card: "Adding…" until that handler lets go of the button, then
+  // "Added to cart" for a moment. Delegated on document, so bound once.
+  if (!window.__newInAddBound) {
+    window.__newInAddBound = true;
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest(".new-in_bar [data-add-variant]");
+      if (!btn) return;
+      const bar = btn.closest(".new-in_bar");
+      const msg = bar.querySelector(".new-in_bar-msg");
+      const say = (text) => { if (msg) msg.textContent = text; };
+      clearTimeout(bar.__newInTimer);
+      bar.classList.add("is-status");
+      say("Adding…");
+      const done = () => {
+        say("Added to cart");
+        bar.__newInTimer = setTimeout(() => {
+          bar.classList.remove("is-status");
+          say("");
+        }, 1800);
+      };
+      if (!btn.disabled) return done();
+      const watch = new MutationObserver(() => {
+        if (btn.disabled) return;
+        watch.disconnect();
+        done();
+      });
+      watch.observe(btn, { attributes: true, attributeFilter: ["disabled"] });
+    });
+  }
+
   // Sticky mobile add-to-cart: show the bar while the real button is off
   // screen, and route its click to the real button so the one form and the
   // cart drawer handle everything. Price follows the real price element,

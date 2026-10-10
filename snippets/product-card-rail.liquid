@@ -1,0 +1,72 @@
+{%- comment -%}
+  Product card for the New in carousel: photo (second photo on hover), a
+  badge for a sale or a sold-out product, a quick-add bar that slides up over
+  the photo on hover, then the title and price underneath.
+
+  The quick-add buttons carry data-add-variant, so the add itself is done by
+  the cart's own handler in scripts-2026.js, which also refreshes the drawer.
+  A product with one option (Size) gets a button per size; one with no
+  options gets a single Add to cart; anything else links to the product.
+
+  Params: product, show_alt (second photo on hover), quick_add
+{%- endcomment -%}
+{%- liquid
+  assign on_sale = false
+  if product.compare_at_price > product.price
+    assign on_sale = true
+    assign save = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+  endif
+  assign alt_media = product.media[1]
+  assign img_sizes = '(max-width: 767px) 62vw, (max-width: 1023px) 40vw, 25vw'
+  assign img_alt = product.featured_media.alt | default: product.title
+-%}
+<li class="new-in_card">
+  <div class="new-in_media">
+    <a href="{{ product.url }}" class="new-in_media-link" tabindex="-1" aria-hidden="true">
+      {%- if product.featured_media -%}
+        {{ product.featured_media | image_url: width: 1200 | image_tag: class: 'new-in_img', loading: 'lazy', widths: '400, 600, 800, 1000, 1200', sizes: img_sizes, alt: img_alt }}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'new-in_img' }}
+      {%- endif -%}
+      {%- if show_alt and alt_media and alt_media.media_type == 'image' -%}
+        {{ alt_media | image_url: width: 1200 | image_tag: class: 'new-in_img is-alt', loading: 'lazy', widths: '400, 600, 800, 1000, 1200', sizes: img_sizes, alt: '' }}
+      {%- endif -%}
+    </a>
+
+    {%- if product.available == false -%}
+      <span class="new-in_badge is-muted body-upper">Sold out</span>
+    {%- elsif on_sale -%}
+      <span class="new-in_badge body-upper">Save {{ save }}%</span>
+    {%- endif -%}
+
+    {%- if quick_add and product.available -%}
+      <div class="new-in_bar body-upper">
+        {%- if product.has_only_default_variant -%}
+          <button type="button" class="new-in_bar-btn" data-add-variant="{{ product.selected_or_first_available_variant.id }}">Add to cart</button>
+        {%- elsif product.options.size == 1 and product.variants.size <= 8 -%}
+          <span class="new-in_bar-label" aria-hidden="true">Add to cart</span>
+          <div class="new-in_sizes" role="group" aria-label="Add {{ product.title | escape }} to cart in size">
+            {%- for v in product.variants -%}
+              <button type="button" class="new-in_size" data-add-variant="{{ v.id }}"{% unless v.available %} disabled{% endunless %}>{{ v.title }}</button>
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <a href="{{ product.url }}" class="new-in_bar-btn">Choose options</a>
+        {%- endif -%}
+        <span class="new-in_bar-msg" role="status" aria-live="polite"></span>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <a href="{{ product.url }}" class="new-in_info">
+    <h3 class="new-in_title">{{ product.title }}</h3>
+    <div class="new-in_price">
+      {%- if on_sale -%}
+        <s>{{ product.compare_at_price | money }}</s>
+        <span class="is-sale">{{ product.price | money }}</span>
+      {%- else -%}
+        <span>{% if product.price_varies %}From {% endif %}{{ product.price | money }}</span>
+      {%- endif -%}
+    </div>
+  </a>
+</li>
