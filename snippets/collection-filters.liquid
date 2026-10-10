@@ -21,6 +21,7 @@
   <aside id="CollectionFilters" class="collection-filters" aria-label="{{ 'collections.filters.title' | t | default: 'Filter' }}">
 
     <form method="get" action="{{ collection.url }}" class="collection-filters_form" data-filters-form>
+      {%- if template.suffix != blank -%}<input type="hidden" name="view" value="{{ template.suffix | escape }}">{%- endif -%}
       {%- comment -%} Carry the active sort across a filter change. {%- endcomment -%}
       {%- if collection.sort_by != blank -%}
         <input type="hidden" name="sort_by" value="{{ collection.sort_by | escape }}">

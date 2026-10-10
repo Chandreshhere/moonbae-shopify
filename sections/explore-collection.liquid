@@ -1,0 +1,149 @@
+{%- comment -%}
+  Explore the collection: one full-screen tile per category, two side by side
+  and the last one full width when the count is odd. Each tile links to its
+  category: a real Shopify collection when one exists with the expected handle
+  (hoodies, t-shirts, baby-tees), otherwise the theme's own category view of
+  all products (/collections/all?view=hoodies), which sorts products by title
+  with the same rule as main-collection: "hoodie" in the title is a hoodie,
+  "baby tee" is a baby tee, everything else is a t-shirt.
+  The images drift with scroll through the shared [data-parallax] handler.
+{%- endcomment -%}
+{%- liquid
+  assign n_hoodies = 0
+  assign n_tshirts = 0
+  assign n_babytees = 0
+  for p in collections.all.products
+      assign t = p.title | downcase
+      assign c = 'tshirts'
+      if t contains 'hoodie'
+        assign c = 'hoodies'
+      elsif t contains 'baby tee' or t contains 'baby-tee' or t contains 'baby t-shirt'
+        assign c = 'babytees'
+      endif
+      case c
+        when 'hoodies'
+          assign n_hoodies = n_hoodies | plus: 1
+        when 'babytees'
+          assign n_babytees = n_babytees | plus: 1
+        else
+          assign n_tshirts = n_tshirts | plus: 1
+      endcase
+  endfor
+-%}
+{% render 'section-class', classes: 'explore-section', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+<div class="explore" style="--explore-h: {{ section.settings.tile_height }}svh; --explore-h-m: {{ section.settings.mobile_height }}svh;">
+  {%- if section.settings.heading != blank -%}
+    <div class="explore_head u-container">
+      {%- if section.settings.eyebrow != blank -%}<p class="explore_eyebrow body-upper">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="explore_heading">{{ section.settings.heading }}</h2>
+    </div>
+  {%- endif -%}
+  <div class="explore_grid">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign cat = block.settings.category
+        assign count = n_tshirts
+        assign fallback = 'moonbae-01.jpg'
+        assign handles = 't-shirts,tshirts,t-shirt'
+        case cat
+          when 'hoodies'
+            assign count = n_hoodies
+            assign fallback = 'moonbae-06.jpg'
+            assign handles = 'hoodies,hoodie'
+          when 'babytees'
+            assign count = n_babytees
+            assign fallback = 'hero-women.jpg'
+            assign handles = 'baby-tees,babytees,baby-tee'
+        endcase
+        assign url = '/collections/all?view=' | append: cat
+        assign hl = handles | split: ','
+        for h in hl
+          if collections[h].products_count > 0
+            assign url = collections[h].url
+            assign count = collections[h].products_count
+            break
+          endif
+        endfor
+        if block.settings.collection != blank
+          assign url = block.settings.collection.url
+          assign count = block.settings.collection.products_count
+        endif
+        if block.settings.link != blank
+          assign url = block.settings.link
+        endif
+        assign full = false
+        assign odd = forloop.length | modulo: 2
+        if forloop.last and odd == 1
+          assign full = true
+        endif
+        capture img_attrs
+          echo 'style="object-position: ' | append: block.settings.focus | append: '"'
+        endcapture
+      -%}
+      <a href="{{ url }}" class="explore_tile{% if full %} is-full{% endif %}" {{ block.shopify_attributes }}>
+        <div class="explore_visual" data-parallax>
+          {% render 'img', image: block.settings.image, fallback: fallback, fallback_width: '1800x', alt: block.settings.title, class: 'explore_img', sizes: '(max-width: 767px) 50vw, 50vw', attrs: img_attrs %}
+        </div>
+        <div class="explore_scrim" aria-hidden="true"></div>
+        <div class="explore_label">
+          {%- if section.settings.show_count and count > 0 -%}
+            <span class="explore_count body-upper">(&nbsp;{{ count }}&nbsp;)</span>
+          {%- endif -%}
+          <h3 class="explore_title">{{ block.settings.title }}</h3>
+          {%- if block.settings.cta != blank -%}
+            <span class="explore_cta body-upper">{{ block.settings.cta }} <span aria-hidden="true">&rarr;</span></span>
+          {%- endif -%}
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Explore collection",
+  "tag": "div",
+  "class": "explore-section",
+  "max_blocks": 6,
+  "settings": [
+    {"type": "text", "id": "eyebrow", "label": "Small line above the heading", "default": "Curated by Moon"},
+    {"type": "text", "id": "heading", "label": "Heading", "default": "Explore the collection"},
+    {"type": "checkbox", "id": "show_count", "label": "Show how many products are in each", "default": true},
+    {"type": "range", "id": "tile_height", "label": "Tile height on desktop", "min": 50, "max": 100, "step": 5, "unit": "%", "default": 100, "info": "Share of the screen height."},
+    {"type": "range", "id": "mobile_height", "label": "Tile height on phones", "min": 40, "max": 100, "step": 5, "unit": "%", "default": 75},
+    {"type": "header", "content": "Spacing"},
+    {"type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 320, "step": 4, "default": 0, "unit": "px", "info": "0 keeps the design default."},
+    {"type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 320, "step": 4, "default": 0, "unit": "px", "info": "0 keeps the design default."}
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Category tile",
+      "settings": [
+        {"type": "text", "id": "title", "label": "Title", "default": "Hoodies"},
+        {"type": "select", "id": "category", "label": "Products to show", "default": "hoodies",
+         "options": [{"value": "hoodies", "label": "Hoodies (title contains \"hoodie\")"}, {"value": "tshirts", "label": "T-shirts (everything else)"}, {"value": "babytees", "label": "Baby tees (title contains \"baby tee\")"}],
+         "info": "Links to the matching Shopify collection if one exists with the handle hoodies, t-shirts or baby-tees; otherwise to the theme's own category page."},
+        {"type": "collection", "id": "collection", "label": "Or link to this collection", "info": "Optional. Overrides the category above."},
+        {"type": "url", "id": "link", "label": "Or link anywhere", "info": "Optional. Overrides both of the above."},
+        {"type": "image_picker", "id": "image", "label": "Image"},
+        {"type": "select", "id": "focus", "label": "Image focus", "default": "center center",
+         "options": [{"value": "left center", "label": "Left"}, {"value": "center center", "label": "Centre"}, {"value": "right center", "label": "Right"}, {"value": "center top", "label": "Top"}],
+         "info": "Which part of the image stays in view when the tile crops it."},
+        {"type": "text", "id": "cta", "label": "Link text", "default": "Explore"}
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Explore collection",
+      "category": "Home",
+      "blocks": [
+        {"type": "tile", "settings": {"title": "Hoodies", "category": "hoodies", "focus": "left center"}},
+        {"type": "tile", "settings": {"title": "T-shirts", "category": "tshirts"}},
+        {"type": "tile", "settings": {"title": "Baby tees", "category": "babytees", "focus": "right center"}}
+      ]
+    }
+  ]
+}
+{% endschema %}

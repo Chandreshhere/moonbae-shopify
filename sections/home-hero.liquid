@@ -5,7 +5,7 @@
   what renders.
 {%- endcomment -%}
 {%- if request.page_type == 'index' -%}
-  <h1 class="u-visually-hidden">{{ settings.brand_name | default: shop.name | escape }} — {{ settings.seo_tagline | default: 'streetwear, made to order in India' | escape }}</h1>
+  <h1 class="u-visually-hidden">{{ settings.brand_name | default: shop.name | escape }} — {{ settings.seo_tagline | default: 'wearable art, curated by Moon' | escape }}</h1>
 {%- endif -%}
 
 {%- assign hero_fallbacks = 'hero-1.jpg,hero-2.jpg,hero-3.jpg' | split: ',' -%}
@@ -165,7 +165,7 @@
           "type": "richtext",
           "id": "title",
           "label": "Title",
-          "default": "<p>Streetwear, made to order in India</p>"
+          "default": "<p>Wearable art, curated by Moon</p>"
         },
         {
           "type": "text",
