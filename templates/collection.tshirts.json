@@ -1,7 +1,14 @@
 {
   "sections": {
     "main": {
-      "type": "main-search"
+      "type": "main-collection",
+      "settings": {
+        "hero_height": 60,
+        "hero_fit": "native",
+        "show_hero": false,
+        "category": "tshirts",
+        "title_override": "T-shirts"
+      }
     },
     "footer": {
       "type": "footer-dark",

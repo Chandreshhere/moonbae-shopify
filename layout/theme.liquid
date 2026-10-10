@@ -21,9 +21,27 @@
     <link rel="canonical" href="{{ canonical_url }}">
 
     {%- assign site_name = settings.brand_name | default: shop.name -%}
+    {%- liquid
+      comment
+        Category views share /collections/all, whose own title is "Products".
+      endcomment
+      assign view_title = blank
+      if template.name == 'collection'
+        case template.suffix
+          when 'hoodies'
+            assign view_title = 'Hoodies'
+          when 'tshirts'
+            assign view_title = 'T-shirts'
+          when 'babytees'
+            assign view_title = 'Baby tees'
+        endcase
+      endif
+    -%}
     <title>
       {%- if request.page_type == 'index' -%}
-        {{ site_name }} &ndash; {{ settings.seo_tagline | default: 'streetwear, made to order in India' }}
+        {{ site_name }} &ndash; {{ settings.seo_tagline | default: 'wearable art, curated by Moon' }}
+      {%- elsif view_title != blank -%}
+        {{ view_title }} &ndash; {{ site_name }}
       {%- else -%}
         {{ page_title }}
         {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
@@ -42,7 +60,7 @@
       {%- elsif template.name == 'product' -%}{{ product.description | strip_html | truncatewords: 30 }}
       {%- elsif template.name == 'collection' and collection.description != blank -%}{{ collection.description | strip_html | truncatewords: 30 }}
       {%- elsif shop.description != blank -%}{{ shop.description }}
-      {%- else -%}{{ settings.brand_name | default: shop.name }} — clothing made in small runs in India.
+      {%- else -%}{{ settings.brand_name | default: shop.name }} — wearable art curated by Moon. Hoodies, tees and baby tees, printed to order in India for artists and creative people.
       {%- endif -%}
     {%- endcapture -%}
     <meta name="description" content="{{ meta_description | strip | truncate: 300 | escape }}">
@@ -158,7 +176,7 @@
     {{ content_for_header }}
 
     {%- comment -%} Social link previews and structured data, after content_for_header so they win. {%- endcomment -%}
-    {% render 'meta-tags' %}
+    {% render 'meta-tags', view_title: view_title %}
   </head>
 
   {%- comment -%}

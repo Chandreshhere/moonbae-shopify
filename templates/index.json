@@ -6,7 +6,7 @@
         "slide-1": {
           "type": "slide",
           "settings": {
-            "title": "<p>Streetwear, made to order in India</p>",
+            "title": "<p>Wearable art, curated by Moon</p>",
             "link_label": "Shop now",
             "link_url": "/collections/all",
             "new_tab": false
@@ -15,7 +15,7 @@
         "slide-2": {
           "type": "slide",
           "settings": {
-            "title": "<p>Printed after you order.<br/>Shipped across India.</p>",
+            "title": "<p>Made for artists and creative people</p>",
             "link_label": "About us",
             "link_url": "/pages/about",
             "new_tab": false
@@ -47,7 +47,7 @@
       "type": "intro-section",
       "settings": {
         "mark_size": 0,
-        "text": "<p>moonbae is a streetwear label from India. Tees, hoodies, joggers and tops, printed to order and shipped across India.</p>",
+        "text": "<p>moonbae is a small label from India. Moon picks every design, reworks it for the garment and decides how it sits: the size, the placement, the colour. It goes on hoodies, tees and baby tees made for artists and creative people. It isn't meant to be for everyone.</p>",
         "padding_top": 20,
         "padding_bottom": 0
       }
@@ -57,7 +57,7 @@
       "settings": {
         "collection": "",
         "products_limit": 38,
-        "eyebrow": "<p>( Featured )</p>",
+        "eyebrow": "<p>( Featured pieces )</p>",
         "link_label": "View all",
         "link_url": "/collections/all",
         "padding_top": 160,
@@ -118,10 +118,10 @@
       "type": "or-text-section",
       "settings": {
         "mark_size": 0,
-        "eyebrow": "<p>moonbae ©2026<br/>Designed and printed in India</p>",
+        "eyebrow": "<p>moonbae ©2026<br/>Curated by Moon, printed in India</p>",
         "left_label": "moonbae",
         "right_label": "India",
-        "text": "<p>Every piece is printed in India after you order it, then shipped straight to you. No stock, no bulk runs.</p>",
+        "text": "<p>Every design is customised by Moon before it goes on sale. Each piece is then printed in India after you order it and shipped straight to you. We don't hold stock or print in bulk.</p>",
         "padding_top": 160,
         "padding_bottom": 240
       }
@@ -180,8 +180,8 @@
         "partner-1": {
           "type": "partner",
           "settings": {
-            "title": "Made to order",
-            "text": "<p>Each piece is printed in India after you order it. We don't hold stock.</p>",
+            "title": "Curated by Moon",
+            "text": "<p>Every design is chosen and adjusted by hand before it is added to the shop.</p>",
             "url": "",
             "link_label": ""
           }
@@ -189,8 +189,8 @@
         "partner-2": {
           "type": "partner",
           "settings": {
-            "title": "Shipped across India",
-            "text": "<p>Dispatched in 2–4 business days and delivered in 5–11 business days.</p>",
+            "title": "Made to order",
+            "text": "<p>Each piece is printed in India after you order it. We don't hold stock.</p>",
             "url": "",
             "link_label": ""
           }
@@ -198,8 +198,8 @@
         "partner-3": {
           "type": "partner",
           "settings": {
-            "title": "Free shipping over ₹1,599",
-            "text": "<p>Flat ₹60 below that.</p>",
+            "title": "Shipped across India",
+            "text": "<p>Dispatched in 2–4 business days and delivered in 5–11 business days.</p>",
             "url": "",
             "link_label": ""
           }
@@ -221,8 +221,8 @@
         "partner-4"
       ],
       "settings": {
-        "giving_title": "<p>How we work</p>",
-        "giving_text": "<p>Every piece is printed in India after you order it and shipped straight to you. Nothing is made in bulk or left sitting in a warehouse.</p>",
+        "giving_title": "<p>How a piece gets made</p>",
+        "giving_text": "<p>Moon finds or draws the art, then reworks it for the garment it goes on. Only then is it added to the shop, and nothing is printed until someone orders it.</p>",
         "list_heading": "The basics",
         "padding_top": 0,
         "padding_bottom": 0
@@ -304,10 +304,56 @@
       ],
       "settings": {
         "logo_size": 0,
-        "tagline": "<p>moonbae<br/>streetwear, made to order in India</p>",
+        "tagline": "<p>moonbae<br/>wearable art, curated by Moon</p>",
         "copyright": "© 2026 moonbae. All rights reserved.",
         "credit_label": "Website by malvah",
         "credit_url": ""
+      }
+    },
+    "explore": {
+      "type": "explore-collection",
+      "blocks": {
+        "tile-1": {
+          "type": "tile",
+          "settings": {
+            "title": "Hoodies",
+            "category": "hoodies",
+            "focus": "left center",
+            "cta": "Explore"
+          }
+        },
+        "tile-2": {
+          "type": "tile",
+          "settings": {
+            "title": "T-shirts",
+            "category": "tshirts",
+            "focus": "center center",
+            "cta": "Explore"
+          }
+        },
+        "tile-3": {
+          "type": "tile",
+          "settings": {
+            "title": "Baby tees",
+            "category": "babytees",
+            "focus": "right center",
+            "cta": "Explore"
+          }
+        }
+      },
+      "block_order": [
+        "tile-1",
+        "tile-2",
+        "tile-3"
+      ],
+      "settings": {
+        "eyebrow": "Curated by Moon",
+        "heading": "Explore the collection",
+        "show_count": true,
+        "tile_height": 100,
+        "mobile_height": 75,
+        "padding_top": 160,
+        "padding_bottom": 0
       }
     }
   },
@@ -315,6 +361,7 @@
     "home-hero",
     "intro",
     "featured-products",
+    "explore",
     "image-ctas",
     "made-locally",
     "gallery",

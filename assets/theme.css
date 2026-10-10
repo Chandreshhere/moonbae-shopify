@@ -1439,3 +1439,63 @@ body:has(.announcement-bar) .page_wrap {
   letter-spacing: .08em;
 }
 .shopify-policy__body .rte p.policy-heading:first-child { margin-top: 0; }
+
+
+/* --- Explore the collection ----------------------------------------------
+   Full-screen category tiles: two side by side, the last full width when the
+   count is odd. Images drift with scroll through [data-parallax]. */
+.explore-section { padding-top: var(--size--8rem, 8rem); }
+.explore_head { text-align: center; margin-bottom: clamp(1.5rem, 4vw, 3rem); }
+.explore_eyebrow { margin: 0 0 .6rem; opacity: .6; }
+.explore_heading {
+  margin: 0;
+  font-family: var(--_typography---font--secondary-family, inherit);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 7vw, 6rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.explore_grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--site--gutter, 10px); }
+.explore_tile {
+  position: relative; display: block; overflow: hidden;
+  height: var(--explore-h, 100svh); color: #fff; text-decoration: none;
+  background: var(--swatch--dark, #000);
+}
+.explore_tile.is-full { grid-column: 1 / -1; }
+.explore_visual[data-parallax] { position: absolute; inset: 0; overflow: hidden; transition: transform 900ms cubic-bezier(.25, 1, .5, 1); }
+.explore_visual[data-parallax] > .explore_img {
+  position: absolute; left: 0; top: -10%; width: 100%; height: 120%;
+  object-fit: cover; display: block; will-change: transform; backface-visibility: hidden;
+}
+.explore_scrim {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, rgba(0, 0, 0, .55) 0%, rgba(0, 0, 0, .1) 45%, rgba(0, 0, 0, 0) 70%);
+}
+.explore_label {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  display: flex; flex-direction: column; align-items: flex-start; gap: .5rem;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+}
+.explore_count { opacity: .85; }
+.explore_title {
+  margin: 0;
+  font-family: var(--_typography---font--secondary-family, inherit);
+  font-weight: 400;
+  font-size: clamp(2.25rem, 6vw, 5.5rem);
+  line-height: .95;
+}
+.explore_cta { display: inline-flex; gap: .4rem; border-bottom: 1px solid currentColor; padding-bottom: .15rem; }
+@media (hover: hover) {
+  .explore_tile:hover .explore_visual { transform: scale(1.04); }
+}
+@media only screen and (max-width: 767px) {
+  .explore-section { padding-top: var(--size--5rem, 5rem); }
+  .explore_tile { height: var(--explore-h-m, 75svh); }
+  .explore_tile:not(.is-full) .explore_title { font-size: clamp(1.6rem, 8vw, 2.5rem); }
+  .explore_tile:not(.is-full) .explore_label { padding: 1rem; }
+  /* Phones drift further (14% in JS), so they need more image behind the frame. */
+  .explore_visual[data-parallax] > .explore_img { top: -20%; height: 140%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .explore_visual[data-parallax] > .explore_img { top: 0; height: 100%; }
+}
