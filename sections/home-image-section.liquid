@@ -1,42 +1,55 @@
-{% render 'section-class', classes: 'page-contain u-container is-section', attrs: 'nav-dark', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
-<div class="split-grid u-grid-desktop">
-
-{%- assign cta_fallbacks = 'moonbae-02.jpg,moonbae-01.jpg,moonbae-03.jpg' | split: ',' -%}
-
-{%- for block in section.blocks -%}
-  {%- assign fb = cta_fallbacks[forloop.index0] | default: 'moonbae-01.jpg' -%}
-  <div class="split-col u-column-{{ block.settings.width }}{% if block.settings.full_height %} is-100{% endif %}" {{ block.shopify_attributes }}>
-    <a overlay="trigger" href="{{ block.settings.link_url }}"{% if block.settings.new_tab %} target="_blank"{% endif %} class="cta-block w-inline-block">
-      <div class="body-upper is-desktop">
-        <p{% if forloop.first %} class="body-upper is-desktop"{% endif %}>{{ block.settings.eyebrow }}</p>
-      </div>
-      <div cta-cursor_wrap="" class="cta-img_wrap">
-        {% render 'img', image: block.settings.image, fallback: fb, class: 'g_visual_img m-absolute' %}
-        <div overlay="el" class="img-overlay"></div>
-        <div cta-cursor_el="" class="cta-hover_el">
-          <div class="body-upper">{{ block.settings.hover_title }}</div>
-          <div class="orgc-detail body-upper">
-            {% render 'icon-bracket-left' %}
-            <div class="detail-text">{{ block.settings.hover_link_label }}</div>
-            {% render 'icon-bracket-right' %}
-          </div>
+{%- comment -%}
+  Shop tiles: one row of image tiles, all the same height, each with its title,
+  a small line and a link always visible (the old version only showed them on
+  mouse hover, which phones never do). Desktop widths come from each tile's
+  Width setting on a 12-column row; on phones a Half tile spans the row and the
+  others sit two to a row.
+{%- endcomment -%}
+{% render 'section-class', classes: 'page-contain u-container is-section shop-tiles-section', attrs: 'nav-dark', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+<div class="shop-tiles" style="--shop-tiles-h: {{ section.settings.tile_height }}svh; --shop-tiles-h-m: {{ section.settings.mobile_height }}svh;">
+  {%- if section.settings.heading != blank -%}
+    <h2 class="shop-tiles_heading">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+  <div class="shop-tiles_grid">
+    {%- assign tile_fallbacks = 'moonbae-07.jpg,moonbae-04.jpg,hero-men.jpg,moonbae-05.jpg' | split: ',' -%}
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign fb = tile_fallbacks[forloop.index0] | default: 'moonbae-07.jpg'
+        assign span = block.settings.width | default: '6'
+        capture img_attrs
+          echo 'style="object-position: ' | append: block.settings.focus | append: '"'
+        endcapture
+      -%}
+      <a href="{{ block.settings.link_url | default: '/collections/all' }}"{% if block.settings.new_tab %} target="_blank" rel="noopener"{% endif %}
+         class="shop-tile{% if span == '6' %} is-wide{% endif %}" style="--span: {{ span }};" {{ block.shopify_attributes }}>
+        <div class="shop-tile_visual">
+          {% render 'img', image: block.settings.image, fallback: fb, fallback_width: '1400x', alt: block.settings.eyebrow, class: 'shop-tile_img', sizes: '(max-width: 767px) 100vw, 50vw', attrs: img_attrs %}
         </div>
-      </div>
-    </a>
+        <div class="shop-tile_scrim" aria-hidden="true"></div>
+        <div class="shop-tile_label">
+          {%- if block.settings.hover_title != blank -%}
+            <span class="shop-tile_kicker body-upper">{{ block.settings.hover_title }}</span>
+          {%- endif -%}
+          <h3 class="shop-tile_title">{{ block.settings.eyebrow }}</h3>
+          {%- if block.settings.hover_link_label != blank -%}
+            <span class="shop-tile_cta body-upper">{{ block.settings.hover_link_label }} <span aria-hidden="true">&rarr;</span></span>
+          {%- endif -%}
+        </div>
+      </a>
+    {%- endfor -%}
   </div>
-{%- endfor -%}
 </div>
 
 {% schema %}
 {
-  "name": "Image CTAs",
+  "name": "Shop tiles",
   "tag": "div",
-  "class": "page-contain u-container is-section",
+  "class": "page-contain u-container is-section shop-tiles-section",
   "max_blocks": 4,
   "blocks": [
     {
       "type": "cta",
-      "name": "CTA",
+      "name": "Tile",
       "settings": [
         {
           "type": "image_picker",
@@ -44,27 +57,40 @@
           "label": "Image"
         },
         {
+          "type": "select",
+          "id": "focus",
+          "label": "Image focus",
+          "default": "center center",
+          "options": [
+            { "value": "left center", "label": "Left" },
+            { "value": "center center", "label": "Centre" },
+            { "value": "right center", "label": "Right" },
+            { "value": "center top", "label": "Top" }
+          ],
+          "info": "Which part of the image stays in view when the tile crops it."
+        },
+        {
           "type": "text",
           "id": "eyebrow",
-          "label": "Eyebrow",
+          "label": "Title",
           "default": "Shop"
         },
         {
           "type": "text",
           "id": "hover_title",
-          "label": "Hover title",
+          "label": "Small line above the title",
           "default": "ALL PRODUCTS"
         },
         {
           "type": "text",
           "id": "hover_link_label",
-          "label": "Hover link label",
+          "label": "Link text",
           "default": "Shop now"
         },
         {
           "type": "url",
           "id": "link_url",
-          "label": "Link URL"
+          "label": "Link"
         },
         {
           "type": "checkbox",
@@ -75,33 +101,53 @@
         {
           "type": "select",
           "id": "width",
-          "label": "Column width",
+          "label": "Width on desktop",
           "default": "6",
           "options": [
-            {
-              "value": "3",
-              "label": "Quarter"
-            },
-            {
-              "value": "4",
-              "label": "Third"
-            },
-            {
-              "value": "6",
-              "label": "Half"
-            }
-          ]
+            { "value": "3", "label": "Quarter" },
+            { "value": "4", "label": "Third" },
+            { "value": "6", "label": "Half" }
+          ],
+          "info": "On phones a Half tile spans the row; the others sit two to a row."
         },
         {
           "type": "checkbox",
           "id": "full_height",
           "label": "Full height",
-          "default": true
+          "default": true,
+          "info": "Kept from the previous layout and no longer used: every tile is the same height, set on the section."
         }
       ]
     }
   ],
   "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Optional. Shown above the tiles."
+    },
+    {
+      "type": "range",
+      "id": "tile_height",
+      "label": "Tile height on desktop",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 75,
+      "info": "Share of the screen height."
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Tile height on phones",
+      "min": 30,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 50
+    },
     {
       "type": "header",
       "content": "Spacing"
@@ -131,41 +177,37 @@
   ],
   "presets": [
     {
-      "name": "Image CTAs",
+      "name": "Shop tiles",
       "category": "Home",
       "blocks": [
         {
           "type": "cta",
           "settings": {
-            "eyebrow": "Our Products",
-            "hover_title": "COLLECTION 01 & 02",
+            "eyebrow": "Shop",
+            "hover_title": "ALL PRODUCTS",
             "hover_link_label": "Shop now",
-            "link_url": "/collections",
-            "width": "6",
-            "full_height": true
+            "link_url": "/collections/all",
+            "width": "6"
           }
         },
         {
           "type": "cta",
           "settings": {
-            "eyebrow": "Our Craft",
-            "hover_title": "For Her",
+            "eyebrow": "Women",
+            "hover_title": "FOR HER",
             "hover_link_label": "Shop for her",
             "link_url": "/collections/women",
-            "width": "3",
-            "full_height": false
+            "width": "3"
           }
         },
         {
           "type": "cta",
           "settings": {
-            "eyebrow": "Our Community",
-            "hover_title": "Social",
-            "hover_link_label": "Instagram",
-            "link_url": "https://www.instagram.com/moonbae.stores",
-            "new_tab": true,
-            "width": "3",
-            "full_height": true
+            "eyebrow": "Men",
+            "hover_title": "FOR HIM",
+            "hover_link_label": "Shop for him",
+            "link_url": "/collections/men",
+            "width": "3"
           }
         }
       ]
