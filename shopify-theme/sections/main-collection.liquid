@@ -16,6 +16,20 @@
     the tag, and Shopify then refuses the whole file. Resolve the title here.
   endcomment
   assign page_title = collection.title | default: section.settings.fallback_title
+  if section.settings.title_override != blank
+    assign page_title = section.settings.title_override
+  endif
+  comment
+    Category views (templates/collection.hoodies.json and friends, opened as
+    /collections/all?view=hoodies) show one kind of product, sorted by title:
+    "hoodie" is a hoodie, "baby tee" is a baby tee, the rest are t-shirts. The
+    same rule is used by the Explore section. One page holds them all.
+  endcomment
+  assign category = section.settings.category | default: 'all'
+  assign per_page = section.settings.products_per_page
+  if category != 'all'
+    assign per_page = 250
+  endif
   assign hero_image = collection.image
   if hero_image == blank
     assign hero_image = section.settings.hero_fallback_image
@@ -57,9 +71,27 @@
   endif
 -%}
 {% render 'section-class', classes: wrapper_classes, attrs: 'count-items', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
-<h1 class="u-visually-hidden">{{ collection.title | default: section.settings.fallback_title }}</h1>
+<h1 class="u-visually-hidden">{{ page_title }}</h1>
 
-{%- paginate collection.products by section.settings.products_per_page -%}
+{%- paginate collection.products by per_page -%}
+{%- liquid
+  assign shown_count = collection.products_count
+  if category != 'all'
+    assign shown_count = 0
+    for p in collection.products
+      assign t = p.title | downcase
+      assign c = 'tshirts'
+      if t contains 'hoodie'
+        assign c = 'hoodies'
+      elsif t contains 'baby tee' or t contains 'baby-tee' or t contains 'baby t-shirt'
+        assign c = 'babytees'
+      endif
+      if c == category
+        assign shown_count = shown_count | plus: 1
+      endif
+    endfor
+  endif
+-%}
 <div class="page-inner">
   {%- if has_hero -%}
     {%- comment -%}
@@ -76,7 +108,7 @@
         title: page_title,
         eyebrow: section.settings.eyebrow,
         text: hero_text,
-        count: collection.products_count,
+        count: shown_count,
         count_attr: 'count-items="total"',
         fallback: hero_fallback,
         modifier: hero_fit_class,
@@ -95,14 +127,14 @@
           <div class="split-grid u-grid-desktop m-flex m-gap_0">
             <div class="split-col u-column-6 m-width_6">
               <div class="body-upper">
-                <p>{{ collection.title | default: section.settings.fallback_title }}</p>
+                <p>{{ page_title }}</p>
               </div>
             </div>
             <div class="split-col u-column-2 m-col_6">
               <div class="body-upper">{{ section.settings.eyebrow }}</div>
             </div>
             <div class="split-col u-column-4 u-text-align-right m-push_right m-col_6">
-              <p class="body-upper">(&nbsp;<span count-items="total">{{ collection.products_count }}</span>&nbsp;)</p>
+              <p class="body-upper">(&nbsp;<span count-items="total">{{ shown_count }}</span>&nbsp;)</p>
             </div>
           </div>
         </div>
@@ -116,13 +148,30 @@
 
       <div class="product-col_wrap w-dyn-list" udy-collection="product">
       <div role="list" class="product-col_list u-grid-desktop w-dyn-items">
+        {%- assign rendered = 0 -%}
         {%- for product in collection.products -%}
-          {% render 'product-card-grid', product: product, view_label: section.settings.view_label %}
-        {%- else -%}
+          {%- liquid
+            assign c = category
+            if category != 'all'
+              assign t = product.title | downcase
+              assign c = 'tshirts'
+              if t contains 'hoodie'
+                assign c = 'hoodies'
+              elsif t contains 'baby tee' or t contains 'baby-tee' or t contains 'baby t-shirt'
+                assign c = 'babytees'
+              endif
+            endif
+          -%}
+          {%- if c == category -%}
+            {% render 'product-card-grid', product: product, view_label: section.settings.view_label %}
+            {%- assign rendered = rendered | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if rendered == 0 -%}
           <div class="product-col_item u-column-4">
             <p class="body-upper">{{ 'collections.general.no_matches' | t }}</p>
           </div>
-        {%- endfor -%}
+        {%- endif -%}
       </div>
       </div>
     </div>
@@ -148,6 +197,37 @@
   "tag": "div",
   "class": "page-collection u-container",
   "settings": [
+    {
+      "type": "select",
+      "id": "category",
+      "label": "Products to show",
+      "default": "all",
+      "options": [
+        {
+          "value": "all",
+          "label": "Everything in the collection"
+        },
+        {
+          "value": "hoodies",
+          "label": "Hoodies only"
+        },
+        {
+          "value": "tshirts",
+          "label": "T-shirts only"
+        },
+        {
+          "value": "babytees",
+          "label": "Baby tees only"
+        }
+      ],
+      "info": "Sorted by product title: \"hoodie\" is a hoodie, \"baby tee\" is a baby tee, the rest are t-shirts."
+    },
+    {
+      "type": "text",
+      "id": "title_override",
+      "label": "Page title",
+      "info": "Optional. Replaces the collection's own title."
+    },
     {
       "type": "checkbox",
       "id": "show_hero",

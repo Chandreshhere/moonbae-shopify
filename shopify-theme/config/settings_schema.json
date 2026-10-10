@@ -21,7 +21,7 @@
         "type": "text",
         "id": "seo_tagline",
         "label": "Tagline",
-        "default": "streetwear, made to order in India",
+        "default": "wearable art, curated by Moon",
         "info": "Follows the brand name in the browser tab, in link previews, and as the home page's heading for search engines."
       },
       {

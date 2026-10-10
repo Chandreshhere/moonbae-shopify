@@ -14,8 +14,10 @@
     must be the brand and tagline, matching the <title> in the layout.
   endcomment
   if request.page_type == 'index'
-    assign seo_tagline = settings.seo_tagline | default: 'streetwear, made to order in India'
+    assign seo_tagline = settings.seo_tagline | default: 'wearable art, curated by Moon'
     assign og_title = settings.brand_name | default: shop.name | append: ' — ' | append: seo_tagline
+  elsif view_title != blank
+    assign og_title = view_title | append: ' — ' | append: settings.brand_name
   else
     assign og_title = page_title
   endif
