@@ -1445,7 +1445,9 @@ body:has(.announcement-bar) .page_wrap {
    One screen tall: the first tile fills the left half at full height, the
    others are stacked on the right and share it (the section sets the lead
    tile's row span inline). Images drift with scroll through [data-parallax]. */
-.explore-section { padding-top: var(--size--8rem, 8rem); }
+/* No top padding of its own: the section above already ends with the site's
+   section spacing, and adding more doubled the gap. */
+.explore-section { padding-top: 0; }
 .explore_head { text-align: center; margin-bottom: clamp(1.5rem, 4vw, 3rem); }
 .explore_eyebrow { margin: 0 0 .6rem; opacity: .6; }
 .explore_heading {
@@ -1500,7 +1502,6 @@ body:has(.announcement-bar) .page_wrap {
   .explore_tile:hover .explore_visual { transform: scale(1.04); }
 }
 @media only screen and (max-width: 767px) {
-  .explore-section { padding-top: var(--size--5rem, 5rem); }
   .explore_grid { height: 85vh; height: var(--explore-h-m, 85svh); }
   .explore_tile .explore_title,
   .explore_tile:not(.is-lead):not(.is-only) .explore_title { font-size: clamp(1.6rem, 8vw, 2.5rem); }
