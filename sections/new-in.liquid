@@ -1,0 +1,93 @@
+{%- comment -%}
+  New in: a sideways row of product cards with arrows, newest first. Without
+  a collection picked it takes every product in the store and sorts them by
+  the date they were created, so anything added in Shopify (or by Qikink)
+  appears at the front on its own. With a collection it keeps that
+  collection's own order. Arrows and quick-add feedback live in
+  scripts-2026.js ([data-new-in]).
+{%- endcomment -%}
+{% render 'section-class', classes: 'new-in-section', attrs: 'nav-dark', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+{%- liquid
+  assign limit = section.settings.products_limit
+  assign link = section.settings.link_url | default: '/collections/all?sort_by=created-descending'
+  assign shown = 0
+-%}
+{%- capture cards -%}
+  {%- if section.settings.collection != blank -%}
+    {%- for product in section.settings.collection.products -%}
+      {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+      {%- if product.available == false and section.settings.show_sold_out == false -%}{%- continue -%}{%- endif -%}
+      {% render 'product-card-rail', product: product, show_alt: section.settings.show_second_image, quick_add: section.settings.quick_add %}
+      {%- assign shown = shown | plus: 1 -%}
+    {%- endfor -%}
+  {%- else -%}
+    {%- paginate collections.all.products by 250 -%}
+      {%- assign newest = collections.all.products | sort: 'created_at' | reverse -%}
+      {%- for product in newest -%}
+        {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+        {%- if product.available == false and section.settings.show_sold_out == false -%}{%- continue -%}{%- endif -%}
+        {% render 'product-card-rail', product: product, show_alt: section.settings.show_second_image, quick_add: section.settings.quick_add %}
+        {%- assign shown = shown | plus: 1 -%}
+      {%- endfor -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+<div class="new-in" data-new-in style="--ni-ratio: {{ section.settings.image_ratio }};">
+  <div class="new-in_head u-container">
+    <div>
+      {%- if section.settings.heading != blank -%}<h2 class="new-in_heading">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.subheading != blank -%}<p class="new-in_sub">{{ section.settings.subheading }}</p>{%- endif -%}
+    </div>
+    {%- if section.settings.link_label != blank -%}
+      <a href="{{ link }}" class="new-in_link body-upper">{{ section.settings.link_label }}</a>
+    {%- endif -%}
+  </div>
+
+  {%- if shown == 0 -%}
+    {%- if request.design_mode -%}
+      <p class="u-container body-upper">No products to show yet. Products appear here once they are active and published to the Online Store sales channel. This note is only visible in the theme editor.</p>
+    {%- endif -%}
+  {%- else -%}
+    <div class="new-in_rail">
+      <button type="button" class="new-in_arrow is-prev" data-new-in-prev aria-label="Previous products" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <ul class="new-in_track" data-new-in-track>{{ cards }}</ul>
+      <button type="button" class="new-in_arrow is-next" data-new-in-next aria-label="Next products">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+    {%- if section.settings.show_rule -%}<hr class="new-in_rule">{%- endif -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "New in",
+  "tag": "div",
+  "class": "new-in-section",
+  "settings": [
+    {"type": "text", "id": "heading", "label": "Heading", "default": "New in"},
+    {"type": "text", "id": "subheading", "label": "Line under the heading", "default": "The latest pieces in the shop, newest first."},
+    {"type": "text", "id": "link_label", "label": "Link text", "default": "Shop new arrivals"},
+    {"type": "url", "id": "link_url", "label": "Link", "info": "Leave empty to open all products, newest first."},
+    {"type": "header", "content": "Products"},
+    {"type": "collection", "id": "collection", "label": "Collection", "info": "Optional. Leave empty to show the newest products in the store. A collection keeps its own sort order."},
+    {"type": "range", "id": "products_limit", "label": "Products shown", "min": 4, "max": 24, "step": 1, "default": 12},
+    {"type": "checkbox", "id": "show_sold_out", "label": "Include sold-out products", "default": false},
+    {"type": "select", "id": "image_ratio", "label": "Photo shape", "default": "4 / 5",
+     "options": [{"value": "4 / 5", "label": "Portrait (4:5)"}, {"value": "2 / 3", "label": "Tall (2:3)"}, {"value": "1 / 1", "label": "Square"}],
+     "info": "Your product photos are 4:5, so Portrait shows them uncropped."},
+    {"type": "checkbox", "id": "show_second_image", "label": "Show the second photo on hover", "default": true},
+    {"type": "checkbox", "id": "quick_add", "label": "Add to cart bar on hover", "default": true, "info": "Desktop only. Lets shoppers pick a size and add without opening the product."},
+    {"type": "checkbox", "id": "show_rule", "label": "Line under the row", "default": true},
+    {"type": "header", "content": "Spacing"},
+    {"type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 320, "step": 4, "default": 0, "unit": "px", "info": "0 keeps the design default."},
+    {"type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 320, "step": 4, "default": 0, "unit": "px", "info": "0 keeps the design default."}
+  ],
+  "presets": [
+    {"name": "New in", "category": "Products"}
+  ]
+}
+{% endschema %}

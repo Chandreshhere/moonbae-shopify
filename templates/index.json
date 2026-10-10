@@ -70,50 +70,41 @@
         "cta-1": {
           "type": "cta",
           "settings": {
-            "eyebrow": "Shop",
-            "hover_title": "ALL PRODUCTS",
-            "hover_link_label": "Shop now",
-            "link_url": "/collections/all",
+            "eyebrow": "Shop men",
+            "hover_title": "",
+            "hover_link_label": "",
+            "link_url": "/collections/men",
             "new_tab": false,
             "width": "6",
+            "focus": "center center",
             "full_height": true
           }
         },
         "cta-2": {
           "type": "cta",
           "settings": {
-            "eyebrow": "Women",
-            "hover_title": "FOR HER",
-            "hover_link_label": "Shop for her",
+            "eyebrow": "Shop women",
+            "hover_title": "",
+            "hover_link_label": "",
             "link_url": "/collections/women",
             "new_tab": false,
-            "width": "3",
-            "full_height": false
-          }
-        },
-        "cta-3": {
-          "type": "cta",
-          "settings": {
-            "eyebrow": "Men",
-            "hover_title": "FOR HIM",
-            "hover_link_label": "Shop for him",
-            "link_url": "/collections/men",
-            "new_tab": false,
-            "width": "3",
+            "width": "6",
+            "focus": "center center",
             "full_height": true
           }
         }
       },
       "block_order": [
         "cta-1",
-        "cta-2",
-        "cta-3"
+        "cta-2"
       ],
       "settings": {
-        "tile_height": 75,
-        "mobile_height": 50,
+        "title_style": "condensed",
+        "title_font": "oswald_n4",
+        "tile_height": 100,
+        "mobile_height": 60,
         "padding_top": 32,
-        "padding_bottom": 120
+        "padding_bottom": 0
       }
     },
     "made-locally": {
@@ -357,6 +348,22 @@
         "padding_top": 0,
         "padding_bottom": 0
       }
+    },
+    "new-in": {
+      "type": "new-in",
+      "settings": {
+        "heading": "New in",
+        "subheading": "The latest pieces in the shop, newest first.",
+        "link_label": "Shop new arrivals",
+        "products_limit": 12,
+        "show_sold_out": false,
+        "image_ratio": "4 / 5",
+        "show_second_image": true,
+        "quick_add": true,
+        "show_rule": true,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
     }
   },
   "order": [
@@ -366,6 +373,7 @@
     "explore",
     "made-locally",
     "image-ctas",
+    "new-in",
     "gallery",
     "community",
     "footer"
