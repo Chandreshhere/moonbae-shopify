@@ -1,0 +1,29 @@
+{%- comment -%}
+  The price, the same way everywhere a product is listed: when the variant has
+  a Compare-at price above its price in Shopify admin, that higher price is
+  struck through and the discount shows as a percentage. Nothing is made up
+  here: with no Compare-at price set, only the price shows.
+  Theme settings > Product badges can turn the discount display off.
+
+  Params: product, variant (optional; defaults to the first available one),
+  class (extra classes on the wrapper), percent (true adds "31% off" after
+  the price, for places with no photo badge to carry it)
+{%- endcomment -%}
+{%- liquid
+  assign v = variant | default: product.selected_or_first_available_variant
+  assign now = v.price
+  assign was = v.compare_at_price | default: 0
+  assign off = 0
+  if settings.show_discount != false and was > now
+    assign off = was | minus: now | times: 100.0 | divided_by: was | round
+  endif
+-%}
+<span class="price-group{% if off > 0 %} is-on-sale{% endif %}{% if class != blank %} {{ class }}{% endif %}">
+  {%- if off > 0 -%}
+    <s class="price-was"><span class="u-visually-hidden">Regular price </span>{{ was | money }}</s>
+  {%- endif -%}
+  <span class="price-now">{% if off > 0 %}<span class="u-visually-hidden">Sale price </span>{% endif %}{{ now | money }}</span>
+  {%- if off > 0 and percent -%}
+    <span class="price-off">{{ off }}% off</span>
+  {%- endif -%}
+</span>

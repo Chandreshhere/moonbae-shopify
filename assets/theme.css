@@ -1625,14 +1625,6 @@ body:has(.announcement-bar) .page_wrap {
 .new-in_media-link { position: absolute; inset: 0; display: block; }
 .new-in_img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .new-in_img.is-alt { opacity: 0; transition: opacity 500ms ease; }
-.new-in_badge {
-  position: absolute; top: .85rem; left: .85rem; z-index: 2;
-  padding: .45rem .6rem; border-radius: .3rem;
-  background: var(--swatch--dark, #000); color: #fff;
-  font-size: .68rem; line-height: 1; letter-spacing: .06em;
-  pointer-events: none;
-}
-.new-in_badge.is-muted { background: #fff; color: var(--swatch--dark, #000); }
 .new-in_bar {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
   height: 3.25rem;
@@ -1675,8 +1667,6 @@ body:has(.announcement-bar) .page_wrap {
   line-height: 1.25; letter-spacing: .01em; text-transform: uppercase;
 }
 .new-in_price { display: flex; flex-wrap: wrap; gap: .4rem .9rem; margin-top: .5rem; font-size: clamp(.85rem, 1.05vw, 1.05rem); }
-.new-in_price s { opacity: .45; }
-.new-in_price .is-sale { color: #b3261e; }
 .new-in_arrow {
   position: absolute; z-index: 3;
   top: calc(var(--ni-img-h, 30vw) / 2);
@@ -1710,4 +1700,51 @@ body:has(.announcement-bar) .page_wrap {
   .new-in { --ni-cols: 1.6; }
   .new-in_head { flex-direction: column; align-items: flex-start; gap: 1rem; }
   .new-in_arrow { display: none; }
+}
+
+/* --- Prices and badges (snippets/price, snippets/product-badge) -----------
+   One look wherever a product is listed: the Compare-at price struck through,
+   the price in the sale colour, and the percentage off. The sale colour is
+   Theme settings > Colours. */
+.price-group { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: .2em .55em; }
+.price-was { opacity: .5; font-weight: 400; text-decoration: line-through; }
+.price-group.is-on-sale .price-now,
+.price-now.is-on-sale,
+.is-on-sale[data-product-price],
+.is-on-sale[data-sticky-atc-price] { color: var(--swatch--sale, #d62d20); }
+.price-off { color: var(--swatch--sale, #d62d20); font-weight: 600; text-transform: uppercase; white-space: nowrap; }
+.price-save { opacity: .65; white-space: nowrap; }
+.p-badge {
+  position: absolute; top: .75rem; left: .75rem; z-index: 3;
+  padding: .45rem .6rem; border-radius: .3rem;
+  background: var(--swatch--dark, #000); color: #fff;
+  font-size: .68rem; line-height: 1; letter-spacing: .06em;
+  pointer-events: none;
+}
+.p-badge.is-sale { background: var(--swatch--sale-badge, #050fff); font-weight: 600; }
+.p-badge.is-muted { background: #fff; color: var(--swatch--dark, #000); }
+/* Collection grid: title on the left, price on the right; a discounted price
+   is longer, so it may wrap under itself rather than squeeze the title. */
+.product-block_info.is-alt > p { flex: none; max-width: 62%; margin: 0; text-align: right; }
+.product-block_info.is-alt .price-group { justify-content: flex-end; }
+/* Product page: under the main price. */
+.product-compare {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: flex-end;
+  gap: .25rem .7rem; margin-top: .4rem;
+}
+.sticky-atc_price { display: flex; align-items: baseline; gap: .5rem; }
+.cart-page_price .price-was { display: block; margin-top: .25rem; white-space: nowrap; }
+.product-compare[hidden],
+.cart-savings[hidden],
+[data-sticky-atc-was][hidden] { display: none !important; }
+@media screen and (max-width: 991px) {
+  .product-compare { justify-content: flex-start; }
+}
+@media only screen and (max-width: 767px) {
+  .p-badge { top: .5rem; left: .5rem; padding: .35rem .45rem; font-size: .6rem; }
+  /* Two cards to a row leaves no room for a title and a discounted price side
+     by side, so the price goes under the title. */
+  .product-block_info.is-alt { flex-flow: column; grid-row-gap: .35rem; }
+  .product-block_info.is-alt > p { max-width: 100%; text-align: left; }
+  .product-block_info.is-alt .price-group { justify-content: flex-start; }
 }

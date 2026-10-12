@@ -14,7 +14,7 @@
   endif
 -%}
 <!DOCTYPE html>
-<html lang="{{ request.locale.iso_code }}"{% if ads_here %} data-ads{% endif %}{% if settings.lock_browser_bars %} class="lock-browser-bars"{% endif %} data-money-format="{{ shop.money_format | escape }}" data-money-currency-format="{{ shop.money_with_currency_format | escape }}"{% if settings.tab_away_text != blank %} data-tab-away-text="{{ settings.tab_away_text | escape }}"{% endif %}>
+<html lang="{{ request.locale.iso_code }}"{% if ads_here %} data-ads{% endif %}{% if settings.show_discount == false %} data-no-discount{% endif %}{% if settings.lock_browser_bars %} class="lock-browser-bars"{% endif %} data-money-format="{{ shop.money_format | escape }}" data-money-currency-format="{{ shop.money_with_currency_format | escape }}"{% if settings.tab_away_text != blank %} data-tab-away-text="{{ settings.tab_away_text | escape }}"{% endif %}>
   <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
@@ -34,6 +34,10 @@
             assign view_title = 'T-shirts'
           when 'babytees'
             assign view_title = 'Baby tees'
+          when 'men'
+            assign view_title = 'Men'
+          when 'women'
+            assign view_title = 'Women'
         endcase
       endif
     -%}
@@ -119,6 +123,8 @@
         --swatch--brand: {{ settings.color_brand }};
         --swatch--light-grey: {{ settings.color_light_grey }};
         --swatch--light-faded: {{ settings.color_light_faded }};
+        --swatch--sale: {{ settings.color_sale | default: '#d62d20' }};
+        --swatch--sale-badge: {{ settings.color_sale_badge | default: '#050fff' }};
         --swatch--faded-text: {{ settings.color_faded_text }};
         --swatch--dark-faded: {{ settings.color_dark }};
         --swatch--dark-faded-1: {{ settings.color_dark | color_modify: 'alpha', 0.1 }};

@@ -170,8 +170,10 @@
             a dead link.
           {%- endcomment -%}
           {%- for block in section.blocks -%}
+            {%- comment -%} Men and Women are views of All products (?view=men), so the path alone cannot tell which one is open. {%- endcomment -%}
+            {%- assign view_param = 'view=' | append: template.suffix -%}
             {%- if block.type == 'category' and block.settings.label != blank and block.settings.url != blank -%}
-              <a h-flip="" href="{{ block.settings.url }}" class="nav-link is-desktop is-category w-inline-block"{% if block.settings.url == request.path %} aria-current="page"{% endif %} {{ block.shopify_attributes }}>
+              <a h-flip="" href="{{ block.settings.url }}" class="nav-link is-desktop is-category w-inline-block"{% if block.settings.url == request.path or template.suffix != blank and block.settings.url contains view_param %} aria-current="page"{% endif %} {{ block.shopify_attributes }}>
                 <div class="body-upper">{{ block.settings.label }}</div>
               </a>
             {%- endif -%}
@@ -384,14 +386,14 @@
         "type": "category",
         "settings": {
           "label": "Men",
-          "url": "/collections/men"
+          "url": "/collections/all?view=men"
         }
       },
       {
         "type": "category",
         "settings": {
           "label": "Women",
-          "url": "/collections/women"
+          "url": "/collections/all?view=women"
         }
       }
     ]

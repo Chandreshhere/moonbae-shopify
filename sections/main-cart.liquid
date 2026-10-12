@@ -70,7 +70,16 @@
               </a>
             </div>
             <div class="u-column-2 u-text-align-right cart-page_price">
-              <p class="body-upper" data-line-total="{{ forloop.index }}">{{ item.final_line_price | money }}</p>
+              {%- liquid
+                assign unit_was = item.variant.compare_at_price | default: 0
+                if settings.show_discount == false or unit_was <= item.final_price
+                  assign unit_was = 0
+                endif
+              -%}
+              <p class="body-upper{% if unit_was > 0 %} price-now is-on-sale{% endif %}" data-line-total="{{ forloop.index }}">{{ item.final_line_price | money }}</p>
+              {%- if unit_was > 0 -%}
+                <s class="price-was body-upper" data-line-was="{{ forloop.index }}" data-unit-was="{{ unit_was }}">{{ unit_was | times: item.quantity | money }}</s>
+              {%- endif -%}
             </div>
           </div>
         {%- endfor -%}
@@ -81,6 +90,27 @@
             <div class="cart-line_item">
               <div class="field_copy">{{ settings.cart_subtotal_label }}</div>
               <div class="body-upper" data-cart-subtotal>{{ cart.total_price | money_with_currency }}</div>
+            </div>
+            {%- liquid
+              comment
+                What the Compare-at prices add up to over what is being paid,
+                line by line. scripts-2026.js keeps it in step when a quantity
+                changes.
+              endcomment
+              assign cart_saved = 0
+              if settings.show_discount != false
+                for item in cart.items
+                  assign w = item.variant.compare_at_price | default: 0
+                  if w > item.final_price
+                    assign line_saved = w | minus: item.final_price | times: item.quantity
+                    assign cart_saved = cart_saved | plus: line_saved
+                  endif
+                endfor
+              endif
+            -%}
+            <div class="cart-line_item cart-savings"{% if cart_saved <= 0 %} hidden{% endif %}>
+              <div class="field_copy">You save</div>
+              <div class="body-upper price-off" data-cart-savings>{{ cart_saved | money }}</div>
             </div>
             <div class="cart-line_item">
               <div class="field_copy">{{ settings.cart_shipping_label }}</div>

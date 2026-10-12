@@ -1,6 +1,6 @@
 {%- comment -%}
   Product card for the New in carousel: photo (second photo on hover), a
-  badge for a sale or a sold-out product, a quick-add bar that slides up over
+  badge (snippets/product-badge), a quick-add bar that slides up over
   the photo on hover, then the title and price underneath.
 
   The quick-add buttons carry data-add-variant, so the add itself is done by
@@ -11,11 +11,6 @@
   Params: product, show_alt (second photo on hover), quick_add
 {%- endcomment -%}
 {%- liquid
-  assign on_sale = false
-  if product.compare_at_price > product.price
-    assign on_sale = true
-    assign save = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
-  endif
   assign alt_media = product.media[1]
   assign img_sizes = '(max-width: 767px) 62vw, (max-width: 1023px) 40vw, 25vw'
   assign img_alt = product.featured_media.alt | default: product.title
@@ -33,11 +28,7 @@
       {%- endif -%}
     </a>
 
-    {%- if product.available == false -%}
-      <span class="new-in_badge is-muted body-upper">Sold out</span>
-    {%- elsif on_sale -%}
-      <span class="new-in_badge body-upper">Save {{ save }}%</span>
-    {%- endif -%}
+    {% render 'product-badge', product: product %}
 
     {%- if quick_add and product.available -%}
       <div class="new-in_bar body-upper">
@@ -60,13 +51,6 @@
 
   <a href="{{ product.url }}" class="new-in_info">
     <h3 class="new-in_title">{{ product.title }}</h3>
-    <div class="new-in_price">
-      {%- if on_sale -%}
-        <s>{{ product.compare_at_price | money }}</s>
-        <span class="is-sale">{{ product.price | money }}</span>
-      {%- else -%}
-        <span>{% if product.price_varies %}From {% endif %}{{ product.price | money }}</span>
-      {%- endif -%}
-    </div>
+    <div class="new-in_price">{% render 'price', product: product %}</div>
   </a>
 </li>

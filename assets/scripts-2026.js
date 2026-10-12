@@ -1287,7 +1287,14 @@ function globalScripts() {
               (img ? '<img class="cart-rec_img" src="' + img + '" alt="" loading="lazy" decoding="async">' : "") +
               '<span class="cart-rec_info">' +
               '<span class="cart-rec_title body-upper">' + p.title + "</span>" +
-              '<span class="cart-rec_price body-upper">' + formatMoney(p.price) + "</span>" +
+              '<span class="cart-rec_price body-upper">' + (function () {
+                // Same as snippets/price.liquid: a real Compare-at price only.
+                const was = p.compare_at_price || 0;
+                if (!(was > p.price) || document.documentElement.hasAttribute("data-no-discount")) return formatMoney(p.price);
+                const off = Math.round(((was - p.price) * 100) / was);
+                return '<s class="price-was">' + formatMoney(was) + '</s> <span class="price-now is-on-sale">' +
+                  formatMoney(p.price) + '</span> <span class="price-off">' + off + "% off</span>";
+              })() + "</span>" +
               "</span></a>" +
               // Straight into the cart, whichever variant it is. Asking for a
               // size first put a second tap between a shopper and an impulse
@@ -1323,6 +1330,7 @@ function globalScripts() {
                 // products.json prices are decimal strings; recommendations
                 // are integer paise. Normalise to paise.
                 price: Math.round(parseFloat((p.variants[0] || {}).price || "0") * 100),
+                compare_at_price: Math.round(parseFloat((p.variants[0] || {}).compare_at_price || "0") * 100),
                 featured_image: (p.images[0] || {}).src || "",
                 __variants: (p.variants || []).filter((v) => v.available !== false),
               }))
@@ -1669,15 +1677,31 @@ function globalScripts() {
         if (el) el.textContent = money(cart.total_price, true);
         const count = document.querySelector("[data-cart-count]");
         if (count) count.textContent = cart.item_count;
+        // The Compare-at price per unit rides on the struck-through line
+        // price, since cart.js does not carry it; the saving is summed from
+        // those so it moves with the quantities.
+        let saved = 0;
         (cart.items || []).forEach((item, i) => {
           const total = document.querySelector('[data-line-total="' + (i + 1) + '"]');
           if (total) total.textContent = money(item.final_line_price);
+          const was = document.querySelector('[data-line-was="' + (i + 1) + '"]');
+          if (was) {
+            const unitWas = parseInt(was.getAttribute("data-unit-was"), 10) || 0;
+            was.textContent = money(unitWas * item.quantity);
+            if (unitWas > item.final_price) saved += (unitWas - item.final_price) * item.quantity;
+          }
           const qty = document.querySelector('[data-cart-line="' + (i + 1) + '"]');
           if (qty) {
             qty.value = item.quantity;
             qty.setAttribute("data-unit-price", item.final_price);
           }
         });
+        const savings = document.querySelector("[data-cart-savings]");
+        if (savings) {
+          savings.textContent = money(saved);
+          const row = savings.closest(".cart-savings");
+          if (row) row.hidden = saved <= 0;
+        }
         // A line removed outright renumbers everything after it, and patching
         // that up in place is more ways to be wrong than it is worth.
         if (quantity === 0) window.rerenderCartPage();
@@ -1881,6 +1905,50 @@ function globalScripts() {
       watch.observe(btn, { attributes: true, attributeFilter: ["disabled"] });
     });
   }
+
+  // Product page discount. The cart bridge rewrites the price when the size
+  // changes; the struck-through Compare-at price, the % off and the saving
+  // beside it follow from the map main-product.liquid prints, looked up by the
+  // option selects (the pills drive those). Nothing to do when no variant has
+  // a Compare-at price.
+  document.querySelectorAll("[data-compare-map]").forEach((mapEl) => {
+    let map;
+    try { map = JSON.parse(mapEl.textContent); } catch (e) { return; }
+    if (!Array.isArray(map) || !map.some((v) => v.off > 0)) return;
+    const form = document.querySelector(mapEl.getAttribute("data-form")) || document;
+    const box = document.querySelector("[data-product-compare]");
+    const price = document.querySelector("[data-product-price]");
+    const stickyPrice = document.querySelector("[data-sticky-atc-price]");
+    const stickyWas = document.querySelector("[data-sticky-atc-was]");
+    const selects = [...form.querySelectorAll('select[data-node-type="add-to-cart-option-select"]')];
+    const current = () => {
+      if (!selects.length) return map[0];
+      const chosen = ["", "", ""];
+      selects.forEach((sel) => {
+        const i = parseInt(sel.getAttribute("data-option-index"), 10) - 1;
+        if (i >= 0 && i < 3) chosen[i] = (sel.value || "").toLowerCase();
+      });
+      return map.find((v) => v.o.every((o, i) => !chosen[i] || o === chosen[i])) || null;
+    };
+    const set = (sel, text) => { const el = box && box.querySelector(sel); if (el) el.textContent = text; };
+    const paint = () => {
+      const v = current();
+      const on = !!(v && v.off > 0);
+      if (box) {
+        box.hidden = !on;
+        if (on) { set("[data-compare-was]", v.was); set("[data-compare-off]", v.off); set("[data-compare-save]", v.save); }
+      }
+      if (price) price.classList.toggle("is-on-sale", on);
+      if (stickyPrice) stickyPrice.classList.toggle("is-on-sale", on);
+      if (stickyWas) { stickyWas.hidden = !on; if (on) stickyWas.textContent = v.was; }
+    };
+    const later = () => setTimeout(paint, 60);
+    form.addEventListener("change", later);
+    form.addEventListener("click", (e) => {
+      if (e.target.closest('[data-node-type="add-to-cart-option-pill"], .size-button')) later();
+    });
+    paint();
+  });
 
   // Sticky mobile add-to-cart: show the bar while the real button is off
   // screen, and route its click to the real button so the one form and the

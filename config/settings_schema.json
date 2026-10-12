@@ -190,6 +190,44 @@
         "id": "color_faded_text",
         "label": "Muted text on dark",
         "default": "#cccccc"
+      },
+      {
+        "type": "color",
+        "id": "color_sale",
+        "label": "Sale price",
+        "default": "#d62d20"
+      },
+      {
+        "type": "color",
+        "id": "color_sale_badge",
+        "label": "Save badge on product photos",
+        "default": "#050fff"
+      }
+    ]
+  },
+  {
+    "name": "Product badges",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "A discount shows wherever a product is listed when its Compare-at price in Shopify admin is higher than its price: the higher price struck through, the price, and the percentage off."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_discount",
+        "label": "Show Compare-at price and % off",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "new_badge_days",
+        "label": "New badge for products added in the last",
+        "min": 0,
+        "max": 60,
+        "step": 5,
+        "unit": "d",
+        "default": 15,
+        "info": "0 turns the New badge off. A discount badge takes its place when the product has one."
       }
     ]
   },

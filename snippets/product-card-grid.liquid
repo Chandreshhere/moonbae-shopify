@@ -23,6 +23,7 @@
       {%- if hover_media -%}
         <img src="{{ hover_media | image_url: width: 1200 }}" alt="" class="product-hover_img">
       {%- endif -%}
+      {% render 'product-badge', product: product %}
       <div overlay="el" class="product-overlay"></div>
       <div cta-cursor_el="" class="cta-hover_el is-desktop">
         {% render 'product-code', product: product, tag: 'div', class: 'body-upper' %}
@@ -37,7 +38,7 @@
       <div class="product-info">
         <div class="body-upper">{{ product.title }}</div>
       </div>
-      <p class="body-upper">{{ product.price | money }}</p>
+      <p class="body-upper">{% render 'price', product: product %}</p>
     </div>
   </a>
 </div>

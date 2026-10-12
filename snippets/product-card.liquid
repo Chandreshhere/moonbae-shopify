@@ -24,6 +24,8 @@
         <img src="{{ hover_media | image_url: width: 1200 }}" alt="" class="product-hover_img" loading="lazy">
       {%- endif -%}
 
+      {% render 'product-badge', product: product %}
+
       {%- comment -%}
         Covers the whole card so a tap anywhere opens the product. Hidden from
         assistive tech and the tab order, because the link below it already
@@ -38,7 +40,7 @@
             {% render 'product-code', product: product, tag: 'p', class: 'body-upper text-grey' %}
           </div>
           <div class="product-btn_flex">
-            <div class="price">{{ product.price | money }}</div>
+            <div class="price">{% render 'price', product: product %}</div>
             <div arrow-wrap="" class="arrow-svg_holder">{% render 'icon-arrow' %}</div>
           </div>
         </div>

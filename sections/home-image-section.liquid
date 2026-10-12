@@ -30,9 +30,9 @@
           order of Men and Women does not swap their pictures.
         endcomment
         assign link = block.settings.link_url | downcase
-        if link contains '/women'
+        if link contains 'women'
           assign fb = 'moonbae-04.jpg'
-        elsif link contains '/men'
+        elsif link contains '/men' or link contains '=men'
           assign fb = 'hero-men.jpg'
         endif
         assign span = block.settings.width | default: '6'
@@ -225,7 +225,7 @@
           "type": "cta",
           "settings": {
             "eyebrow": "Shop men",
-            "link_url": "/collections/men",
+            "link_url": "/collections/all?view=men",
             "width": "6"
           }
         },
@@ -233,7 +233,7 @@
           "type": "cta",
           "settings": {
             "eyebrow": "Shop women",
-            "link_url": "/collections/women",
+            "link_url": "/collections/all?view=women",
             "width": "6"
           }
         }

@@ -85,7 +85,43 @@
               {% render 'product-code', product: product, tag: 'p', class: 'u-text-style-h4 f-5', brackets: false %}
             </div>
             <div class="split-col u-column-4 u-text-align-right m-align_left">
-              <div data-commerce-type="variation-price" class="product-title price" data-product-price>{{ current_variant.price | money }}</div>
+              {%- liquid
+                comment
+                  The cart bridge rewrites the price itself when the size
+                  changes. The struck-through Compare-at price, the % off and
+                  the saving sit beside it and follow it from the map below
+                  (scripts-2026.js, [data-compare-map]).
+                endcomment
+                assign cv_was = current_variant.compare_at_price | default: 0
+                assign cv_off = 0
+                if settings.show_discount != false and cv_was > current_variant.price
+                  assign cv_off = cv_was | minus: current_variant.price | times: 100.0 | divided_by: cv_was | round
+                endif
+              -%}
+              <div data-commerce-type="variation-price" class="product-title price{% if cv_off > 0 %} is-on-sale{% endif %}" data-product-price>{{ current_variant.price | money }}</div>
+              <div class="product-compare body-upper" data-product-compare{% if cv_off == 0 %} hidden{% endif %}>
+                <s class="price-was"><span class="u-visually-hidden">Regular price </span><span data-compare-was>{% if cv_off > 0 %}{{ cv_was | money }}{% endif %}</span></s>
+                <span class="price-off"><span data-compare-off>{{ cv_off }}</span>% off</span>
+                <span class="price-save">You save <span data-compare-save>{% if cv_off > 0 %}{{ cv_was | minus: current_variant.price | money }}{% endif %}</span></span>
+              </div>
+              <script type="application/json" data-compare-map data-form="#product_form_{{ product.id }}">
+                [
+                {%- for v in product.variants -%}
+                  {%- liquid
+                    assign w = v.compare_at_price | default: 0
+                    assign o = 0
+                    if settings.show_discount != false and w > v.price
+                      assign o = w | minus: v.price | times: 100.0 | divided_by: w | round
+                    endif
+                    assign o1 = v.option1 | default: '' | downcase
+                    assign o2 = v.option2 | default: '' | downcase
+                    assign o3 = v.option3 | default: '' | downcase
+                    assign save = w | minus: v.price
+                  -%}
+                  {"o": [{{ o1 | json }}, {{ o2 | json }}, {{ o3 | json }}], "off": {{ o }}, "was": {{ w | money | json }}, "save": {{ save | money | json }}}{% unless forloop.last %},{% endunless %}
+                {%- endfor -%}
+                ]
+              </script>
             </div>
           </div>
           <div class="product-description_wrap u-text-style-small f-5">
@@ -353,7 +389,10 @@
   <div class="sticky-atc" data-sticky-atc="#product_form_{{ product.id }}" aria-hidden="true">
     <div class="sticky-atc_info">
       <div class="body-upper sticky-atc_title">{{ product.title }}</div>
-      <div class="body-upper" data-sticky-atc-price>{{ current_variant.price | money }}</div>
+      <div class="sticky-atc_price">
+        <div class="body-upper{% if cv_off > 0 %} is-on-sale{% endif %}" data-sticky-atc-price>{{ current_variant.price | money }}</div>
+        <s class="price-was body-upper" data-sticky-atc-was{% if cv_off == 0 %} hidden{% endif %}>{% if cv_off > 0 %}{{ cv_was | money }}{% endif %}</s>
+      </div>
     </div>
     <button type="button" class="sticky-atc_btn body-upper" data-sticky-atc-btn tabindex="-1">{{ section.settings.add_label }}</button>
   </div>

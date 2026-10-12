@@ -1,0 +1,32 @@
+{%- comment -%}
+  One badge on a product photo, in this order: Sold out; the discount
+  ("SAVE 31%") when a Compare-at price is set; New for a product added in the
+  last few days. Both are switched in Theme settings > Product badges.
+
+  Params: product, class (extra classes)
+{%- endcomment -%}
+{%- liquid
+  assign v = product.selected_or_first_available_variant
+  assign was = v.compare_at_price | default: 0
+  assign off = 0
+  if settings.show_discount != false and was > v.price
+    assign off = was | minus: v.price | times: 100.0 | divided_by: was | round
+  endif
+  assign is_new = false
+  assign days = settings.new_badge_days | default: 0
+  if days > 0
+    assign now_s = 'now' | date: '%s' | plus: 0
+    assign made_s = product.created_at | date: '%s' | plus: 0
+    assign age = now_s | minus: made_s | divided_by: 86400
+    if age < days
+      assign is_new = true
+    endif
+  endif
+-%}
+{%- if product.available == false -%}
+  <span class="p-badge is-muted body-upper{% if class != blank %} {{ class }}{% endif %}">Sold out</span>
+{%- elsif off > 0 -%}
+  <span class="p-badge is-sale body-upper{% if class != blank %} {{ class }}{% endif %}">Save {{ off }}%</span>
+{%- elsif is_new -%}
+  <span class="p-badge body-upper{% if class != blank %} {{ class }}{% endif %}">New</span>
+{%- endif -%}

@@ -1,0 +1,100 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "hero_height": 60,
+        "hero_fit": "native",
+        "show_hero": false,
+        "category": "men",
+        "title_override": "Men"
+      }
+    },
+    "footer": {
+      "type": "footer-dark",
+      "blocks": {
+        "column-1": {
+          "type": "column",
+          "settings": {
+            "heading": "Shop",
+            "hover_images": true,
+            "link_1_label": "All products",
+            "link_1_url": "/collections/all",
+            "link_2_label": "Home",
+            "link_2_url": "/",
+            "link_3_label": "About",
+            "link_3_url": "/pages/about",
+            "link_4_label": "Contact",
+            "link_4_url": "/pages/contact"
+          }
+        },
+        "column-2": {
+          "type": "column",
+          "settings": {
+            "heading": "Social",
+            "link_1_label": "Instagram",
+            "link_1_url": "https://www.instagram.com/moonbae.stores"
+          }
+        },
+        "column-3": {
+          "type": "column",
+          "settings": {
+            "heading": "Get in touch",
+            "link_1_label": "moonstorepod@gmail.com",
+            "link_1_url": "mailto:moonstorepod@gmail.com?subject=moonbae%20-%20Customer%20Support",
+            "link_2_label": "",
+            "link_2_url": ""
+          }
+        },
+        "column-4": {
+          "type": "column",
+          "settings": {
+            "heading": "Legal",
+            "link_1_label": "Privacy Policy",
+            "link_1_url": "/policies/privacy-policy",
+            "link_2_label": "Refunds",
+            "link_2_url": "/policies/refund-policy",
+            "link_3_label": "Shipping",
+            "link_3_url": "/policies/shipping-policy",
+            "link_4_label": "Terms of service",
+            "link_4_url": "/policies/terms-of-service"
+          }
+        },
+        "hover_image-1": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-2": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-3": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-4": {
+          "type": "hover_image",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "column-1",
+        "column-2",
+        "column-3",
+        "column-4",
+        "hover_image-1",
+        "hover_image-2",
+        "hover_image-3",
+        "hover_image-4"
+      ],
+      "settings": {
+        "tagline": "<p>moonbae<br/>wearable art, curated by Moon</p>",
+        "copyright": "© 2026 moonbae. All rights reserved."
+      }
+    }
+  },
+  "order": [
+    "main",
+    "footer"
+  ]
+}

@@ -24,6 +24,11 @@
     /collections/all?view=hoodies) show one kind of product, sorted by title:
     "hoodie" is a hoodie, "baby tee" is a baby tee, the rest are t-shirts. The
     same rule is used by the Explore section. One page holds them all.
+
+    Men and Women are views of the same kind (?view=men, ?view=women). The
+    hoodies and t-shirts are unisex, so Women is everything and Men is
+    everything except the baby tees. A product added later lands in the right
+    ones by its title, with nothing to tag in admin.
   endcomment
   assign category = section.settings.category | default: 'all'
   assign per_page = section.settings.products_per_page
@@ -85,6 +90,11 @@
         assign c = 'hoodies'
       elsif t contains 'baby tee' or t contains 'baby-tee' or t contains 'baby t-shirt'
         assign c = 'babytees'
+      endif
+      if category == 'women'
+        assign c = category
+      elsif category == 'men' and c != 'babytees'
+        assign c = category
       endif
       if c == category
         assign shown_count = shown_count | plus: 1
@@ -160,6 +170,11 @@
               elsif t contains 'baby tee' or t contains 'baby-tee' or t contains 'baby t-shirt'
                 assign c = 'babytees'
               endif
+              if category == 'women'
+                assign c = category
+              elsif category == 'men' and c != 'babytees'
+                assign c = category
+              endif
             endif
           -%}
           {%- if c == category -%}
@@ -218,6 +233,14 @@
         {
           "value": "babytees",
           "label": "Baby tees only"
+        },
+        {
+          "value": "men",
+          "label": "Men: everything except baby tees"
+        },
+        {
+          "value": "women",
+          "label": "Women: everything, baby tees included"
         }
       ],
       "info": "Sorted by product title: \"hoodie\" is a hoodie, \"baby tee\" is a baby tee, the rest are t-shirts."

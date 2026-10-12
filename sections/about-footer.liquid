@@ -93,7 +93,7 @@
                     </div>
                   </div>
                   <div class="u-column-2 u-text-align-right">
-                    <p data-commerce-type="variation-price" class="body-upper">{{ product.price | money }}</p>
+                    <p class="body-upper">{% render 'price', product: product, percent: true %}</p>
                   </div>
                 </div>
               </a>
