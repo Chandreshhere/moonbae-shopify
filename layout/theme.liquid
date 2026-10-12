@@ -17,6 +17,13 @@
 <html lang="{{ request.locale.iso_code }}"{% if ads_here %} data-ads{% endif %}{% if settings.show_discount == false %} data-no-discount{% endif %}{% if settings.lock_browser_bars %} class="lock-browser-bars"{% endif %} data-money-format="{{ shop.money_format | escape }}" data-money-currency-format="{{ shop.money_with_currency_format | escape }}"{% if settings.tab_away_text != blank %} data-tab-away-text="{{ settings.tab_away_text | escape }}"{% endif %}>
   <head>
     <meta charset="utf-8">
+    {%- comment -%}
+      Which commit of main this theme was built from. The sync workflow writes
+      the short SHA into snippets/theme-build.liquid on the shopify branch; in
+      the repository itself it reads "dev".
+    {%- endcomment -%}
+    {%- capture theme_build -%}{% render 'theme-build' %}{%- endcapture %}
+    <meta name="theme-build" content="{{ theme_build | strip | escape }}">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <link rel="canonical" href="{{ canonical_url }}">
 
