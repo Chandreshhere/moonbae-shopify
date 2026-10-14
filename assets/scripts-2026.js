@@ -1928,6 +1928,41 @@ function globalScripts() {
     });
   }
 
+  // Buy now under product cards (snippets/card-buy): the first tap swaps the
+  // button for the sizes; a size is a [data-buy-now] button, handled by Magic
+  // Checkout or the Buy now code above. Only one card open at a time, and a
+  // tap anywhere else closes it. Delegated on document, so bound once.
+  if (!window.__cardBuyBound) {
+    window.__cardBuyBound = true;
+    const closeCards = (keep) => {
+      document.querySelectorAll("[data-card-buy].is-open").forEach((w) => {
+        if (w === keep) return;
+        w.classList.remove("is-open");
+        w.querySelector("[data-card-buy-sizes]").hidden = true;
+        const o = w.querySelector("[data-card-buy-open]");
+        o.hidden = false;
+        o.setAttribute("aria-expanded", "false");
+      });
+    };
+    document.addEventListener("click", (e) => {
+      const opener = e.target.closest("[data-card-buy-open]");
+      if (!opener) {
+        if (!e.target.closest("[data-card-buy]")) closeCards(null);
+        return;
+      }
+      e.preventDefault();
+      const wrap = opener.closest("[data-card-buy]");
+      closeCards(wrap);
+      wrap.classList.add("is-open");
+      opener.hidden = true;
+      opener.setAttribute("aria-expanded", "true");
+      const sizes = wrap.querySelector("[data-card-buy-sizes]");
+      sizes.hidden = false;
+      const first = sizes.querySelector("button:not([disabled])");
+      if (first) first.focus({ preventScroll: true });
+    });
+  }
+
   // The quick-add bar on a New in card adds through the cart's own
   // [data-add-variant] handler above, which leaves the drawer shut, so say so
   // on the card: "Adding…" until that handler lets go of the button, then

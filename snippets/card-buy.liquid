@@ -1,0 +1,40 @@
+{%- comment -%}
+  Buy now under a product card, so a product can be bought from the home page
+  or a collection without opening it. A product with sizes shows Buy now
+  first; a tap swaps it for the sizes, and a size goes straight to checkout.
+
+  Each size is its own little form posting to /cart/add with that variant's
+  id, and its button carries Shopify's Buy it now classes: that is what
+  Razorpay Magic Checkout takes over (it reads the id from the clicked
+  button's form), so the size opens Magic Checkout. Without Magic Checkout,
+  scripts-2026.js ([data-buy-now]) adds the size and opens Shopify's checkout.
+
+  Must sit outside the card's own link: a button inside an <a> navigates.
+  Theme settings > Product cards turns it off and sets the wording.
+
+  Params: product
+{%- endcomment -%}
+{%- if settings.card_buy_now != false and product.available -%}
+  {%- assign buy_label = settings.card_buy_now_label | default: 'Buy now' -%}
+  <div class="card-buy" data-card-buy>
+    {%- if product.has_only_default_variant -%}
+      <form action="{{ routes.cart_add_url }}" method="post" class="card-buy_form">
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        <input type="hidden" name="quantity" value="1">
+        <button type="button" class="card-buy_btn shopify-payment-button__button shopify-payment-button__button--unbranded" data-buy-now>{{ buy_label }}</button>
+      </form>
+    {%- else -%}
+      <button type="button" class="card-buy_btn" data-card-buy-open aria-expanded="false">{{ buy_label }}</button>
+      <div class="card-buy_sizes" data-card-buy-sizes role="group" aria-label="Buy {{ product.title | escape }} now, choose a size" hidden>
+        <span class="card-buy_hint">{{ settings.card_buy_now_hint | default: 'Pick a size' }}</span>
+        {%- for v in product.variants -%}
+          <form action="{{ routes.cart_add_url }}" method="post" class="card-buy_form">
+            <input type="hidden" name="id" value="{{ v.id }}">
+            <input type="hidden" name="quantity" value="1">
+            <button type="button" class="card-buy_size shopify-payment-button__button shopify-payment-button__button--unbranded" data-buy-now{% unless v.available %} disabled{% endunless %}>{{ v.title }}</button>
+          </form>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+{%- endif -%}

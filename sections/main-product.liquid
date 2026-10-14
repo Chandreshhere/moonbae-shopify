@@ -130,36 +130,11 @@
 
         </div>
 
-        {%- if section.blocks.size > 0 -%}
-          <div class="product-toggle_section">
-            {%- for block in section.blocks -%}
-              {%- assign mf = product.metafields[block.settings.metafield_namespace][block.settings.metafield_key] -%}
-              {%- assign content = block.settings.text -%}
-              {%- if mf != blank -%}{%- assign content = mf | metafield_tag -%}{%- endif -%}
-              {%- if content != blank -%}
-                <div class="product-accordion" {{ block.shopify_attributes }}>
-                  <div class="product-toggle">
-                    <div class="product-info_title_block">
-                      <div class="body-upper">{{ block.settings.title }}</div>
-                    </div>
-                    <div class="accordion-dropdown">
-                      <div class="accordion-dropdown_content">
-                        <div class="u-text-style-small f-5">
-                          <div class="w-richtext" metafield-wrapper="pageItem">{{ content }}</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="toggle-icon">
-                      <div class="toggle-line"></div>
-                      <div class="toggle-line is-vert"></div>
-                    </div>
-                  </div>
-                </div>
-              {%- endif -%}
-            {%- endfor -%}
-          </div>
-        {%- endif -%}
-
+        {%- comment -%}
+          The buy area sits straight under the title and price, ahead of the
+          accordions, so the size and the buttons are the first thing after the
+          price rather than pinned to the bottom of the column.
+        {%- endcomment -%}
         {%- liquid
           comment
             Size chart: the first Size chart block whose "Match" text appears in
@@ -236,14 +211,18 @@
                         <option value="{{ value | downcase | escape }}"{% if option.selected_value == value %} selected{% endif %}>{{ value }}</option>
                       {%- endfor -%}
                     </select>
+                    {%- liquid
+                      assign opt_idx = option.position | minus: 1
+                      assign chosen_value = current_variant.options[opt_idx]
+                    -%}
                     <div data-node-type="add-to-cart-option-pill-group" class="size-button_group w-commerce-commerceaddtocartoptionpillgroup" aria-label="option{{ option.position }}">
                       {%- for value in option.values -%}
-                        <div data-node-type="add-to-cart-option-pill" class="size-button w-commerce-commerceaddtocartoptionpill" data-option-name="{{ value | downcase | escape }}">
+                        <div data-node-type="add-to-cart-option-pill" class="size-button w-commerce-commerceaddtocartoptionpill{% if value == chosen_value %} w--ecommerce-pill-selected{% endif %}" data-option-name="{{ value | downcase | escape }}">
                           <div data-node-type="block" class="body-upper size-choice">{{ value }}</div>
                         </div>
                       {%- endfor -%}
                     </div>
-                    {%- assign chosen = current_variant.options[forloop.index0] | default: '&nbsp;' -%}
+                    {%- assign chosen = chosen_value | default: '&nbsp;' -%}
                     <div data-node-type="block" class="size-toggle">
                       <div data-node-type="block" class="body-upper">
                         {{ option.name }}:
@@ -345,6 +324,37 @@
                  data-w-add-to-cart-select-all-options-error="Please select an option in each set.">{{ settings.cart_error_text }}</div>
           </div>
         </div>
+
+        {%- if section.blocks.size > 0 -%}
+          <div class="product-toggle_section">
+            {%- for block in section.blocks -%}
+              {%- assign mf = product.metafields[block.settings.metafield_namespace][block.settings.metafield_key] -%}
+              {%- assign content = block.settings.text -%}
+              {%- if mf != blank -%}{%- assign content = mf | metafield_tag -%}{%- endif -%}
+              {%- if content != blank -%}
+                <div class="product-accordion" {{ block.shopify_attributes }}>
+                  <div class="product-toggle">
+                    <div class="product-info_title_block">
+                      <div class="body-upper">{{ block.settings.title }}</div>
+                    </div>
+                    <div class="accordion-dropdown">
+                      <div class="accordion-dropdown_content">
+                        <div class="u-text-style-small f-5">
+                          <div class="w-richtext" metafield-wrapper="pageItem">{{ content }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="toggle-icon">
+                      <div class="toggle-line"></div>
+                      <div class="toggle-line is-vert"></div>
+                    </div>
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
       </div>
     </div>
   </div>

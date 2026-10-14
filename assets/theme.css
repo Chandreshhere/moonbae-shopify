@@ -1648,7 +1648,15 @@ body:has(.announcement-bar) .page_wrap {
   border: 0; background: none; color: inherit; font: inherit; letter-spacing: .04em;
   cursor: pointer; transition: background-color 150ms ease;
 }
-.new-in_size:hover:not(:disabled), .new-in_size:focus-visible { background: rgba(255, 255, 255, .16); }
+/* styles.css resets every button to text-align: inherit with no padding,
+   which left each size against the left edge of its box. Centre them, split
+   them with hairlines, and turn the hovered one white. */
+.new-in_size {
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  min-width: 0; padding: 0;
+}
+.new-in_size + .new-in_size { border-left: 1px solid rgba(255, 255, 255, .18); }
+.new-in_size:hover:not(:disabled), .new-in_size:focus-visible { background: var(--swatch--light, #fff); color: var(--swatch--dark, #000); }
 .new-in_size:disabled { opacity: .35; text-decoration: line-through; cursor: default; }
 .new-in_bar:hover .new-in_bar-label,
 .new-in_bar:focus-within .new-in_bar-label { opacity: 0; }
@@ -1840,3 +1848,42 @@ body:has(.announcement-bar) .page_wrap {
 .size-chart_table th:first-child { text-align: left; }
 .size-chart_table tbody th { font-weight: 600; }
 .size-chart_note { margin: 0; padding: .9rem 1.25rem 1.25rem; font-size: .85rem; opacity: .65; }
+
+/* --- Buy now under product cards (snippets/card-buy) -----------------------
+   Buy now first; a tap swaps it for the sizes, and a size goes to checkout. */
+.card-buy { position: relative; z-index: 2; margin-top: .75rem; }
+.card-buy [hidden] { display: none !important; }
+.card-buy_form { display: flex; margin: 0; }
+.card-buy_btn,
+.card-buy_size {
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  height: 2.75rem; border-radius: var(--size--0-25rem, .25rem);
+  font-family: var(--_typography---font--primary-family, inherit);
+  font-size: .75rem; font-weight: 600; line-height: 1; letter-spacing: .06em; text-transform: uppercase;
+  cursor: pointer; transition: background-color 150ms ease, color 150ms ease, opacity 150ms ease;
+}
+.card-buy_btn {
+  width: 100%; padding: 0 1rem; border: 0;
+  background: var(--swatch--brand, #050fff); color: #fff;
+}
+.card-buy_btn:hover { opacity: .88; }
+.card-buy_btn:disabled { opacity: .35; cursor: default; }
+.card-buy_sizes { display: flex; flex-wrap: wrap; gap: .35rem; }
+.card-buy_hint { width: 100%; font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; opacity: .6; }
+.card-buy_sizes .card-buy_form { flex: 1 1 0; min-width: 2.5rem; }
+.card-buy_size {
+  width: 100%; padding: 0;
+  border: 1px solid var(--swatch--brand, #050fff);
+  background: var(--swatch--light, #fff); color: var(--swatch--brand, #050fff);
+}
+.card-buy_size:hover:not(:disabled),
+.card-buy_size:focus-visible { background: var(--swatch--brand, #050fff); color: #fff; }
+.card-buy_size:disabled { border-style: dashed; text-decoration: line-through; opacity: .3; cursor: default; }
+@media only screen and (max-width: 767px) {
+  .card-buy { margin-top: .5rem; }
+  .card-buy_btn, .card-buy_size { height: 2.5rem; font-size: .7rem; }
+}
+
+/* The buy area now follows the title and price instead of being pinned to the
+   foot of the column (styles.css pushes it down with margin-top: auto). */
+.single-product_options > .add-to-cart_single { margin-top: 0; }

@@ -232,6 +232,30 @@
     ]
   },
   {
+    "name": "Product cards",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "card_buy_now",
+        "label": "Buy now under every product",
+        "default": true,
+        "info": "On the home page, collections, search and related products. A product with sizes asks for the size first, then goes straight to checkout (Razorpay Magic Checkout when its app embed is on)."
+      },
+      {
+        "type": "text",
+        "id": "card_buy_now_label",
+        "label": "Button text",
+        "default": "Buy now"
+      },
+      {
+        "type": "text",
+        "id": "card_buy_now_hint",
+        "label": "Line above the sizes",
+        "default": "Pick a size"
+      }
+    ]
+  },
+  {
     "name": "Brand marks",
     "settings": [
       {
