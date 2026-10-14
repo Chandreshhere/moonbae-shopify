@@ -1,0 +1,434 @@
+{%- comment -%}
+  Explore the collection. Each tile links to its category: a real Shopify
+  collection when one exists with the expected handle (hoodies, t-shirts,
+  baby-tees), otherwise the theme's own category view of all products
+  (/collections/all?view=hoodies), which sorts products by title with the same
+  rule as main-collection: "hoodie" in the title is a hoodie, "baby tee" is a
+  baby tee, everything else is a t-shirt.
+
+  Every tile has a desktop picture and a phone picture. A tile can also share
+  the one before it on desktop ("Show inside the tile before it"): it is then
+  hidden there, and the tile before it carries both links, one on each half of
+  its picture (the T-shirts picture shows a tee and a baby tee). On phones
+  every tile stands on its own.
+
+  Desktop: the first tile on the left, the rest on the right; "Fit the
+  pictures" sizes the tiles to the desktop picture's shape instead of the
+  screen. Phones: one tile per row at the phone picture's shape, or the old
+  two-column grid. Images drift with scroll through the shared
+  [data-parallax] handler, gently (6%) so little of the picture is cropped.
+{%- endcomment -%}
+{%- liquid
+  assign n_hoodies = 0
+  assign n_tshirts = 0
+  assign n_babytees = 0
+  for p in collections.all.products
+      assign t = p.title | downcase
+      assign c = 'tshirts'
+      if t contains 'hoodie'
+        assign c = 'hoodies'
+      elsif t contains 'baby tee' or t contains 'baby-tee' or t contains 'baby t-shirt'
+        assign c = 'babytees'
+      endif
+      case c
+        when 'hoodies'
+          assign n_hoodies = n_hoodies | plus: 1
+        when 'babytees'
+          assign n_babytees = n_babytees | plus: 1
+        else
+          assign n_tshirts = n_tshirts | plus: 1
+      endcase
+  endfor
+
+  comment
+    First pass: every tile's link and count, so a tile can carry the next
+    tile's link on desktop. A collection that does not exist answers
+    products_count with an empty string, and comparing that with 0 is a
+    Liquid error printed into the grid, so coerce to a number first.
+  endcomment
+  assign t_urls = ''
+  assign t_counts = ''
+  assign desk_tiles = 0
+  for block in section.blocks
+    assign cat = block.settings.category
+    assign count = n_tshirts
+    assign handles = 't-shirts,tshirts,t-shirt'
+    case cat
+      when 'hoodies'
+        assign count = n_hoodies
+        assign handles = 'hoodies,hoodie'
+      when 'babytees'
+        assign count = n_babytees
+        assign handles = 'baby-tees,babytees,baby-tee'
+    endcase
+    assign url = '/collections/all?view=' | append: cat
+    assign hl = handles | split: ','
+    for h in hl
+      assign found = collections[h].products_count | plus: 0
+      if found > 0
+        assign url = collections[h].url
+        assign count = found
+        break
+      endif
+    endfor
+    if block.settings.collection != blank
+      assign url = block.settings.collection.url
+      assign count = block.settings.collection.products_count | plus: 0
+    endif
+    if block.settings.link != blank
+      assign url = block.settings.link
+    endif
+    assign t_urls = t_urls | append: url | append: '||'
+    assign t_counts = t_counts | append: count | append: '||'
+    if forloop.first or block.settings.merge_desktop != true
+      assign desk_tiles = desk_tiles | plus: 1
+    endif
+  endfor
+  assign t_urls = t_urls | split: '||'
+  assign t_counts = t_counts | split: '||'
+
+  comment
+    The lead tile spans the rows of the tiles beside it on desktop.
+  endcomment
+  assign rest = desk_tiles | minus: 1
+  if rest < 1
+    assign rest = 1
+  endif
+
+  comment
+    Tile shapes come from the pictures: the first tile's desktop picture and
+    its phone picture (or the bundled ones, 1448x1086 and 941x1672).
+  endcomment
+  assign first_block = section.blocks.first
+  assign ratio_d = 1.3333
+  if first_block.settings.image != blank
+    assign ratio_d = first_block.settings.image.aspect_ratio
+  endif
+  assign ratio_m = 0.5628
+  if first_block.settings.image_mobile != blank
+    assign ratio_m = first_block.settings.image_mobile.aspect_ratio
+  endif
+  assign shape_d = section.settings.desktop_shape | default: 'fit'
+  assign shape_m = section.settings.mobile_shape | default: 'stack'
+-%}
+{% render 'section-class', classes: 'explore-section', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+<div class="explore is-{{ shape_d }} is-m-{{ shape_m }}" style="--explore-h: {{ section.settings.tile_height }}svh; --explore-h-m: {{ section.settings.mobile_height }}svh; --explore-ratio: {{ ratio_d }}; --explore-ratio-m: {{ ratio_m }};">
+  {%- if section.settings.heading != blank -%}
+    <div class="explore_head u-container">
+      {%- if section.settings.eyebrow != blank -%}<p class="explore_eyebrow body-upper">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="explore_heading">{{ section.settings.heading }}</h2>
+    </div>
+  {%- endif -%}
+  <div class="explore_grid">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign i = forloop.index0
+        assign url = t_urls[i]
+        assign count = t_counts[i] | plus: 0
+        assign cat = block.settings.category
+        assign fb_desk = 'explore-tee-top-desk.jpg'
+        assign fb_mob = 'explore-tee-mob.jpg'
+        case cat
+          when 'hoodies'
+            assign fb_desk = 'explore-hoodie-desk.jpg'
+            assign fb_mob = 'explore-hoodie-mob.jpg'
+          when 'babytees'
+            assign fb_mob = 'explore-babytee-mob.jpg'
+        endcase
+
+        assign merged = false
+        if forloop.first == false and block.settings.merge_desktop
+          assign merged = true
+        endif
+        assign hosts = false
+        assign next = section.blocks[forloop.index]
+        if next and next.settings.merge_desktop
+          assign hosts = true
+          assign next_url = t_urls[forloop.index]
+          assign next_count = t_counts[forloop.index] | plus: 0
+        endif
+
+        assign tile_class = 'explore_tile'
+        if forloop.first and desk_tiles > 1
+          assign tile_class = tile_class | append: ' is-lead'
+          if rest > 1
+            assign tile_class = tile_class | append: ' spans'
+          endif
+        elsif desk_tiles == 1 and merged == false
+          assign tile_class = tile_class | append: ' is-only'
+        endif
+        if merged
+          assign tile_class = tile_class | append: ' is-merged'
+        endif
+        if hosts
+          assign tile_class = tile_class | append: ' is-host'
+        endif
+
+        capture img_attrs
+          echo 'style="object-position: ' | append: block.settings.focus | append: '"'
+        endcapture
+      -%}
+      {%- capture visual -%}
+        <div class="explore_visual" data-parallax="6">
+          <picture>
+            {%- if block.settings.image_mobile != blank -%}
+              <source media="(max-width: 767px)" srcset="{{ block.settings.image_mobile | image_url: width: 600 }} 600w, {{ block.settings.image_mobile | image_url: width: 1000 }} 1000w" sizes="100vw">
+            {%- elsif block.settings.image == blank -%}
+              <source media="(max-width: 767px)" srcset="{{ fb_mob | asset_img_url: '1000x' }}">
+            {%- endif -%}
+            {% render 'img', image: block.settings.image, fallback: fb_desk, fallback_width: '1800x', alt: block.settings.title, class: 'explore_img', sizes: '(max-width: 767px) 100vw, 50vw', attrs: img_attrs %}
+          </picture>
+        </div>
+        <div class="explore_scrim" aria-hidden="true"></div>
+      {%- endcapture -%}
+      {%- capture label -%}
+        <div class="explore_label">
+          {%- if section.settings.show_count and count > 0 -%}
+            <span class="explore_count body-upper">(&nbsp;{{ count }}&nbsp;)</span>
+          {%- endif -%}
+          <h3 class="explore_title">{{ block.settings.title }}</h3>
+          {%- if block.settings.cta != blank -%}
+            <span class="explore_cta body-upper">{{ block.settings.cta }} <span aria-hidden="true">&rarr;</span></span>
+          {%- endif -%}
+        </div>
+      {%- endcapture -%}
+      {%- if hosts -%}
+        <div class="{{ tile_class }}"{% if forloop.first and rest > 1 %} style="grid-row: span {{ rest }};"{% endif %} {{ block.shopify_attributes }}>
+          {{ visual }}
+          <a href="{{ url }}" class="explore_half is-first">{{ label }}</a>
+          <a href="{{ next_url }}" class="explore_half is-second" tabindex="-1">
+            <div class="explore_label">
+              {%- if section.settings.show_count and next_count > 0 -%}
+                <span class="explore_count body-upper">(&nbsp;{{ next_count }}&nbsp;)</span>
+              {%- endif -%}
+              <h3 class="explore_title">{{ next.settings.title }}</h3>
+              {%- if next.settings.cta != blank -%}
+                <span class="explore_cta body-upper">{{ next.settings.cta }} <span aria-hidden="true">&rarr;</span></span>
+              {%- endif -%}
+            </div>
+          </a>
+        </div>
+      {%- else -%}
+        <a href="{{ url }}" class="{{ tile_class }}"{% if forloop.first and rest > 1 %} style="grid-row: span {{ rest }};"{% endif %} {{ block.shopify_attributes }}>
+          {{ visual }}
+          {{ label }}
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+
+{% schema %}
+{
+  "name": "Explore coll test",
+  "tag": "div",
+  "class": "explore-section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small line above the heading",
+      "default": "Curated by Moon"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Explore the collection"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_count",
+      "label": "Show how many products are in each",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Desktop"
+    },
+    {
+      "type": "select",
+      "id": "desktop_shape",
+      "label": "Tile size",
+      "default": "fit",
+      "options": [
+        {
+          "value": "fit",
+          "label": "Fit the pictures"
+        },
+        {
+          "value": "screen",
+          "label": "Fill the screen height"
+        }
+      ],
+      "info": "Fit the pictures shows the desktop pictures whole, at the first tile's picture shape."
+    },
+    {
+      "type": "range",
+      "id": "tile_height",
+      "label": "Height when filling the screen",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100,
+      "info": "Share of the screen height."
+    },
+    {
+      "type": "header",
+      "content": "Phones"
+    },
+    {
+      "type": "select",
+      "id": "mobile_shape",
+      "label": "Layout",
+      "default": "stack",
+      "options": [
+        {
+          "value": "stack",
+          "label": "One tile per row, at the phone picture's shape"
+        },
+        {
+          "value": "grid",
+          "label": "First tile on the left, the rest stacked on the right"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Height of the two-column layout",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 85
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 320,
+      "step": 4,
+      "default": 0,
+      "unit": "px",
+      "info": "0 keeps the design default."
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 320,
+      "step": 4,
+      "default": 0,
+      "unit": "px",
+      "info": "0 keeps the design default."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Category tile",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Hoodies"
+        },
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Products to show",
+          "default": "hoodies",
+          "options": [
+            {
+              "value": "hoodies",
+              "label": "Hoodies (title contains \"hoodie\")"
+            },
+            {
+              "value": "tshirts",
+              "label": "T-shirts (everything else)"
+            },
+            {
+              "value": "babytees",
+              "label": "Baby tees (title contains \"baby tee\")"
+            }
+          ],
+          "info": "Links to the matching Shopify collection if one exists with the handle hoodies, t-shirts or baby-tees; otherwise to the theme's own category page."
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Or link to this collection",
+          "info": "Optional. Overrides the category above."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Or link anywhere",
+          "info": "Optional. Overrides both of the above."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Desktop picture",
+          "info": "Empty uses the bundled picture for this category."
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Phone picture",
+          "info": "Portrait. Empty uses the desktop picture, or the bundled phone picture when that is empty too."
+        },
+        {
+          "type": "select",
+          "id": "focus",
+          "label": "Desktop picture focus",
+          "default": "center center",
+          "options": [
+            {
+              "value": "left center",
+              "label": "Left"
+            },
+            {
+              "value": "center center",
+              "label": "Centre"
+            },
+            {
+              "value": "right center",
+              "label": "Right"
+            },
+            {
+              "value": "center top",
+              "label": "Top"
+            }
+          ],
+          "info": "Which part of the picture stays in view when the tile crops it."
+        },
+        {
+          "type": "checkbox",
+          "id": "merge_desktop",
+          "label": "On desktop, show inside the tile before it",
+          "default": false,
+          "info": "This tile is hidden on desktop and its link moves to the right half of the tile before it. On phones it stays its own tile."
+        },
+        {
+          "type": "text",
+          "id": "cta",
+          "label": "Link text",
+          "default": "Explore"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
