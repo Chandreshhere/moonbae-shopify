@@ -1840,11 +1840,15 @@ function globalScripts() {
       const frame = this;
       const img = frame.querySelector("img");
       if (!img) return;
+      // data-parallax="6" sets a frame's own drift (the Explore tiles keep
+      // theirs small so the pictures are barely cropped).
+      const own = parseFloat(frame.getAttribute("data-parallax"));
+      const drift = own > 0 ? own : travel;
       gsap.fromTo(
         img,
-        { yPercent: -travel },
+        { yPercent: -drift },
         {
-          yPercent: travel,
+          yPercent: drift,
           ease: "none",
           scrollTrigger: {
             trigger: frame.closest(".hero-slider_wrap") || frame,

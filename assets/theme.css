@@ -1442,9 +1442,12 @@ body:has(.announcement-bar) .page_wrap {
 
 
 /* --- Explore the collection ----------------------------------------------
-   One screen tall: the first tile fills the left half at full height, the
-   others are stacked on the right and share it (the section sets the lead
-   tile's row span inline). Images drift with scroll through [data-parallax]. */
+   Desktop: the first tile on the left, the rest on the right (the section sets
+   the lead tile's row span inline). "Fit" sizes tiles to the desktop picture's
+   shape (--explore-ratio); "screen" fills the screen height. A tile marked to
+   share the one before it is hidden on desktop, and the host carries both
+   links, one per half. Phones: one tile per row at the phone picture's shape
+   (--explore-ratio-m), or the old two-column grid. */
 /* No top padding of its own: the section above already ends with the site's
    section spacing, and adding more doubled the gap. */
 .explore-section { padding-top: 0; }
@@ -1466,6 +1469,10 @@ body:has(.announcement-bar) .page_wrap {
   height: 100vh;
   height: var(--explore-h, 100svh);
 }
+@media only screen and (min-width: 768px) {
+  .explore.is-fit .explore_grid { height: auto; grid-auto-rows: auto; }
+  .explore.is-fit .explore_tile:not(.spans) { aspect-ratio: var(--explore-ratio, 1.3333); }
+}
 .explore_tile {
   position: relative; display: block; overflow: hidden;
   min-height: 0; color: #fff; text-decoration: none;
@@ -1473,11 +1480,14 @@ body:has(.announcement-bar) .page_wrap {
 }
 .explore_tile.is-lead { grid-column: 1; }
 .explore_tile.is-only { grid-column: 1 / -1; }
-/* The stacked tiles are half as tall, so their titles are smaller. */
+/* The stacked tiles are smaller, so their titles are too. */
 .explore_tile:not(.is-lead):not(.is-only) .explore_title { font-size: clamp(2rem, 4.5vw, 4rem); }
 .explore_visual[data-parallax] { position: absolute; inset: 0; overflow: hidden; transition: transform 900ms cubic-bezier(.25, 1, .5, 1); }
-.explore_visual[data-parallax] > .explore_img {
-  position: absolute; left: 0; top: -10%; width: 100%; height: 120%;
+.explore_visual picture { display: contents; }
+/* The section drifts 6% (data-parallax="6"), so 14% extra height is enough
+   image behind both edges: 6% of 114% is 6.8%, inside the 7% slack. */
+.explore_visual[data-parallax] .explore_img {
+  position: absolute; left: 0; top: -7%; width: 100%; height: 114%;
   object-fit: cover; display: block; will-change: transform; backface-visibility: hidden;
 }
 .explore_scrim {
@@ -1498,19 +1508,34 @@ body:has(.announcement-bar) .page_wrap {
   line-height: .95;
 }
 .explore_cta { display: inline-flex; gap: .4rem; border-bottom: 1px solid currentColor; padding-bottom: .15rem; }
+/* A tile carrying the next one's link: each half of the picture is a link,
+   the second labelled from the right. */
+.explore_half { position: absolute; top: 0; bottom: 0; width: 50%; display: block; color: #fff; text-decoration: none; }
+.explore_half.is-first { left: 0; }
+.explore_half.is-second { right: 0; }
+.explore_half.is-second .explore_label { align-items: flex-end; text-align: right; }
 @media (hover: hover) {
   .explore_tile:hover .explore_visual { transform: scale(1.04); }
 }
+@media only screen and (min-width: 768px) {
+  .explore_tile.is-merged { display: none; }
+}
 @media only screen and (max-width: 767px) {
   .explore_grid { height: 85vh; height: var(--explore-h-m, 85svh); }
+  .explore.is-m-stack .explore_grid { grid-template-columns: 1fr; grid-auto-rows: auto; height: auto; }
+  .explore.is-m-stack .explore_tile { grid-column: auto; grid-row: auto !important; aspect-ratio: var(--explore-ratio-m, .5628); }
   .explore_tile .explore_title,
   .explore_tile:not(.is-lead):not(.is-only) .explore_title { font-size: clamp(1.6rem, 8vw, 2.5rem); }
+  .explore.is-m-stack .explore_tile .explore_title { font-size: clamp(2.25rem, 11vw, 3.25rem); }
   .explore_tile .explore_label { padding: 1rem; }
-  /* Phones drift further (14% in JS), so they need more image behind the frame. */
-  .explore_visual[data-parallax] > .explore_img { top: -20%; height: 140%; }
+  .explore.is-m-stack .explore_tile .explore_label { padding: 1.25rem; }
+  /* On phones a shared tile stands on its own again, so the host shows only
+     its own link, across the whole picture. */
+  .explore_half.is-first { width: 100%; }
+  .explore_half.is-second { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .explore_visual[data-parallax] > .explore_img { top: 0; height: 100%; }
+  .explore_visual[data-parallax] .explore_img { top: 0; height: 100%; }
 }
 
 /* --- Shop tiles (home-image-section) --------------------------------------
