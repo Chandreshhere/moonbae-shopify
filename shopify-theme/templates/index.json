@@ -329,9 +329,9 @@
           "settings": {
             "title": "Baby tees",
             "category": "babytees",
+            "merge_desktop": true,
             "focus": "center center",
-            "cta": "Explore",
-            "merge_desktop": true
+            "cta": "Explore"
           }
         }
       },
@@ -344,12 +344,12 @@
         "eyebrow": "Curated by Moon",
         "heading": "Explore the collection",
         "show_count": true,
+        "desktop_shape": "fit",
         "tile_height": 100,
+        "mobile_shape": "stack",
         "mobile_height": 85,
         "padding_top": 0,
-        "padding_bottom": 0,
-        "desktop_shape": "fit",
-        "mobile_shape": "stack"
+        "padding_bottom": 0
       }
     },
     "new-in": {
