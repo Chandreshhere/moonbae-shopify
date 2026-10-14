@@ -256,6 +256,46 @@
     ]
   },
   {
+    "name": "Stock",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Read from Shopify inventory every time a page loads, so the site follows the stock with nothing to update by hand: whatever changes the quantities in Shopify (Unitee's stock sync, an order, an edit in admin) shows on the next visit."
+      },
+      {
+        "type": "range",
+        "id": "low_stock_threshold",
+        "label": "Show \"Only N left\" at or below",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "default": 5,
+        "info": "0 turns it off. Per size, on the product page and under products everywhere."
+      },
+      {
+        "type": "select",
+        "id": "sold_out_position",
+        "label": "Sold-out products in collections",
+        "default": "last",
+        "options": [
+          {
+            "value": "last",
+            "label": "Move to the end"
+          },
+          {
+            "value": "hide",
+            "label": "Hide"
+          },
+          {
+            "value": "inline",
+            "label": "Leave in place"
+          }
+        ],
+        "info": "Sizes that are sold out are always struck through and cannot be picked."
+      }
+    ]
+  },
+  {
     "name": "Brand marks",
     "settings": [
       {

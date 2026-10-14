@@ -1887,3 +1887,13 @@ body:has(.announcement-bar) .page_wrap {
 /* The buy area now follows the title and price instead of being pinned to the
    foot of the column (styles.css pushes it down with margin-top: auto). */
 .single-product_options > .add-to-cart_single { margin-top: 0; }
+
+/* --- Stock notes (snippets/stock-note, product page) -----------------------
+   "Only 2 left in M", in the sale colour. */
+.stock-note {
+  margin: .5rem 0 0;
+  color: var(--swatch--sale, #d62d20);
+  font-size: .75rem; font-weight: 600; letter-spacing: .02em; line-height: 1.3;
+}
+.stock-note[hidden] { display: none; }
+.single-product_actions .product-stock { width: 100%; margin: 0; text-transform: uppercase; }

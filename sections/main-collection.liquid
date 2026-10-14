@@ -81,9 +81,16 @@
 {%- paginate collection.products by per_page -%}
 {%- liquid
   assign shown_count = collection.products_count
-  if category != 'all'
+  assign hide_sold = false
+  if settings.sold_out_position == 'hide'
+    assign hide_sold = true
+  endif
+  if category != 'all' or hide_sold
     assign shown_count = 0
     for p in collection.products
+      if hide_sold and p.available == false
+        continue
+      endif
       assign t = p.title | downcase
       assign c = 'tshirts'
       if t contains 'hoodie'
@@ -158,8 +165,25 @@
 
       <div class="product-col_wrap w-dyn-list" udy-collection="product">
       <div role="list" class="product-col_list u-grid-desktop w-dyn-items">
-        {%- assign rendered = 0 -%}
+        {%- liquid
+          assign rendered = 0
+          comment
+            Sold-out products: after everything that can be bought (default),
+            hidden, or left where they fall. Read from Shopify on every page
+            load, so a product moves back up as soon as it is in stock again.
+            Theme settings > Stock. Sorting is within the page being shown.
+          endcomment
+          assign sold_mode = settings.sold_out_position | default: 'last'
+          assign passes = 'all' | split: ','
+          if sold_mode == 'last'
+            assign passes = 'in,out' | split: ','
+          endif
+        -%}
+        {%- for pass in passes -%}
         {%- for product in collection.products -%}
+          {%- if sold_mode == 'hide' and product.available == false -%}{%- continue -%}{%- endif -%}
+          {%- if pass == 'in' and product.available == false -%}{%- continue -%}{%- endif -%}
+          {%- if pass == 'out' and product.available -%}{%- continue -%}{%- endif -%}
           {%- liquid
             assign c = category
             if category != 'all'
@@ -181,6 +205,7 @@
             {% render 'product-card-grid', product: product, view_label: section.settings.view_label %}
             {%- assign rendered = rendered | plus: 1 -%}
           {%- endif -%}
+        {%- endfor -%}
         {%- endfor -%}
         {%- if rendered == 0 -%}
           <div class="product-col_item u-column-4">

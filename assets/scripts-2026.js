@@ -2010,6 +2010,8 @@ function globalScripts() {
     const form = document.querySelector(mapEl.getAttribute("data-form")) || document;
     const idInput = form.querySelector('input[name="id"]');
     const buyNow = form.querySelector("[data-buy-now]");
+    const stockNote = form.querySelector("[data-stock-note]");
+    const lowAt = stockNote ? parseInt(stockNote.getAttribute("data-low-at"), 10) || 0 : 0;
     const box = document.querySelector("[data-product-compare]");
     const price = document.querySelector("[data-product-price]");
     const stickyPrice = document.querySelector("[data-sticky-atc-price]");
@@ -2029,6 +2031,16 @@ function globalScripts() {
       const v = current();
       if (v && idInput && v.id) idInput.value = v.id;
       if (buyNow) buyNow.disabled = !(v && v.available);
+      // "Only 2 left in M" for the chosen size, from the quantities Shopify
+      // reported when the page was rendered.
+      if (stockNote) {
+        const low = !!(v && v.available && lowAt > 0 && v.qty > 0 && v.qty <= lowAt);
+        stockNote.hidden = !low;
+        if (low) {
+          const size = (v.o.filter(Boolean).join(" / ") || "").toUpperCase();
+          stockNote.textContent = "Only " + v.qty + " left" + (size ? " in " + size : "");
+        }
+      }
       if (!discounts) return;
       const on = !!(v && v.off > 0);
       if (box) {
@@ -3167,6 +3179,10 @@ function toTop() {
 barba.init({
   preventRunning: true,
   cacheFirstPage: true,
+  // Every page change fetches the page afresh. Barba otherwise keeps each
+  // page it has shown and serves that copy again, so going back to a product
+  // showed the stock, prices and sold-out sizes as they were on first visit.
+  cacheIgnore: true,
   timeout: 10000,
   // Barba intercepts every same-origin link click to run its own page
   // transition. Shopify's checkout, account and order pages are not Barba

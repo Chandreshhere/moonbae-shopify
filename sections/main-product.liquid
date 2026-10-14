@@ -118,7 +118,13 @@
                     assign o3 = v.option3 | default: '' | downcase
                     assign save = w | minus: v.price
                   -%}
-                  {"id": {{ v.id }}, "available": {{ v.available | json }}, "o": [{{ o1 | json }}, {{ o2 | json }}, {{ o3 | json }}], "off": {{ o }}, "was": {{ w | money | json }}, "save": {{ save | money | json }}}{% unless forloop.last %},{% endunless %}
+                  {%- liquid
+                    assign q = 'null'
+                    if v.inventory_management == 'shopify' and v.inventory_policy == 'deny'
+                      assign q = v.inventory_quantity
+                    endif
+                  -%}
+                  {"id": {{ v.id }}, "available": {{ v.available | json }}, "qty": {{ q }}, "o": [{{ o1 | json }}, {{ o2 | json }}, {{ o3 | json }}], "off": {{ o }}, "was": {{ w | money | json }}, "save": {{ save | money | json }}}{% unless forloop.last %},{% endunless %}
                 {%- endfor -%}
                 ]
               </script>
@@ -237,6 +243,25 @@
               </div>
             {%- endunless -%}
 
+            {%- liquid
+              comment
+                "Only 2 left in M" for the chosen size, from Shopify inventory.
+                scripts-2026.js rewrites it when the size changes, from the
+                quantities in the compare map. Theme settings > Stock.
+              endcomment
+              assign low_at = settings.low_stock_threshold | default: 0
+              assign cv_qty = 0
+              if current_variant.inventory_management == 'shopify' and current_variant.inventory_policy == 'deny'
+                assign cv_qty = current_variant.inventory_quantity
+              endif
+              assign show_low = false
+              if low_at > 0 and current_variant.available and cv_qty > 0 and cv_qty <= low_at
+                assign show_low = true
+              endif
+            -%}
+            <p class="stock-note product-stock" data-stock-note data-low-at="{{ low_at }}"{% unless show_low %} hidden{% endunless %}>
+              {%- if show_low -%}Only {{ cv_qty }} left{% unless product.has_only_default_variant %} in {{ current_variant.title }}{% endunless %}{%- endif -%}
+            </p>
             <input type="submit"
                    data-node-type="commerce-add-to-cart-button"
                    data-loading-text="{{ section.settings.adding_label | escape }}"

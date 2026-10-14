@@ -1,0 +1,40 @@
+{%- comment -%}
+  "Only 2 left in M" on a product card, read from Shopify inventory on every
+  page load, so it follows whatever updates the stock (Unitee's sync, an
+  order, an edit in admin) with nothing to set by hand. Only sizes Shopify
+  tracks and will not oversell are counted; sold-out sizes are struck through
+  where the sizes are shown, and a sold-out product carries the Sold out badge.
+  Theme settings > Stock sets the threshold (0 turns it off).
+
+  Params: product
+{%- endcomment -%}
+{%- liquid
+  assign low_at = settings.low_stock_threshold | default: 0
+  assign low_sizes = ''
+  assign low_count = 0
+  assign low_qty = 0
+  for v in product.variants
+    if low_at <= 0
+      break
+    endif
+    if v.available and v.inventory_management == 'shopify' and v.inventory_policy == 'deny' and v.inventory_quantity > 0 and v.inventory_quantity <= low_at
+      assign low_count = low_count | plus: 1
+      assign low_qty = v.inventory_quantity
+      if low_sizes != ''
+        assign low_sizes = low_sizes | append: ', '
+      endif
+      assign low_sizes = low_sizes | append: v.title
+    endif
+  endfor
+-%}
+{%- if low_count > 0 -%}
+  <p class="stock-note">
+    {%- if product.has_only_default_variant -%}
+      Only {{ low_qty }} left
+    {%- elsif low_count == 1 -%}
+      Only {{ low_qty }} left in {{ low_sizes }}
+    {%- else -%}
+      Few left in {{ low_sizes }}
+    {%- endif -%}
+  </p>
+{%- endif -%}
