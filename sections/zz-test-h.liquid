@@ -221,7 +221,7 @@
 
 {% schema %}
 {
-  "name": "Explore coll test",
+  "name": "Explore test",
   "tag": "div",
   "class": "explore-section",
   "max_blocks": 6,
@@ -245,61 +245,20 @@
       "default": true
     },
     {
-      "type": "header",
-      "content": "Desktop"
-    },
-    {
-      "type": "select",
-      "id": "desktop_shape",
-      "label": "Tile size",
-      "default": "fit",
-      "options": [
-        {
-          "value": "fit",
-          "label": "Fit the pictures"
-        },
-        {
-          "value": "screen",
-          "label": "Fill the screen height"
-        }
-      ],
-      "info": "Fit the pictures shows the desktop pictures whole, at the first tile's picture shape."
-    },
-    {
       "type": "range",
       "id": "tile_height",
-      "label": "Height when filling the screen",
+      "label": "Section height on desktop",
       "min": 50,
       "max": 100,
       "step": 5,
       "unit": "%",
       "default": 100,
-      "info": "Share of the screen height."
-    },
-    {
-      "type": "header",
-      "content": "Phones"
-    },
-    {
-      "type": "select",
-      "id": "mobile_shape",
-      "label": "Layout",
-      "default": "stack",
-      "options": [
-        {
-          "value": "stack",
-          "label": "One tile per row, at the phone picture's shape"
-        },
-        {
-          "value": "grid",
-          "label": "First tile on the left, the rest stacked on the right"
-        }
-      ]
+      "info": "Share of the screen height. The first tile fills the left at this height; the others share it on the right."
     },
     {
       "type": "range",
       "id": "mobile_height",
-      "label": "Height of the two-column layout",
+      "label": "Section height on phones",
       "min": 40,
       "max": 100,
       "step": 5,
@@ -380,19 +339,19 @@
         {
           "type": "image_picker",
           "id": "image",
-          "label": "Desktop picture",
-          "info": "Empty uses the bundled picture for this category."
+          "label": "Image"
         },
         {
-          "type": "image_picker",
-          "id": "image_mobile",
-          "label": "Phone picture",
-          "info": "Portrait. Empty uses the desktop picture, or the bundled phone picture when that is empty too."
+          "type": "checkbox",
+          "id": "merge_desktop",
+          "label": "On desktop, show inside the tile before it",
+          "default": false,
+          "info": "This tile is hidden on desktop and its link moves to the right half of the tile before it. On phones it stays its own tile."
         },
         {
           "type": "select",
           "id": "focus",
-          "label": "Desktop picture focus",
+          "label": "Image focus",
           "default": "center center",
           "options": [
             {
@@ -412,14 +371,7 @@
               "label": "Top"
             }
           ],
-          "info": "Which part of the picture stays in view when the tile crops it."
-        },
-        {
-          "type": "checkbox",
-          "id": "merge_desktop",
-          "label": "On desktop, show inside the tile before it",
-          "default": false,
-          "info": "This tile is hidden on desktop and its link moves to the right half of the tile before it. On phones it stays its own tile."
+          "info": "Which part of the image stays in view when the tile crops it."
         },
         {
           "type": "text",

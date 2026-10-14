@@ -141,8 +141,8 @@
           assign merged = true
         endif
         assign hosts = false
-        assign nxt = section.blocks[forloop.index]
-        if nxt and nxt.settings.merge_desktop
+        assign next = section.blocks[forloop.index]
+        if next and next.settings.merge_desktop
           assign hosts = true
           assign next_url = t_urls[forloop.index]
           assign next_count = t_counts[forloop.index] | plus: 0
@@ -201,9 +201,9 @@
               {%- if section.settings.show_count and next_count > 0 -%}
                 <span class="explore_count body-upper">(&nbsp;{{ next_count }}&nbsp;)</span>
               {%- endif -%}
-              <h3 class="explore_title">{{ nxt.settings.title }}</h3>
-              {%- if nxt.settings.cta != blank -%}
-                <span class="explore_cta body-upper">{{ nxt.settings.cta }} <span aria-hidden="true">&rarr;</span></span>
+              <h3 class="explore_title">{{ next.settings.title }}</h3>
+              {%- if next.settings.cta != blank -%}
+                <span class="explore_cta body-upper">{{ next.settings.cta }} <span aria-hidden="true">&rarr;</span></span>
               {%- endif -%}
             </div>
           </a>
@@ -221,7 +221,7 @@
 
 {% schema %}
 {
-  "name": "Explore coll test",
+  "name": "Explore test",
   "tag": "div",
   "class": "explore-section",
   "max_blocks": 6,
@@ -268,38 +268,18 @@
     {
       "type": "range",
       "id": "tile_height",
-      "label": "Height when filling the screen",
+      "label": "Section height on desktop",
       "min": 50,
       "max": 100,
       "step": 5,
       "unit": "%",
       "default": 100,
-      "info": "Share of the screen height."
-    },
-    {
-      "type": "header",
-      "content": "Phones"
-    },
-    {
-      "type": "select",
-      "id": "mobile_shape",
-      "label": "Layout",
-      "default": "stack",
-      "options": [
-        {
-          "value": "stack",
-          "label": "One tile per row, at the phone picture's shape"
-        },
-        {
-          "value": "grid",
-          "label": "First tile on the left, the rest stacked on the right"
-        }
-      ]
+      "info": "Share of the screen height. The first tile fills the left at this height; the others share it on the right."
     },
     {
       "type": "range",
       "id": "mobile_height",
-      "label": "Height of the two-column layout",
+      "label": "Section height on phones",
       "min": 40,
       "max": 100,
       "step": 5,
@@ -380,19 +360,12 @@
         {
           "type": "image_picker",
           "id": "image",
-          "label": "Desktop picture",
-          "info": "Empty uses the bundled picture for this category."
-        },
-        {
-          "type": "image_picker",
-          "id": "image_mobile",
-          "label": "Phone picture",
-          "info": "Portrait. Empty uses the desktop picture, or the bundled phone picture when that is empty too."
+          "label": "Image"
         },
         {
           "type": "select",
           "id": "focus",
-          "label": "Desktop picture focus",
+          "label": "Image focus",
           "default": "center center",
           "options": [
             {
@@ -412,14 +385,7 @@
               "label": "Top"
             }
           ],
-          "info": "Which part of the picture stays in view when the tile crops it."
-        },
-        {
-          "type": "checkbox",
-          "id": "merge_desktop",
-          "label": "On desktop, show inside the tile before it",
-          "default": false,
-          "info": "This tile is hidden on desktop and its link moves to the right half of the tile before it. On phones it stays its own tile."
+          "info": "Which part of the image stays in view when the tile crops it."
         },
         {
           "type": "text",
