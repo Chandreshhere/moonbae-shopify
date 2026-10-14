@@ -859,8 +859,7 @@ function globalScripts() {
           },
           "<"
         );
-        tl.fromTo(prevItemImg, { yPercent: 0 }, { yPercent: 10 }, "<");
-        tl.fromTo(nextItemImg, { yPercent: -10 }, { yPercent: 0 }, "<");
+        drift(tl, prevItemImg, nextItemImg, 10);
       } else {
         tl.fromTo(
           nextItem,
@@ -877,11 +876,29 @@ function globalScripts() {
           },
           "<"
         );
-        tl.fromTo(prevItemImg, { yPercent: 0 }, { yPercent: -10 }, "<");
-        tl.fromTo(nextItemImg, { yPercent: 10 }, { yPercent: 0 }, "<");
+        drift(tl, prevItemImg, nextItemImg, -10);
       }
 
       activeIndex = nextIndex;
+    }
+
+    // The images slide a little with the reveal. In the gallery they also
+    // drift with scroll ([data-parallax]), and that scrubbed tween owns their
+    // yPercent: moving the same property here threw the image to -10% at the
+    // start of every change and left it at 0, so the next scroll snapped it
+    // back to where the scroll said — the jump on every slide change. Those
+    // images settle with a slight zoom instead, a property nothing else
+    // animates and one that never pulls the image off the frame's edge.
+    function drift(tl, prevImg, nextImg, dir) {
+      if (nextImg.closest("[data-parallax]").length) {
+        tl.fromTo(prevImg, { scale: 1 }, { scale: 1.04 }, "<");
+        // No clearProps: clearing any transform part clears all of it, the
+        // scroll drift included.
+        tl.fromTo(nextImg, { scale: 1.08 }, { scale: 1 }, "<");
+        return;
+      }
+      tl.fromTo(prevImg, { yPercent: 0 }, { yPercent: dir }, "<");
+      tl.fromTo(nextImg, { yPercent: -dir }, { yPercent: 0 }, "<");
     }
 
     // Auto-advance. Nothing on the hero says the numbers are clickable, so the
@@ -1536,8 +1553,13 @@ function globalScripts() {
         // happened. cart-should-be-updated re-fetches and re-renders without
         // touching whether the drawer is open, which matters because it is
         // already open and toggling it would shut it.
+        // An add from anywhere else (the New in cards' sizes) is the same as
+        // the product page's Add to cart, so it opens the drawer the same way:
+        // product-added is what the bridge listens for to re-render and open.
+        const inDrawer = btn.closest(".w-commerce-commercecartcontainerwrapper");
+        const onCartPage = !!document.querySelector(".cart-page_form");
         if (window.Udesly && window.Udesly.dispatch) {
-          window.Udesly.dispatch("cart-should-be-updated");
+          window.Udesly.dispatch(inDrawer || onCartPage ? "cart-should-be-updated" : "product-added", true);
         }
         // The cart page itself is rendered by the server, so the new line only
         // appears there once the page is rendered again.
@@ -1874,6 +1896,38 @@ function globalScripts() {
     update();
   });
 
+  // Buy now, when Razorpay Magic Checkout has not taken it. Magic Checkout
+  // listens on document in the capture phase and stops the click there, so
+  // this only runs without it: add the chosen size and open Shopify's
+  // checkout, whose first page is the delivery address. The form's id field
+  // is kept on the chosen size by the product-page code above.
+  if (!window.__buyNowBound) {
+    window.__buyNowBound = true;
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-buy-now]");
+      if (!btn || btn.disabled) return;
+      e.preventDefault();
+      const form = btn.closest("form");
+      const id = parseInt(form && form.querySelector('input[name="id"]') && form.querySelector('input[name="id"]').value, 10);
+      if (!id) return;
+      const label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "Going to checkout…";
+      fetch("/cart/add.js", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ items: [{ id: id, quantity: 1 }] }),
+      })
+        .then((r) => (r.ok ? r.json() : r.json().then((j) => Promise.reject(j))))
+        .then(() => { window.location.href = "/checkout"; })
+        .catch((err) => {
+          btn.disabled = false;
+          btn.textContent = (err && err.description) || "Could not add this size. Try again";
+          setTimeout(() => { btn.textContent = label; }, 3500);
+        });
+    });
+  }
+
   // The quick-add bar on a New in card adds through the cart's own
   // [data-add-variant] handler above, which leaves the drawer shut, so say so
   // on the card: "Adding…" until that handler lets go of the button, then
@@ -1906,16 +1960,21 @@ function globalScripts() {
     });
   }
 
-  // Product page discount. The cart bridge rewrites the price when the size
-  // changes; the struck-through Compare-at price, the % off and the saving
-  // beside it follow from the map main-product.liquid prints, looked up by the
-  // option selects (the pills drive those). Nothing to do when no variant has
-  // a Compare-at price.
+  // Product page: follow the chosen size. The cart bridge rewrites the price
+  // itself; the rest follows from the map main-product.liquid prints, looked
+  // up by the option selects (the pills drive those):
+  // - the struck-through Compare-at price, % off and saving beside the price;
+  // - the form's id field, which the bridge never updates and which Buy now
+  //   and Razorpay Magic Checkout read to know what to buy;
+  // - Buy now itself, off for a sold-out size.
   document.querySelectorAll("[data-compare-map]").forEach((mapEl) => {
     let map;
     try { map = JSON.parse(mapEl.textContent); } catch (e) { return; }
-    if (!Array.isArray(map) || !map.some((v) => v.off > 0)) return;
+    if (!Array.isArray(map) || !map.length) return;
+    const discounts = map.some((v) => v.off > 0);
     const form = document.querySelector(mapEl.getAttribute("data-form")) || document;
+    const idInput = form.querySelector('input[name="id"]');
+    const buyNow = form.querySelector("[data-buy-now]");
     const box = document.querySelector("[data-product-compare]");
     const price = document.querySelector("[data-product-price]");
     const stickyPrice = document.querySelector("[data-sticky-atc-price]");
@@ -1933,6 +1992,9 @@ function globalScripts() {
     const set = (sel, text) => { const el = box && box.querySelector(sel); if (el) el.textContent = text; };
     const paint = () => {
       const v = current();
+      if (v && idInput && v.id) idInput.value = v.id;
+      if (buyNow) buyNow.disabled = !(v && v.available);
+      if (!discounts) return;
       const on = !!(v && v.off > 0);
       if (box) {
         box.hidden = !on;
@@ -1948,6 +2010,24 @@ function globalScripts() {
       if (e.target.closest('[data-node-type="add-to-cart-option-pill"], .size-button')) later();
     });
     paint();
+  });
+
+  // Size chart: a native <dialog>, opened from the link beside the sizes and
+  // closed by its button, Escape or a click on the dimmed page around it.
+  // Lenis is paused while it is open so the page underneath stays put.
+  document.querySelectorAll("[data-size-chart]").forEach((dlg) => {
+    const opener = document.querySelector("[data-size-chart-open]");
+    if (!opener || typeof dlg.showModal !== "function") return;
+    opener.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation(); // the size row toggles on click, the chart should not
+      dlg.showModal();
+      lenis.stop();
+    });
+    dlg.addEventListener("close", () => lenis.start());
+    dlg.querySelector("[data-size-chart-close]").addEventListener("click", () => dlg.close());
+    dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
+    onTeardown(() => { if (dlg.open) dlg.close(); });
   });
 
   // Sticky mobile add-to-cart: show the bar while the real button is off
@@ -3020,16 +3100,34 @@ barba.hooks.after((data) => {
   if (nav) gsap.set(nav, { clearProps: "top" });
   const bar = data.next.container.querySelector(".announcement-bar");
   if (bar) gsap.set(bar, { clearProps: "top" });
-  $(window).scrollTop(0);
-  // On phones the page scrolls inside .page_wrap, which the line above does not
-  // touch — so a page opened from low down arrived at the footer.
-  if (lockBars) pageScroller.scrollTop = 0;
+  toTop();
   // The previous page's triggers were never killed, so each transition
   // stacked another set measured against a page that no longer exists.
   ScrollTrigger.getAll().forEach((t) => t.kill());
+  // ScrollTrigger remembers scroll positions and puts them back on refresh,
+  // and globalScripts() refreshes: without this it restored the old page's
+  // position, clamped to the bottom of the new one.
+  ScrollTrigger.clearScrollMemory("manual");
   globalScripts();
+  toTop();
   resetShopify(data);
 });
+
+// A page opened by a transition starts at the top. Clicking a product from low
+// on a long page landed on the new page's footer: when the old page left, the
+// document shrank under the scroll position, the browser clamped it to the new
+// page's bottom, and Lenis, which keeps its own copy of the position, kept
+// putting it back there. So both are reset, Lenis first and with force since
+// it is stopped for the length of the transition. On phones the page scrolls
+// inside .page_wrap instead.
+function toTop() {
+  if (lockBars) {
+    pageScroller.scrollTop = 0;
+    return;
+  }
+  lenis.scrollTo(0, { immediate: true, force: true });
+  window.scrollTo(0, 0);
+}
 
 barba.init({
   preventRunning: true,

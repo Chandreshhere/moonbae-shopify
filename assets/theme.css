@@ -1748,3 +1748,95 @@ body:has(.announcement-bar) .page_wrap {
   .product-block_info.is-alt > p { max-width: 100%; text-align: left; }
   .product-block_info.is-alt .price-group { justify-content: flex-start; }
 }
+
+/* --- Product page buy area -------------------------------------------------
+   The sizes are a row of boxes that are always on show, with the chosen one
+   named beside "Size:" and the size chart link at the other end of that line.
+   They used to sit in a list that opened upwards from a toggle, with no hover
+   state and nothing showing which size was picked. Add to cart and Buy now
+   share the row underneath. */
+.single-product_actions { flex-wrap: wrap; align-items: stretch; }
+.single-product_actions .size-variation_btn { width: 100%; display: block; }
+.single-product_actions .option { display: flex; flex-direction: column; gap: .75rem; }
+.single-product_actions .size-toggle {
+  order: -1;
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 0; background: none; cursor: default;
+}
+.single-product_actions .size-toggle .toggle-icon { display: none; }
+.single-product_actions .size-selected { margin-left: .35em; }
+.single-product_actions .size-button_group,
+.single-product_actions .size-button_group.show {
+  display: flex !important; position: static;
+  flex-flow: row wrap; align-items: stretch; justify-content: flex-start; gap: .5rem;
+  width: auto; margin: 0; padding: 0; background: none;
+}
+.single-product_actions .size-button {
+  min-width: 3.4rem; height: 3rem; padding: 0 .9rem;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--swatch--dark-faded-2, rgba(0, 0, 0, .2));
+  border-radius: var(--size--0-25rem, .25rem);
+  background: var(--swatch--light, #fff); color: var(--swatch--dark, #000);
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+}
+.single-product_actions .size-button .size-choice { color: inherit; line-height: 1; }
+@media (hover: hover) {
+  .single-product_actions .size-button:hover { border-color: var(--swatch--dark, #000); }
+}
+.single-product_actions .size-button.w--ecommerce-pill-selected {
+  background: var(--swatch--dark, #000); border-color: var(--swatch--dark, #000); color: var(--swatch--light, #fff);
+}
+.single-product_actions .size-button.w--ecommerce-pill-disabled {
+  background: var(--swatch--light, #fff); color: var(--swatch--dark, #000);
+  border-style: dashed; text-decoration: line-through; opacity: .35; pointer-events: none;
+}
+.size-chart_link {
+  padding: 0; border: 0; background: none; color: inherit;
+  text-decoration: underline; text-underline-offset: .2em; cursor: pointer;
+}
+.single-product_actions .add-to-cart_btn,
+.single-product_actions .buy-now_btn { flex: 1 1 0; width: auto; min-width: 0; }
+.buy-now_btn {
+  padding: var(--size--1-25rem, 1.25rem) 1rem;
+  border: 0; border-radius: var(--size--0-25rem, .25rem);
+  background: var(--swatch--brand, #050fff); color: #fff;
+  font-family: var(--_typography---font--primary-family, inherit);
+  font-size: var(--_typography---font-size--text-small, .875rem);
+  font-weight: var(--_typography---font--primary-bold, 600);
+  line-height: 1; text-transform: uppercase; text-align: center;
+  cursor: pointer; transition: opacity 150ms ease-out;
+}
+.buy-now_btn:hover { opacity: .88; }
+.buy-now_btn:disabled { opacity: .35; cursor: not-allowed; }
+
+/* Size chart dialog. */
+.size-chart {
+  width: min(40rem, calc(100vw - 2rem)); max-height: calc(100svh - 2rem);
+  padding: 0; border: 0; border-radius: .5rem;
+  background: var(--swatch--light, #fff); color: var(--swatch--dark, #000);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+}
+.size-chart::backdrop { background: rgba(0, 0, 0, .5); }
+.size-chart_head {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  padding: 1.1rem 1.25rem; border-bottom: 1px solid var(--swatch--dark-faded-1, rgba(0, 0, 0, .1));
+}
+.size-chart_title { margin: 0; }
+.size-chart_close {
+  padding: 0; border: 0; background: none; color: inherit;
+  text-decoration: underline; text-underline-offset: .2em; cursor: pointer;
+}
+.size-chart_scroll { overflow-x: auto; padding: .5rem 1.25rem 0; }
+.size-chart_table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.size-chart_table th,
+.size-chart_table td {
+  padding: .75rem .5rem; text-align: center; white-space: nowrap;
+  border-bottom: 1px solid var(--swatch--dark-faded-1, rgba(0, 0, 0, .08));
+}
+.size-chart_table thead th {
+  font-size: .72rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; opacity: .6;
+}
+.size-chart_table th:first-child { text-align: left; }
+.size-chart_table tbody th { font-weight: 600; }
+.size-chart_note { margin: 0; padding: .9rem 1.25rem 1.25rem; font-size: .85rem; opacity: .65; }

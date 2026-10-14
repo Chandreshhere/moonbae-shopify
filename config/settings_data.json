@@ -30,6 +30,28 @@
     "tier_2_amount": 0,
     "tier_3_amount": 0,
     "tier_1_label": "10% off",
-    "tier_1_code": "MOON10"
+    "tier_1_code": "MOON10",
+    "blocks": {
+      "17844675666580048712": {
+        "type": "shopify://apps/razorpay-cod-magic-checkout/blocks/sso-script/c13c688d-5c45-4054-b95f-1edd63faa705",
+        "disabled": true,
+        "settings": {}
+      },
+      "3557650678667880288": {
+        "type": "shopify://apps/razorpay-cod-magic-checkout/blocks/magicx-script/c13c688d-5c45-4054-b95f-1edd63faa705",
+        "disabled": false,
+        "settings": {}
+      },
+      "2166187066657961218": {
+        "type": "shopify://apps/razorpay-cod-magic-checkout/blocks/review-widget-embed/c13c688d-5c45-4054-b95f-1edd63faa705",
+        "disabled": true,
+        "settings": {
+          "enable_reviews": true,
+          "enable_star_rating": true,
+          "primary_color": "",
+          "star_color": ""
+        }
+      }
+    }
   }
 }

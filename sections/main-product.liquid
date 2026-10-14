@@ -118,7 +118,7 @@
                     assign o3 = v.option3 | default: '' | downcase
                     assign save = w | minus: v.price
                   -%}
-                  {"o": [{{ o1 | json }}, {{ o2 | json }}, {{ o3 | json }}], "off": {{ o }}, "was": {{ w | money | json }}, "save": {{ save | money | json }}}{% unless forloop.last %},{% endunless %}
+                  {"id": {{ v.id }}, "available": {{ v.available | json }}, "o": [{{ o1 | json }}, {{ o2 | json }}, {{ o3 | json }}], "off": {{ o }}, "was": {{ w | money | json }}, "save": {{ save | money | json }}}{% unless forloop.last %},{% endunless %}
                 {%- endfor -%}
                 ]
               </script>
@@ -160,6 +160,32 @@
           </div>
         {%- endif -%}
 
+        {%- liquid
+          comment
+            Size chart: the first Size chart block whose "Match" text appears in
+            this product's SKU or title. Unitee's SKUs name the blank
+            (240-offwh-boxy-tee-u-…, 360-bl-hood-u-…), so each garment finds its
+            own chart and a product added later needs nothing set on it.
+          endcomment
+          assign size_chart = nil
+          assign chart_hay = product.selected_or_first_available_variant.sku | append: ' ' | append: product.title | downcase
+          for block in section.blocks
+            if block.type != 'size_chart' or block.settings.match == blank
+              continue
+            endif
+            assign chart_keys = block.settings.match | downcase | split: ','
+            for k in chart_keys
+              assign k = k | strip
+              if k != blank and chart_hay contains k
+                assign size_chart = block
+                break
+              endif
+            endfor
+            if size_chart
+              break
+            endif
+          endfor
+        -%}
         <div class="add-to-cart_single">
           {%- comment -%}
             Written out rather than using {% form 'product' %}: the reference markup needs
@@ -217,15 +243,15 @@
                         </div>
                       {%- endfor -%}
                     </div>
+                    {%- assign chosen = current_variant.options[forloop.index0] | default: '&nbsp;' -%}
                     <div data-node-type="block" class="size-toggle">
                       <div data-node-type="block" class="body-upper">
                         {{ option.name }}:
-                        <span data-node-type="span" class="size-selected">&nbsp;</span>
+                        <span data-node-type="span" class="size-selected">{{ chosen }}</span>
                       </div>
-                      <div data-node-type="block" class="toggle-icon">
-                        <div data-node-type="block" class="toggle-line"></div>
-                        <div data-node-type="block" class="toggle-line is-vert"></div>
-                      </div>
+                      {%- if size_chart and forloop.first -%}
+                        <button type="button" class="size-chart_link body-upper" data-size-chart-open aria-haspopup="dialog">{{ section.settings.size_chart_label | default: 'Size chart' }}</button>
+                      {%- endif -%}
                     </div>
                   </fieldset>
                 {%- endfor -%}
@@ -240,9 +266,71 @@
                    class="w-commerce-commerceaddtocartbutton add-to-cart_btn"
                    value="{{ section.settings.add_label | escape }}"
                    {% unless current_variant.available %}disabled{% endunless %}>
+            {%- if section.settings.buy_now_label != blank -%}
+              {%- comment -%}
+                Buy now goes straight to checkout with this item. Razorpay Magic
+                Checkout takes over any button.shopify-payment-button__button--unbranded
+                inside a form posting to /cart/add, so with its app embed on this
+                opens Magic Checkout at the address step; without it,
+                scripts-2026.js ([data-buy-now]) adds the item and opens Shopify's
+                checkout, whose first page is the address.
+              {%- endcomment -%}
+              <button type="button"
+                      class="buy-now_btn shopify-payment-button__button shopify-payment-button__button--unbranded"
+                      data-buy-now
+                      {% unless current_variant.available %}disabled{% endunless %}>{{ section.settings.buy_now_label }}</button>
+            {%- endif -%}
             <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
             <input type="hidden" name="product-id" value="{{ product.id }}">
           </form>
+
+          {%- if size_chart -%}
+            {%- liquid
+              assign chart_cols = size_chart.settings.columns | split: ','
+              assign chart_rows = size_chart.settings.rows | newline_to_br | split: '<br />'
+              comment
+                Only the sizes this product is sold in, so a tee offered in
+                S to XL does not list a 2XL. XXL and 2XL count as the same.
+              endcomment
+              assign sold_sizes = ''
+              for v in product.options_with_values.first.values
+                assign vv = v | upcase | replace: '2XL', 'XXL' | strip
+                assign sold_sizes = sold_sizes | append: '|' | append: vv | append: '|'
+              endfor
+            -%}
+            <dialog class="size-chart" data-size-chart data-lenis-prevent aria-labelledby="size-chart-title-{{ section.id }}" {{ size_chart.shopify_attributes }}>
+              <div class="size-chart_head">
+                <h2 class="size-chart_title body-upper" id="size-chart-title-{{ section.id }}">{{ size_chart.settings.title }}</h2>
+                <button type="button" class="size-chart_close body-upper" data-size-chart-close aria-label="Close size chart">Close</button>
+              </div>
+              <div class="size-chart_scroll">
+                <table class="size-chart_table">
+                  <thead>
+                    <tr>
+                      {%- for c in chart_cols -%}<th scope="col">{{ c | strip }}</th>{%- endfor -%}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {%- for row in chart_rows -%}
+                      {%- assign cells = row | strip | split: ',' -%}
+                      {%- if cells.size == 0 -%}{%- continue -%}{%- endif -%}
+                      {%- assign key = cells.first | strip | upcase | replace: '2XL', 'XXL' -%}
+                      {%- assign needle = '|' | append: key | append: '|' -%}
+                      {%- unless sold_sizes contains needle -%}{%- continue -%}{%- endunless -%}
+                      <tr>
+                        {%- for cell in cells -%}
+                          {%- if forloop.first -%}<th scope="row">{{ cell | strip }}</th>{%- else -%}<td>{{ cell | strip }}</td>{%- endif -%}
+                        {%- endfor -%}
+                      </tr>
+                    {%- endfor -%}
+                  </tbody>
+                </table>
+              </div>
+              {%- if size_chart.settings.note != blank -%}
+                <p class="size-chart_note">{{ size_chart.settings.note }}</p>
+              {%- endif -%}
+            </dialog>
+          {%- endif -%}
 
           <div style="display:{% if current_variant.available %}none{% else %}block{% endif %}" class="w-commerce-commerceaddtocartoutofstock error-state" tabindex="0">
             <div class="body-upper">{{ section.settings.sold_out_text }}</div>
@@ -277,12 +365,61 @@
     back to the value typed on the block, so one block can serve the
     whole catalogue and still say something different per product.
   {%- endcomment -%}
-  {%- assign specs = section.blocks | where: 'type', 'spec' -%}
+  {%- liquid
+    assign specs = section.blocks | where: 'type', 'spec'
+    comment
+      What the garment is, read off the Unitee SKU (360-bl-hood-u-…: GSM,
+      colour, blank). One Weight block saying 220 GSM was wrong for every
+      hoodie and boxy tee. Facts are Unitee's own catalogue: fabric per
+      blank, GSM from the SKU. A product metafield still wins, and a blank
+      not listed here falls back to the value typed on the block.
+    endcomment
+    assign sku = product.selected_or_first_available_variant.sku | downcase
+    assign sku_gsm = sku | split: '-' | first | plus: 0
+    assign fact_weight = ''
+    if sku_gsm > 0
+      assign fact_weight = sku_gsm | append: ' GSM'
+    endif
+    assign fact_comp = ''
+    assign fact_fit = ''
+    if sku contains '-hood-'
+      assign fact_comp = '100% cotton fleece'
+      assign fact_fit = 'Boxy'
+    elsif sku contains 'baby-tee'
+      assign fact_comp = '95% cotton, 5% lycra'
+      assign fact_fit = 'Fitted'
+    elsif sku contains 'boxy-tee'
+      assign fact_comp = '100% French terry cotton'
+      assign fact_fit = 'Boxy'
+    elsif sku contains '-waf-'
+      assign fact_comp = 'Cotton blend waffle knit'
+      assign fact_fit = 'Oversized'
+    elsif sku contains 'ovr-tee'
+      assign fact_fit = 'Oversized'
+      if sku_gsm == 240
+        assign fact_comp = '100% French terry cotton'
+      elsif sku_gsm > 0
+        assign fact_comp = '100% cotton'
+      endif
+    endif
+  -%}
   {%- if specs.size > 0 -%}
     <dl class="product-specs">
       {%- for block in specs -%}
-        {%- assign mf = product.metafields[block.settings.metafield_namespace][block.settings.metafield_key] -%}
-        {%- assign value = mf | default: block.settings.value -%}
+        {%- liquid
+          assign mf = product.metafields[block.settings.metafield_namespace][block.settings.metafield_key]
+          assign fact = ''
+          assign spec_label = block.settings.label | downcase | strip
+          case spec_label
+            when 'composition', 'fabric', 'material'
+              assign fact = fact_comp
+            when 'weight', 'gsm'
+              assign fact = fact_weight
+            when 'fit'
+              assign fact = fact_fit
+          endcase
+          assign value = mf | default: fact | default: block.settings.value
+        -%}
         {%- if value != blank -%}
           <div class="product-spec" {{ block.shopify_attributes }}>
             <dt class="body-upper product-spec_label">{{ block.settings.label }}</dt>
@@ -445,6 +582,19 @@
     },
     {
       "type": "text",
+      "id": "buy_now_label",
+      "label": "Buy now label",
+      "default": "Buy now",
+      "info": "Goes straight to checkout with the chosen size. Opens Razorpay Magic Checkout when its app embed is on. Leave empty to hide the button."
+    },
+    {
+      "type": "text",
+      "id": "size_chart_label",
+      "label": "Size chart link",
+      "default": "Size chart"
+    },
+    {
+      "type": "text",
       "id": "sold_out_text",
       "label": "Sold out message",
       "default": "Sold out."
@@ -502,6 +652,47 @@
     }
   ],
   "blocks": [
+    {
+      "type": "size_chart",
+      "name": "Size chart",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Shown from a Size chart link beside the sizes. A product uses the first chart whose Match text is in its SKU or title."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Size chart"
+        },
+        {
+          "type": "text",
+          "id": "match",
+          "label": "Match",
+          "info": "Text from the SKU or product title, for example -hood- or baby-tee. Separate alternatives with commas."
+        },
+        {
+          "type": "text",
+          "id": "columns",
+          "label": "Column headings",
+          "default": "Size, Chest, Length",
+          "info": "Separated by commas."
+        },
+        {
+          "type": "textarea",
+          "id": "rows",
+          "label": "Rows",
+          "info": "One size per line, values separated by commas, size first: S, 46, 24. Sizes the product is not sold in are left out."
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Note under the table",
+          "default": "All measurements in inches. May vary by up to 1 inch."
+        }
+      ]
+    },
     {
       "type": "accordion",
       "name": "Accordion",

@@ -93,6 +93,66 @@
             "title": "Replaced if it arrives wrong",
             "text": "Damaged, misprinted or incorrect — tell us within 5 days"
           }
+        },
+        "size-chart-denim": {
+          "type": "size_chart",
+          "settings": {
+            "title": "Denim wash boxy fit tee",
+            "match": "denim",
+            "columns": "Size, Chest, Length",
+            "rows": "S, 40, 24.5\nM, 42, 25.5\nL, 44, 26.5\nXL, 46, 27.5\nXXL, 48, 28.5",
+            "note": "All measurements in inches. May vary by up to 1 inch."
+          }
+        },
+        "size-chart-hoodie": {
+          "type": "size_chart",
+          "settings": {
+            "title": "Boxy hoodie",
+            "match": "-hood-",
+            "columns": "Size, Length, Chest, Shoulder",
+            "rows": "S, 25.5, 53, 25.5\nM, 26.5, 55, 27\nL, 27.5, 56, 27\nXL, 28, 58, 28",
+            "note": "All measurements in inches. May vary by up to 1 inch."
+          }
+        },
+        "size-chart-boxy-tee": {
+          "type": "size_chart",
+          "settings": {
+            "title": "Boxy fit tee",
+            "match": "boxy-tee",
+            "columns": "Size, Chest, Length",
+            "rows": "S, 46, 24\nM, 48, 25\nL, 50, 26\nXL, 52, 27\nXXL, 54, 28",
+            "note": "All measurements in inches. May vary by up to 1 inch."
+          }
+        },
+        "size-chart-baby-tee": {
+          "type": "size_chart",
+          "settings": {
+            "title": "Baby tee",
+            "match": "baby-tee",
+            "columns": "Size, Bust, Length, Waist",
+            "rows": "XS, 26, 18, 26\nS, 29, 19, 28\nM, 31, 19, 30\nL, 33, 20, 32\nXL, 35, 20, 34\nXXL, 36, —, 36",
+            "note": "All measurements in inches. May vary by up to 0.5 inch."
+          }
+        },
+        "size-chart-oversized-tee": {
+          "type": "size_chart",
+          "settings": {
+            "title": "Oversized tee",
+            "match": "ovr-tee",
+            "columns": "Size, Chest, Length, Sleeve",
+            "rows": "S, 41, 26, 10\nM, 43, 27, 10.25\nL, 45, 28, 10.5\nXL, 47, 29, 10.5\nXXL, 49, 29.5, 11",
+            "note": "All measurements in inches. May vary by up to 1 inch."
+          }
+        },
+        "size-chart-waffle": {
+          "type": "size_chart",
+          "settings": {
+            "title": "Waffle knit oversized full sleeve",
+            "match": "waf",
+            "columns": "Size, Length, Chest, Shoulder",
+            "rows": "S, 24, 45, 23\nM, 25, 47, 24\nL, 26, 49, 25\nXL, 27, 51, 26\nXXL, 28, 53, 27",
+            "note": "All measurements in inches. May vary by up to 2 inches."
+          }
         }
       },
       "block_order": [
@@ -106,11 +166,19 @@
         "benefit-1",
         "benefit-2",
         "benefit-3",
-        "benefit-4"
+        "benefit-4",
+        "size-chart-denim",
+        "size-chart-hoodie",
+        "size-chart-boxy-tee",
+        "size-chart-baby-tee",
+        "size-chart-oversized-tee",
+        "size-chart-waffle"
       ],
       "settings": {
         "show_breadcrumb": true,
-        "benefits_heading": "What you get for"
+        "benefits_heading": "What you get for",
+        "buy_now_label": "Buy now",
+        "size_chart_label": "Size chart"
       }
     },
     "footer": {
