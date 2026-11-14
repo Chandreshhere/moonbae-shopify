@@ -30,5 +30,28 @@
     {{ attrs }}>
 {%- else -%}
   {%- if fallback_width != blank -%}{%- assign fb_src = fallback | asset_img_url: fallback_width -%}{%- else -%}{%- assign fb_src = fallback | asset_url -%}{%- endif -%}
-  <img src="{{ fb_src }}" alt="{{ img_alt | escape }}" class="{{ img_class }}" loading="{{ img_loading }}" decoding="async" {{ attrs }}>
+  {%- comment -%}
+    Bundled photos were sent at full size to every screen, a phone included:
+    the home hero (the page's largest paint) among them. Raster files get a
+    srcset of CDN-resized copies so the browser picks the size it needs;
+    SVGs and the like are left as they are. A caller that caps the width
+    (fallback_width) without saying how wide the image shows (sizes) keeps
+    its single capped file, since a srcset read against the default 100vw
+    could fetch a bigger one than before.
+  {%- endcomment -%}
+  {%- liquid
+    assign fb_ext = fallback | split: '.' | last | downcase
+    assign fb_responsive = false
+    if fb_ext == 'jpg' or fb_ext == 'jpeg' or fb_ext == 'png' or fb_ext == 'webp'
+      if fallback_width == blank or sizes != blank
+        assign fb_responsive = true
+      endif
+    endif
+  -%}
+  {%- if fb_responsive -%}
+    {%- capture fb_srcset -%}{{ fallback | asset_img_url: '640x' }} 640w, {{ fallback | asset_img_url: '960x' }} 960w, {{ fallback | asset_img_url: '1280x' }} 1280w, {{ fallback | asset_img_url: '1920x' }} 1920w{%- endcapture -%}
+    <img src="{{ fb_src }}" srcset="{{ fb_srcset }}" sizes="{{ sizes | default: '100vw' }}" alt="{{ img_alt | escape }}" class="{{ img_class }}" loading="{{ img_loading }}" decoding="async" {{ attrs }}>
+  {%- else -%}
+    <img src="{{ fb_src }}" alt="{{ img_alt | escape }}" class="{{ img_class }}" loading="{{ img_loading }}" decoding="async" {{ attrs }}>
+  {%- endif -%}
 {%- endif -%}

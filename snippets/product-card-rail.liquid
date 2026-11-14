@@ -13,7 +13,10 @@
 {%- liquid
   assign alt_media = product.media[1]
   assign img_sizes = '(max-width: 767px) 62vw, (max-width: 1023px) 40vw, 25vw'
-  assign img_alt = product.featured_media.alt | default: product.title
+  capture img_alt
+    render 'media-alt', product: product, media: product.featured_media
+  endcapture
+  assign img_alt = img_alt | strip
 -%}
 <li class="new-in_card">
   <div class="new-in_media">

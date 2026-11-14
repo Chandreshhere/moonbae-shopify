@@ -7,11 +7,12 @@
   <div class="product-block">
     <div class="product-img_wrap {{ wrap_class }}">
       {%- if product.featured_media -%}
+        {%- capture card_alt -%}{% render 'media-alt', product: product, media: product.featured_media %}{%- endcapture -%}
         <img
           src="{{ product.featured_media | image_url: width: 1200 }}"
           srcset="{{ product.featured_media | image_url: width: 500 }} 500w, {{ product.featured_media | image_url: width: 800 }} 800w, {{ product.featured_media | image_url: width: 1200 }} 1200w, {{ product.featured_media | image_url: width: 1600 }} 1600w, {{ product.featured_media | image_url: width: 1920 }} 1920w"
           sizes="(max-width: 767px) 60vw, 25vw"
-          alt="{{ product.featured_media.alt | default: product.title | escape }}"
+          alt="{{ card_alt | strip | escape }}"
           class="img-contain {{ wrap_class }}"
           loading="lazy" decoding="async"
           data-commerce-type="variation-image">

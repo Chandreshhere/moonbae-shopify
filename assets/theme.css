@@ -1922,3 +1922,8 @@ body:has(.announcement-bar) .page_wrap {
 }
 .stock-note[hidden] { display: none; }
 .single-product_actions .product-stock { width: 100%; margin: 0; text-transform: uppercase; }
+
+/* Collection intro: a line or two under the title row saying what the page
+   holds (collection description or the template's Intro text). */
+.collection-intro { max-width: 40rem; margin-top: 1.5rem; opacity: .75; }
+.collection-intro p { margin: 0; }

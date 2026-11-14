@@ -40,6 +40,12 @@
         "id": "social_instagram",
         "label": "Instagram URL",
         "info": "Used in structured data so search engines can link the brand to its social profile."
+      },
+      {
+        "type": "textarea",
+        "id": "social_other",
+        "label": "Other profiles",
+        "info": "One full URL per line (YouTube, Pinterest, Reddit, LinkedIn…). Listed with Instagram in the structured data so search engines and AI tools connect them to the brand."
       }
     ]
   },
@@ -292,6 +298,46 @@
           }
         ],
         "info": "Sizes that are sold out are always struck through and cannot be picked."
+      }
+    ]
+  },
+  {
+    "name": "Shipping for search",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Sent to Google with every product so it can show delivery cost and time in search and Shopping. Keep these the same as Settings > Shipping and delivery in Shopify admin and your FAQ."
+      },
+      {
+        "type": "number",
+        "id": "shipping_rate",
+        "label": "Standard shipping rate (₹)",
+        "default": 60,
+        "info": "Orders at or above the free-shipping amount (Theme settings > Cart drawer) are sent as free."
+      },
+      {
+        "type": "number",
+        "id": "handling_days_min",
+        "label": "Printing and dispatch, fastest (business days)",
+        "default": 2
+      },
+      {
+        "type": "number",
+        "id": "handling_days_max",
+        "label": "Printing and dispatch, slowest (business days)",
+        "default": 4
+      },
+      {
+        "type": "number",
+        "id": "transit_days_min",
+        "label": "Delivery after dispatch, fastest (business days)",
+        "default": 3
+      },
+      {
+        "type": "number",
+        "id": "transit_days_max",
+        "label": "Delivery after dispatch, slowest (business days)",
+        "default": 12
       }
     ]
   },

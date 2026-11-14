@@ -154,6 +154,21 @@
               <p class="body-upper">(&nbsp;<span count-items="total">{{ shown_count }}</span>&nbsp;)</p>
             </div>
           </div>
+          {%- comment -%}
+            A line or two saying what the page holds, so the category has words
+            for search engines to read and not only product names: the
+            collection's own description from Shopify admin, or the Intro text
+            set on this template (the category views).
+          {%- endcomment -%}
+          {%- liquid
+            assign intro_copy = section.settings.intro_text
+            if collection.description != blank and collection.handle != 'all'
+              assign intro_copy = collection.description
+            endif
+          -%}
+          {%- if intro_copy != blank -%}
+            <div class="collection-intro u-text-style-small">{{ intro_copy }}</div>
+          {%- endif -%}
         </div>
       </div>
     </div>
@@ -269,6 +284,12 @@
         }
       ],
       "info": "Sorted by product title: \"hoodie\" is a hoodie, \"baby tee\" is a baby tee, the rest are t-shirts."
+    },
+    {
+      "type": "richtext",
+      "id": "intro_text",
+      "label": "Intro text",
+      "info": "A line or two under the title saying what this page holds. A real collection shows its own description from Shopify admin instead."
     },
     {
       "type": "text",

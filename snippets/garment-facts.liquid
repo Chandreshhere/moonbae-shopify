@@ -1,0 +1,103 @@
+{%- comment -%}
+  What a product is, read off its Unitee SKU, as one pipe-separated line:
+
+    kind|garment|descriptor|gsm|fabric|fit|colour
+
+  e.g. "hoodie|boxy hoodie|360 GSM Graphic Hoodie|360|100% cotton fleece|Boxy|Black"
+
+  Unitee SKUs name the blank: 360-bl-hood-u-…, 240-offwh-boxy-tee-u-…,
+  220-rd-baby-tee-u-…, 240-wh-ovr-waf-fs-u-… (GSM, colour code, blank).
+  Fabric per blank is Unitee's own catalogue. Any part it cannot read is left
+  empty, and a product that is not a Unitee blank gives an empty kind.
+
+  Capture it and split on "|":
+    {%- capture gf -%}{% render 'garment-facts', product: product %}{%- endcapture -%}
+    {%- assign gf = gf | split: '|' -%}   (gf[0] kind … gf[6] colour)
+
+  Used by the product page specs, the page title and meta description
+  (layout/theme.liquid) and the product structured data (meta-tags).
+  Params: product
+{%- endcomment -%}
+{%- liquid
+  assign sku = product.selected_or_first_available_variant.sku | downcase
+  assign parts = sku | split: '-'
+  assign gsm = parts.first | plus: 0
+  assign kind = ''
+  assign garment = ''
+  assign descriptor = ''
+  assign fabric = ''
+  assign fit = ''
+  if sku contains '-hood-'
+    assign kind = 'hoodie'
+    assign garment = 'boxy hoodie'
+    assign descriptor = 'Graphic Hoodie'
+    assign fabric = '100% cotton fleece'
+    assign fit = 'Boxy'
+  elsif sku contains 'baby-tee'
+    assign kind = 'babytee'
+    assign garment = 'baby tee'
+    assign descriptor = "Women's Y2K Crop Tee"
+    assign fabric = '95% cotton, 5% lycra'
+    assign fit = 'Fitted'
+  elsif sku contains 'boxy-tee'
+    assign kind = 'boxytee'
+    assign garment = 'boxy fit tee'
+    assign descriptor = 'Boxy Graphic Tee'
+    assign fabric = '100% French terry cotton'
+    assign fit = 'Boxy'
+    if product.title contains 'Denim' or product.title contains 'denim'
+      assign garment = 'denim wash boxy tee'
+      assign descriptor = 'Boxy Fit Tee'
+    endif
+  elsif sku contains '-waf-'
+    assign kind = 'waffle'
+    assign garment = 'waffle knit full-sleeve top'
+    assign descriptor = 'Waffle Knit Graphic Top'
+    assign fabric = 'Cotton blend waffle knit'
+    assign fit = 'Oversized'
+  elsif sku contains 'ovr-tee'
+    assign kind = 'oversizedtee'
+    assign garment = 'oversized tee'
+    assign descriptor = 'Graphic Tee'
+    assign fit = 'Oversized'
+    if gsm == 240
+      assign fabric = '100% French terry cotton'
+    elsif gsm > 0
+      assign fabric = '100% cotton'
+    endif
+  endif
+  if gsm > 0 and kind != 'babytee' and kind != 'waffle'
+    assign descriptor = gsm | append: ' GSM ' | append: descriptor
+  endif
+
+  comment
+    Colour is the second part of the SKU when it is one of Unitee's codes.
+  endcomment
+  assign colour = ''
+  case parts[1]
+    when 'bl'
+      assign colour = 'Black'
+    when 'wh'
+      assign colour = 'White'
+    when 'offwh'
+      assign colour = 'Off-white'
+    when 'rd'
+      assign colour = 'Red'
+    when 'bpk'
+      assign colour = 'Baby pink'
+    when 'crm'
+      assign colour = 'Cream'
+    when 'gry', 'gr'
+      assign colour = 'Grey'
+  endcase
+  comment
+    Unitee's waffle knits come in off-white and black, so "wh" there is off-white.
+  endcomment
+  if kind == 'waffle' and colour == 'White'
+    assign colour = 'Off-white'
+  endif
+  if gsm == 0
+    assign gsm = ''
+  endif
+  echo kind | append: '|' | append: garment | append: '|' | append: descriptor | append: '|' | append: gsm | append: '|' | append: fabric | append: '|' | append: fit | append: '|' | append: colour
+-%}

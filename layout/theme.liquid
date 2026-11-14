@@ -25,56 +25,150 @@
     {%- capture theme_build -%}{% render 'theme-build' %}{%- endcapture %}
     <meta name="theme-build" content="{{ theme_build | strip | escape }}">
     <meta content="width=device-width, initial-scale=1" name="viewport">
-    <link rel="canonical" href="{{ canonical_url }}">
-
     {%- assign site_name = settings.brand_name | default: shop.name -%}
     {%- liquid
       comment
         Category views share /collections/all, whose own title is "Products".
+        Each gets its own title, description and canonical so it can rank as
+        a page of its own; when a real collection exists for the category
+        (handle hoodies, t-shirts or baby-tees, with products) the view points
+        its canonical there instead.
       endcomment
-      assign view_title = blank
+      assign view_title = ''
+      assign view_tag = ''
+      assign view_desc = ''
+      assign view_handles = ''
       if template.name == 'collection'
         case template.suffix
           when 'hoodies'
             assign view_title = 'Hoodies'
+            assign view_tag = 'Boxy Graphic Hoodies, 360 GSM'
+            assign view_desc = 'Boxy graphic hoodies in 360 GSM cotton fleece. Every design is picked and reworked by Moon, then printed in India after you order. Sizes S to XL.'
+            assign view_handles = 'hoodies,hoodie'
           when 'tshirts'
             assign view_title = 'T-shirts'
+            assign view_tag = 'Boxy and Oversized Graphic Tees'
+            assign view_desc = 'Boxy fit and oversized graphic tees in 240 GSM cotton, plus waffle knit full sleeves. Each design is curated by Moon and printed to order in India.'
+            assign view_handles = 't-shirts,tshirts,t-shirt'
           when 'babytees'
             assign view_title = 'Baby tees'
+            assign view_tag = "Women's Y2K Baby Tees"
+            assign view_desc = "Fitted Y2K baby tees for women in 220 GSM cotton with a little stretch (95% cotton, 5% lycra). Sizes XS to XXL, printed to order in India."
+            assign view_handles = 'baby-tees,babytees,baby-tee'
           when 'men'
             assign view_title = 'Men'
+            assign view_tag = 'Graphic Hoodies and Tees for Men'
+            assign view_desc = 'Graphic hoodies, boxy and oversized tees and waffle knits from Moonbae: wearable art curated by Moon, printed to order in India.'
           when 'women'
             assign view_title = 'Women'
+            assign view_tag = 'Baby Tees, Graphic Tees and Hoodies for Women'
+            assign view_desc = 'Fitted Y2K baby tees plus unisex graphic hoodies and tees from Moonbae: wearable art curated by Moon, printed to order in India.'
         endcase
       endif
+
+      assign seo_canonical = canonical_url
+      if view_title != blank and collection.handle == 'all'
+        assign seo_canonical = canonical_url | split: '?' | first | append: '?view=' | append: template.suffix
+        assign vh = view_handles | split: ','
+        for h in vh
+          assign found = collections[h].products_count | plus: 0
+          if found > 0
+            assign seo_canonical = request.origin | append: collections[h].url
+            break
+          endif
+        endfor
+      endif
+
+      comment
+        Search results are thin and endless, so they stay out of the index;
+        links on them are still followed.
+      endcomment
+      assign seo_robots = ''
+      if template.name == 'search'
+        assign seo_robots = 'noindex, follow'
+      endif
+
+      comment
+        Products: most descriptions are only the product name (Unitee fills
+        them in that way), which gives search engines nothing to read. When
+        the description adds fewer than 40 characters to the title, the title
+        and description below are built from the garment's facts instead
+        (snippets/garment-facts). A real description or an SEO title set in
+        Shopify admin always wins.
+      endcomment
+      assign desc_thin = false
+      if template.name == 'product'
+        capture gf
+          render 'garment-facts', product: product
+        endcapture
+        assign gf = gf | split: '|'
+        assign desc_text = product.description | strip_html | strip_newlines | strip
+        assign desc_extra = desc_text | remove: product.title | strip
+        if desc_extra.size < 40
+          assign desc_thin = true
+        endif
+        assign pd = page_description | strip_html | strip_newlines | strip
+        assign pd_extra = pd | remove: product.title | strip
+        assign use_generated_desc = false
+        if desc_thin and pd_extra.size < 40
+          assign use_generated_desc = true
+        endif
+      endif
     -%}
-    <title>
+    <link rel="canonical" href="{{ seo_canonical }}">
+    {%- if seo_robots != blank %}
+    <meta name="robots" content="{{ seo_robots }}">
+    {%- endif %}
+    {%- capture seo_title -%}
       {%- if request.page_type == 'index' -%}
         {{ site_name }} &ndash; {{ settings.seo_tagline | default: 'wearable art, curated by Moon' }}
       {%- elsif view_title != blank -%}
-        {{ view_title }} &ndash; {{ site_name }}
+        {{ view_title }} | {{ view_tag }} &ndash; {{ site_name }}
+      {%- elsif template.name == 'product' and page_title == product.title and gf[2] != blank -%}
+        {{ product.title }} | {{ gf[2] }} &ndash; {{ site_name }}
       {%- else -%}
         {{ page_title }}
         {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
         {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
         {%- unless page_title contains site_name %} &ndash; {{ site_name }}{% endunless -%}
       {%- endif -%}
-    </title>
+    {%- endcapture -%}
+    {%- comment -%}
+      The capture keeps stray line breaks out of the title ("About↵ – Moonbae").
+    {%- endcomment -%}
+    {%- assign seo_title = seo_title | strip_newlines | strip -%}
+    <title>{{ seo_title }}</title>
 
     {%- comment -%}
       Without a fallback, every page the merchant has not written a description
       for ships with none at all, and the search result gets whatever Google
-      scrapes off the page.
+      scrapes off the page. Each kind of page gets its own fallback rather
+      than all sharing the site description.
     {%- endcomment -%}
     {%- capture meta_description -%}
-      {%- if page_description != blank -%}{{ page_description }}
+      {%- if template.name == 'product' and use_generated_desc -%}
+        {%- if gf[0] != blank -%}
+          {{ product.title }}: a {% if gf[6] != blank %}{{ gf[6] | downcase }} {% endif %}{% if gf[3] != blank %}{{ gf[3] }} GSM {% endif %}{{ gf[1] }} in {{ gf[4] | downcase }}, with a design curated by Moon. Printed to order in India and dispatched in 2–4 business days.
+        {%- else -%}
+          {{ product.title }} by {{ site_name }}: wearable art curated by Moon, printed to order in India and dispatched in 2–4 business days.
+        {%- endif -%}
+        {%- unless product.has_only_default_variant %} Sizes {{ product.options_with_values.first.values.first }}–{{ product.options_with_values.first.values.last }},{% endunless %} {{ product.price | money_without_trailing_zeros | strip_html }}.
+      {%- elsif page_description != blank -%}{{ page_description }}
       {%- elsif template.name == 'product' -%}{{ product.description | strip_html | truncatewords: 30 }}
       {%- elsif template.name == 'collection' and collection.description != blank -%}{{ collection.description | strip_html | truncatewords: 30 }}
+      {%- elsif view_desc != blank -%}{{ view_desc }}
+      {%- elsif template.name == 'collection' -%}{{ collection.title }} at {{ site_name }}: wearable art curated by Moon, printed to order in India and dispatched in 2–4 business days.
+      {%- elsif template.name == 'page' and page.handle == 'about' -%}About {{ site_name }}: a small Indian label where Moon picks every design, reworks it for the garment and prints it to order on hoodies, tees and baby tees for artists and creative people.
+      {%- elsif template.name == 'page' and page.handle == 'contact' -%}Contact {{ site_name }} about sizes, orders and delivery. Every hoodie, tee and baby tee is printed to order in India after you buy it.
+      {%- elsif template.name == 'page' and page.content != blank -%}{{ page.content | strip_html | truncatewords: 30 }}
+      {%- elsif request.page_type == 'policy' -%}{{ site_name }} {{ page_title | downcase }}: how ordering, printing, delivery and replacements work for our made-to-order hoodies and tees in India.
+      {%- elsif template.name == 'blog' -%}News from {{ site_name }}: new drops, the designs behind them and how each piece is printed to order in India.
       {%- elsif shop.description != blank -%}{{ shop.description }}
-      {%- else -%}{{ settings.brand_name | default: shop.name }} — wearable art curated by Moon. Hoodies, tees and baby tees, printed to order in India for artists and creative people.
+      {%- else -%}{{ site_name }} makes wearable art curated by Moon: hoodies, tees and baby tees, printed to order in India for artists and creative people.
       {%- endif -%}
     {%- endcapture -%}
-    <meta name="description" content="{{ meta_description | strip | truncate: 300 | escape }}">
+    {%- assign meta_description = meta_description | strip_html | strip_newlines | strip | truncate: 300 -%}
+    <meta name="description" content="{{ meta_description | escape }}">
 
     {%- comment -%}
       The design's serif is served by Shopify through font_face below, so the
@@ -189,7 +283,7 @@
     {{ content_for_header }}
 
     {%- comment -%} Social link previews and structured data, after content_for_header so they win. {%- endcomment -%}
-    {% render 'meta-tags', view_title: view_title %}
+    {% render 'meta-tags', view_title: view_title, seo_title: seo_title, seo_description: meta_description, seo_canonical: seo_canonical %}
   </head>
 
   {%- comment -%}

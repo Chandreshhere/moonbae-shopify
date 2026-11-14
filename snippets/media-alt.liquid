@@ -1,0 +1,32 @@
+{%- comment -%}
+  Alt text for a product photo: the product's name and which side of the
+  garment it shows, read from the file name Unitee gives its mockups
+  (…-front-…, …-back-…, …-leftSleeve-…). Unitee's own alt text is generic
+  and sometimes wrong ("Black Boxy Hoodie Front Design" on a cream hoodie),
+  so it is used only when it names the product. Output is plain text; escape
+  it where it goes into an attribute.
+  Params: product, media
+{%- endcomment -%}
+{%- liquid
+  assign src = media.preview_image.src | default: media.src | downcase
+  assign view = ''
+  if src contains '-leftsleeve' or src contains '_leftsleeve'
+    assign view = 'left sleeve'
+  elsif src contains '-rightsleeve' or src contains '_rightsleeve'
+    assign view = 'right sleeve'
+  elsif src contains '-back' or src contains '_back'
+    assign view = 'back'
+  elsif src contains '-front' or src contains '_front'
+    assign view = 'front'
+  endif
+  assign own = media.alt | strip
+  assign own_lc = own | downcase
+  assign name_word = product.title | split: ' ' | first | downcase
+  if own != blank and own_lc contains name_word
+    echo own
+  elsif view != blank
+    echo product.title | append: ', ' | append: view | append: ' view'
+  else
+    echo product.title
+  endif
+-%}

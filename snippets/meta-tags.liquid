@@ -15,13 +15,20 @@
   endcomment
   if request.page_type == 'index'
     assign seo_tagline = settings.seo_tagline | default: 'wearable art, curated by Moon'
-    assign og_title = settings.brand_name | default: shop.name | append: ' — ' | append: seo_tagline
+    assign og_title = settings.brand_name | default: shop.name | append: ' – ' | append: seo_tagline
+  elsif seo_title != blank
+    comment
+      The same title the layout puts in <title> (with the garment descriptor
+      on products and the category line on category views).
+    endcomment
+    assign og_title = seo_title | replace: '&ndash;', '–'
   elsif view_title != blank
-    assign og_title = view_title | append: ' — ' | append: settings.brand_name
+    assign og_title = view_title | append: ' – ' | append: settings.brand_name
   else
     assign og_title = page_title
   endif
-  assign og_description = page_description | default: shop.description | default: settings.brand_name | default: shop.name
+  assign og_url = seo_canonical | default: canonical_url
+  assign og_description = seo_description | default: page_description | default: shop.description | default: settings.brand_name | default: shop.name
   assign og_image = settings.social_image | default: settings.logo_dark
 
   case request.page_type
@@ -43,7 +50,7 @@
 -%}
 
 <meta property="og:site_name" content="{{ settings.brand_name | default: shop.name | escape }}">
-<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:url" content="{{ og_url }}">
 <meta property="og:title" content="{{ og_title | escape }}">
 <meta property="og:description" content="{{ og_description | strip_html | truncate: 200 | escape }}">
 <meta property="og:type" content="{{ og_type }}">
@@ -82,14 +89,47 @@
 
 {%- comment -%} Structured data. Product carries the fields Google needs for a rich result. {%- endcomment -%}
 {%- if request.page_type == 'product' -%}
-  {%- assign variant = product.selected_or_first_available_variant -%}
+  {%- liquid
+    assign variant = product.selected_or_first_available_variant
+    capture gf
+      render 'garment-facts', product: product
+    endcapture
+    assign gf = gf | split: '|'
+    comment
+      The description most products carry is only their name, so the layout's
+      built description (garment, GSM, fabric) stands in until a real one is
+      written in Shopify admin.
+    endcomment
+    assign ld_desc = product.description | strip_html | strip_newlines | strip
+    assign ld_extra = ld_desc | remove: product.title | strip
+    if ld_extra.size < 40 and seo_description != blank
+      assign ld_desc = seo_description
+    endif
+    comment
+      Shipping for Google's product listings: Theme settings > Shipping for
+      search. Free at or above the free-shipping threshold.
+    endcomment
+    assign ship_rate = settings.shipping_rate | default: 0
+    assign free_over = settings.free_shipping_threshold | default: 0
+    assign free_over_paise = free_over | times: 100
+    assign handling_min = settings.handling_days_min | default: 2
+    assign handling_max = settings.handling_days_max | default: 4
+    assign transit_min = settings.transit_days_min | default: 3
+    assign transit_max = settings.transit_days_max | default: 12
+  -%}
   <script type="application/ld+json">
     {
       "@context": "https://schema.org/",
       "@type": "Product",
       "name": {{ product.title | json }},
       "url": {{ canonical_url | json }},
-      "description": {{ product.description | strip_html | truncate: 500 | json }},
+      "description": {{ ld_desc | truncate: 500 | json }},
+      {%- if gf[6] != blank %}
+        "color": {{ gf[6] | json }},
+      {%- endif %}
+      {%- if gf[4] != blank %}
+        "material": {{ gf[4] | json }},
+      {%- endif %}
       {%- if product.featured_media %}
         "image": [{% for media in product.media limit: 5 %}{{ media | image_url: width: 1200 | prepend: 'https:' | json }}{% unless forloop.last %}, {% endunless %}{% endfor %}],
       {%- endif %}
@@ -108,7 +148,25 @@
             "url": {{ v.url | prepend: request.origin | json }},
             "price": {{ v.price | divided_by: 100.0 | json }},
             "priceCurrency": {{ cart.currency.iso_code | json }},
-            "availability": "https://schema.org/{% if v.available %}InStock{% else %}OutOfStock{% endif %}"
+            {%- if v.sku != blank %}
+            "sku": {{ v.sku | json }},
+            {%- endif %}
+            "itemCondition": "https://schema.org/NewCondition",
+            "availability": "https://schema.org/{% if v.available %}InStock{% else %}OutOfStock{% endif %}",
+            "shippingDetails": {
+              "@type": "OfferShippingDetails",
+              "shippingRate": {
+                "@type": "MonetaryAmount",
+                "value": {% if free_over > 0 and v.price >= free_over_paise %}0{% else %}{{ ship_rate }}{% endif %},
+                "currency": {{ cart.currency.iso_code | json }}
+              },
+              "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" },
+              "deliveryTime": {
+                "@type": "ShippingDeliveryTime",
+                "handlingTime": { "@type": "QuantitativeValue", "minValue": {{ handling_min }}, "maxValue": {{ handling_max }}, "unitCode": "DAY" },
+                "transitTime": { "@type": "QuantitativeValue", "minValue": {{ transit_min }}, "maxValue": {{ transit_max }}, "unitCode": "DAY" }
+              }
+            }
           }{% unless forloop.last %}, {% endunless %}
         {%- endfor -%}
       ]
@@ -148,23 +206,49 @@
       }
     }
   </script>
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org/",
-      "@type": "Organization",
-      "name": {{ settings.brand_name | default: shop.name | json }},
-      "url": {{ request.origin | append: routes.root_url | json }},
-      {%- if settings.social_instagram != blank %}
-        "sameAs": [{{ settings.social_instagram | json }}],
-      {%- endif %}
-      "logo": {%- if settings.logo_dark != blank -%}
-        {{ settings.logo_dark | image_url: width: 600 | prepend: 'https:' | json }}
-      {%- else -%}
-        {{ 'og-moonbae.png' | asset_url | prepend: 'https:' | replace: 'https:https:', 'https:' | json }}
-      {%- endif %}
-    }
-  </script>
 {%- endif -%}
+
+{%- comment -%}
+  The brand on every page, not only the home page, so every page names its
+  publisher. sameAs ties the brand to its profiles elsewhere (Instagram plus
+  any listed in Theme settings > Branding > Other profiles); the more of them
+  agree, the more confidently search engines and AI tools recognise the brand.
+{%- endcomment -%}
+{%- liquid
+  assign same_as = ''
+  if settings.social_instagram != blank
+    assign same_as = settings.social_instagram
+  endif
+  assign other_profiles = settings.social_other | newline_to_br | split: '<br />'
+  for u in other_profiles
+    assign u = u | strip
+    if u contains 'http'
+      if same_as != ''
+        assign same_as = same_as | append: '|'
+      endif
+      assign same_as = same_as | append: u
+    endif
+  endfor
+  assign same_as = same_as | split: '|'
+-%}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Organization",
+    "name": {{ settings.brand_name | default: shop.name | json }},
+    "url": {{ request.origin | append: routes.root_url | json }},
+    "description": {{ settings.brand_name | default: shop.name | append: ' is an Indian clothing label: wearable art curated by Moon, printed to order on hoodies, tees and baby tees.' | json }},
+    "areaServed": "IN",
+    {%- if same_as.size > 0 %}
+      "sameAs": {{ same_as | json }},
+    {%- endif %}
+    "logo": {%- if settings.logo_dark != blank -%}
+      {{ settings.logo_dark | image_url: width: 600 | prepend: 'https:' | json }}
+    {%- else -%}
+      {{ 'og-moonbae.png' | asset_url | prepend: 'https:' | replace: 'https:https:', 'https:' | json }}
+    {%- endif %}
+  }
+</script>
 
 {%- comment -%}
   Breadcrumbs let a result show Home > Collection > Product rather than a raw

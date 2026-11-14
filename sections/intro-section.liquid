@@ -1,4 +1,12 @@
 {% render 'section-class', classes: 'page-contain u-container is-section', attrs: 'nav-dark', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
+{%- comment -%}
+  About and Contact open with this section and had no H1 at all. On a page it
+  names the page for search engines and screen readers (visually hidden, as
+  the home page's H1 is); the home page has its own in the hero.
+{%- endcomment -%}
+{%- if template.name == 'page' and section.index == 1 -%}
+  <h1 class="u-visually-hidden">{{ page.title }} &ndash; {{ settings.brand_name | default: shop.name }}</h1>
+{%- endif -%}
 <div class="split-grid u-grid-desktop m-vflex">
 
 <div class="split-col u-column-6">

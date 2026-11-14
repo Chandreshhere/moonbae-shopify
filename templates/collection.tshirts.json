@@ -7,7 +7,8 @@
         "hero_fit": "native",
         "show_hero": false,
         "category": "tshirts",
-        "title_override": "T-shirts"
+        "title_override": "T-shirts",
+        "intro_text": "<p>Boxy fit and oversized graphic tees in 240 GSM cotton, plus waffle knit full sleeves. The boxy fit is shorter and wider than oversized, so it sits at the hip. Each design is curated by Moon and printed to order in India.</p>"
       }
     },
     "footer": {

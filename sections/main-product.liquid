@@ -7,6 +7,7 @@
     <div class="single-img_col u-column-7">
       <div class="single-featured_img">
         {%- if product.featured_media -%}
+          {%- capture featured_alt -%}{% render 'media-alt', product: product, media: product.featured_media %}{%- endcapture -%}
           {%- comment -%}
             width/height matter here beyond tidiness: with no intrinsic size the
             browser reserves nothing, so until the file arrives the alt text
@@ -14,7 +15,7 @@
             Design" appearing as words on the page actually was.
           {%- endcomment -%}
           <img
-            alt="{{ product.featured_media.alt | default: product.title | escape }}"
+            alt="{{ featured_alt | strip | escape }}"
             src="{{ product.featured_media | image_url: width: 1920 }}"
             width="{{ product.featured_media.width }}"
             height="{{ product.featured_media.height }}"
@@ -23,7 +24,7 @@
             decoding="async"
             class="img-contain product-zoomable"
             data-lightbox-src="{{ product.featured_media | image_url: width: 2400 }}"
-            data-lightbox-alt="{{ product.featured_media.alt | default: product.title | escape }}"
+            data-lightbox-alt="{{ featured_alt | strip | escape }}"
             role="button" tabindex="0"
             data-commerce-type="variation-image"
             srcset="{{ product.featured_media | image_url: width: 500 }} 500w, {{ product.featured_media | image_url: width: 800 }} 800w, {{ product.featured_media | image_url: width: 1200 }} 1200w, {{ product.featured_media | image_url: width: 1600 }} 1600w, {{ product.featured_media | image_url: width: 1920 }} 1920w"
@@ -44,10 +45,11 @@
           <div role="list" class="split-grid u-grid-desktop is-product_slider w-dyn-items">
             {%- for media in product.media offset: 1 -%}
               <div role="listitem" class="split-col u-column-6 w-dyn-item">
+                {%- capture more_alt -%}{% render 'media-alt', product: product, media: media %}{%- endcapture -%}
                 <div class="product-img_wrap">
-                  <img alt="{{ media.alt | default: product.title | escape }}" src="{{ media | image_url: width: 1200 }}"
+                  <img alt="{{ more_alt | strip | escape }}" src="{{ media | image_url: width: 1200 }}"
                        width="{{ media.width }}" height="{{ media.height }}" loading="lazy" decoding="async" class="img-contain product-zoomable"
-                       data-lightbox-src="{{ media | image_url: width: 2400 }}" data-lightbox-alt="{{ media.alt | default: product.title | escape }}"
+                       data-lightbox-src="{{ media | image_url: width: 2400 }}" data-lightbox-alt="{{ more_alt | strip | escape }}"
                        role="button" tabindex="0"
                        srcset="{{ media | image_url: width: 500 }} 500w, {{ media | image_url: width: 800 }} 800w, {{ media | image_url: width: 1200 }} 1200w"
                        sizes="(max-width: 991px) 50vw, 29vw">
@@ -130,8 +132,34 @@
               </script>
             </div>
           </div>
+          {%- liquid
+            comment
+              Most descriptions are only the product name (Unitee fills them in
+              that way). Until a real one is written in Shopify admin, say what
+              the piece is from its garment facts (snippets/garment-facts), and
+              the made-to-order terms from the FAQ, rather than repeat the title.
+            endcomment
+            assign pdesc_text = product.description | strip_html | strip_newlines | strip
+            assign pdesc_extra = pdesc_text | remove: product.title | strip
+            capture dgf
+              render 'garment-facts', product: product
+            endcapture
+            assign dgf = dgf | split: '|'
+            assign d_garment = dgf[1]
+            assign d_fit = dgf[5] | downcase
+            if d_fit != blank
+              unless d_garment contains d_fit
+                assign d_garment = d_fit | append: ' ' | append: d_garment
+              endunless
+            endif
+          -%}
           <div class="product-description_wrap u-text-style-small f-5">
-            {{ product.description }}
+            {%- if pdesc_extra.size >= 40 or dgf[0] == blank -%}
+              {{ product.description }}
+            {%- else -%}
+              <p>{{ product.title }} is a {{ d_garment }}{% if dgf[6] != blank %} in {{ dgf[6] | downcase }}{% endif %}, made from {% if dgf[3] != blank %}{{ dgf[3] }} GSM {% endif %}{{ dgf[4] | downcase }}. The design is curated by Moon and printed in India after you order, then dispatched in 2–4 business days.</p>
+              <p>Check the size chart before you order: each piece is made for you, so it can't be returned for fit, but it is replaced or refunded free if it arrives damaged, misprinted or wrong (tell us within 5 days of delivery).</p>
+            {%- endif -%}
           </div>
 
         </div>
@@ -403,40 +431,21 @@
   {%- liquid
     assign specs = section.blocks | where: 'type', 'spec'
     comment
-      What the garment is, read off the Unitee SKU (360-bl-hood-u-…: GSM,
-      colour, blank). One Weight block saying 220 GSM was wrong for every
-      hoodie and boxy tee. Facts are Unitee's own catalogue: fabric per
-      blank, GSM from the SKU. A product metafield still wins, and a blank
-      not listed here falls back to the value typed on the block.
+      What the garment is, read off the Unitee SKU (snippets/garment-facts):
+      one Weight block saying 220 GSM was wrong for every hoodie and boxy
+      tee. A product metafield still wins, and a blank the snippet does not
+      know falls back to the value typed on the block.
     endcomment
-    assign sku = product.selected_or_first_available_variant.sku | downcase
-    assign sku_gsm = sku | split: '-' | first | plus: 0
+    capture gf
+      render 'garment-facts', product: product
+    endcapture
+    assign gf = gf | split: '|'
     assign fact_weight = ''
-    if sku_gsm > 0
-      assign fact_weight = sku_gsm | append: ' GSM'
+    if gf[3] != blank
+      assign fact_weight = gf[3] | append: ' GSM'
     endif
-    assign fact_comp = ''
-    assign fact_fit = ''
-    if sku contains '-hood-'
-      assign fact_comp = '100% cotton fleece'
-      assign fact_fit = 'Boxy'
-    elsif sku contains 'baby-tee'
-      assign fact_comp = '95% cotton, 5% lycra'
-      assign fact_fit = 'Fitted'
-    elsif sku contains 'boxy-tee'
-      assign fact_comp = '100% French terry cotton'
-      assign fact_fit = 'Boxy'
-    elsif sku contains '-waf-'
-      assign fact_comp = 'Cotton blend waffle knit'
-      assign fact_fit = 'Oversized'
-    elsif sku contains 'ovr-tee'
-      assign fact_fit = 'Oversized'
-      if sku_gsm == 240
-        assign fact_comp = '100% French terry cotton'
-      elsif sku_gsm > 0
-        assign fact_comp = '100% cotton'
-      endif
-    endif
+    assign fact_comp = gf[4]
+    assign fact_fit = gf[5]
   -%}
   {%- if specs.size > 0 -%}
     <dl class="product-specs">
