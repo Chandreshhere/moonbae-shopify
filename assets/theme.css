@@ -2050,3 +2050,29 @@ body:has(.announcement-bar) .page_wrap {
   .product-card > .card-buy,
   .new-in_card > .card-buy { padding-top: .5rem; }
 }
+
+/* Product primaries keep their own image ratio. A square cover frame cut the
+   heads off portrait model photos; natural height shows the complete source
+   without letterboxing and leaves the mobile horizontal gallery intact. */
+.single-featured_img {
+  aspect-ratio: auto;
+  height: auto;
+  align-self: flex-start;
+}
+.single-featured_img > .img-contain {
+  position: static;
+  inset: auto;
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center top;
+}
+.single-more_imgs .img-contain,
+.product-col_item .product-img,
+.single-product-col_item .product-img,
+.product-img_wrap .product-hover_img,
+.product-card .img-contain,
+.new-in_img {
+  object-position: center top;
+}
