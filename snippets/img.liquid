@@ -20,7 +20,7 @@
 {%- if image_mobile != blank -%}
   <picture class="responsive-picture">
     <source
-      media="(max-width: 767px)"
+      media="(max-width: 767px) and (orientation: portrait)"
       srcset="{{ image_mobile | image_url: width: 480 }} 480w, {{ image_mobile | image_url: width: 750 }} 750w, {{ image_mobile | image_url: width: 1000 }} 1000w"
       sizes="{{ sizes_mobile | default: '100vw' }}"
       width="{{ image_mobile.width }}"
