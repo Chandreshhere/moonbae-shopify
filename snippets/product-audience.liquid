@@ -1,0 +1,17 @@
+{%- comment -%}
+  Product image/link context. Alternate Men/Women collection and product
+  templates carry the audience in ?view=men or ?view=women. An explicit
+  audience wins; ordinary product/category pages keep their default image.
+{%- endcomment -%}
+{%- liquid
+  assign selected_audience = audience | default: template.suffix | downcase
+  unless selected_audience == 'men' or selected_audience == 'women'
+    assign selected_audience = collection.handle | downcase
+  endunless
+  case selected_audience
+    when 'men', 'mens'
+      echo 'men'
+    when 'women', 'womens', 'for-her'
+      echo 'women'
+  endcase
+-%}

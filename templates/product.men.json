@@ -1,0 +1,280 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "accordion-1": {
+          "type": "accordion",
+          "settings": {
+            "title": "Garment Details",
+            "metafield_namespace": "custom",
+            "metafield_key": "garment_details",
+            "text": "<p>• Outer: 100% cotton twill (230gsm)<br/>• Relaxed fit<br/>• Embroidered chest branding<br/>• Designed to age beautifully</p>"
+          }
+        },
+        "accordion-2": {
+          "type": "accordion",
+          "settings": {
+            "title": "Wash Care",
+            "metafield_namespace": "custom",
+            "metafield_key": "wash_care",
+            "text": "<p>Washing:<br/>• Machine wash cold with like colors<br/>• Gentle cycle<br/>• Do not bleach<br/><br/>Drying:<br/>• Tumble dry low / hang to dry<br/>• Do not dry clean</p>"
+          }
+        },
+        "accordion-3": {
+          "type": "accordion",
+          "settings": {
+            "title": "Shipping & Returns",
+            "metafield_namespace": "custom",
+            "metafield_key": "shipping_returns",
+            "text": "<p>Made in India<br/>Shipping calculated at checkout.</p>"
+          }
+        },
+        "spec-1": {
+          "type": "spec",
+          "settings": {
+            "label": "Composition",
+            "value": "100% cotton",
+            "metafield_namespace": "custom",
+            "metafield_key": "spec_composition"
+          }
+        },
+        "spec-2": {
+          "type": "spec",
+          "settings": {
+            "label": "Weight",
+            "value": "220 GSM",
+            "metafield_namespace": "custom",
+            "metafield_key": "spec_weight"
+          }
+        },
+        "spec-3": {
+          "type": "spec",
+          "settings": {
+            "label": "Fit",
+            "value": "Oversized",
+            "metafield_namespace": "custom",
+            "metafield_key": "spec_fit"
+          }
+        },
+        "spec-4": {
+          "type": "spec",
+          "settings": {
+            "label": "Made in",
+            "value": "India",
+            "metafield_namespace": "custom",
+            "metafield_key": "spec_made_in"
+          }
+        },
+        "benefit-1": {
+          "type": "benefit",
+          "settings": {
+            "title": "Made to order, in India",
+            "text": "Printed and finished after you order — never warehoused"
+          }
+        },
+        "benefit-2": {
+          "type": "benefit",
+          "settings": {
+            "title": "Dispatched in 2–4 business days",
+            "text": "Delivered in 5–11 business days across India"
+          }
+        },
+        "benefit-3": {
+          "type": "benefit",
+          "settings": {
+            "title": "Free shipping over ₹1,599",
+            "text": "Flat ₹60 below that"
+          }
+        },
+        "benefit-4": {
+          "type": "benefit",
+          "settings": {
+            "title": "Replaced if it arrives wrong",
+            "text": "Damaged, misprinted or incorrect — tell us within 5 days"
+          }
+        },
+        "size-chart-denim": {
+          "type": "size_chart",
+          "settings": {
+            "title": "Denim wash boxy fit tee",
+            "match": "denim",
+            "columns": "Size, Chest, Length",
+            "rows": "S, 40, 24.5\nM, 42, 25.5\nL, 44, 26.5\nXL, 46, 27.5\nXXL, 48, 28.5",
+            "note": "All measurements in inches. May vary by up to 1 inch."
+          }
+        },
+        "size-chart-hoodie": {
+          "type": "size_chart",
+          "settings": {
+            "title": "Boxy hoodie",
+            "match": "-hood-",
+            "columns": "Size, Length, Chest, Shoulder",
+            "rows": "S, 25.5, 53, 25.5\nM, 26.5, 55, 27\nL, 27.5, 56, 27\nXL, 28, 58, 28",
+            "note": "All measurements in inches. May vary by up to 1 inch."
+          }
+        },
+        "size-chart-boxy-tee": {
+          "type": "size_chart",
+          "settings": {
+            "title": "Boxy fit tee",
+            "match": "boxy-tee",
+            "columns": "Size, Chest, Length",
+            "rows": "S, 46, 24\nM, 48, 25\nL, 50, 26\nXL, 52, 27\nXXL, 54, 28",
+            "note": "All measurements in inches. May vary by up to 1 inch."
+          }
+        },
+        "size-chart-baby-tee": {
+          "type": "size_chart",
+          "settings": {
+            "title": "Baby tee",
+            "match": "baby-tee",
+            "columns": "Size, Bust, Length, Waist",
+            "rows": "XS, 26, 18, 26\nS, 29, 19, 28\nM, 31, 19, 30\nL, 33, 20, 32\nXL, 35, 20, 34\nXXL, 36, —, 36",
+            "note": "All measurements in inches. May vary by up to 0.5 inch."
+          }
+        },
+        "size-chart-oversized-tee": {
+          "type": "size_chart",
+          "settings": {
+            "title": "Oversized tee",
+            "match": "ovr-tee",
+            "columns": "Size, Chest, Length, Sleeve",
+            "rows": "S, 41, 26, 10\nM, 43, 27, 10.25\nL, 45, 28, 10.5\nXL, 47, 29, 10.5\nXXL, 49, 29.5, 11",
+            "note": "All measurements in inches. May vary by up to 1 inch."
+          }
+        },
+        "size-chart-waffle": {
+          "type": "size_chart",
+          "settings": {
+            "title": "Waffle knit oversized full sleeve",
+            "match": "waf",
+            "columns": "Size, Length, Chest, Shoulder",
+            "rows": "S, 24, 45, 23\nM, 25, 47, 24\nL, 26, 49, 25\nXL, 27, 51, 26\nXXL, 28, 53, 27",
+            "note": "All measurements in inches. May vary by up to 2 inches."
+          }
+        }
+      },
+      "block_order": [
+        "accordion-1",
+        "accordion-2",
+        "accordion-3",
+        "spec-1",
+        "spec-2",
+        "spec-3",
+        "spec-4",
+        "benefit-1",
+        "benefit-2",
+        "benefit-3",
+        "benefit-4",
+        "size-chart-denim",
+        "size-chart-hoodie",
+        "size-chart-boxy-tee",
+        "size-chart-baby-tee",
+        "size-chart-oversized-tee",
+        "size-chart-waffle"
+      ],
+      "settings": {
+        "show_breadcrumb": true,
+        "benefits_heading": "What you get for",
+        "buy_now_label": "Buy now",
+        "size_chart_label": "Size chart"
+      }
+    },
+    "footer": {
+      "type": "footer-dark",
+      "blocks": {
+        "column-1": {
+          "type": "column",
+          "settings": {
+            "heading": "Shop",
+            "hover_images": true,
+            "link_1_label": "All products",
+            "link_1_url": "/collections/all",
+            "link_2_label": "Home",
+            "link_2_url": "/",
+            "link_3_label": "About",
+            "link_3_url": "/pages/about",
+            "link_4_label": "Contact",
+            "link_4_url": "/pages/contact"
+          }
+        },
+        "column-2": {
+          "type": "column",
+          "settings": {
+            "heading": "Social",
+            "link_1_label": "Instagram",
+            "link_1_url": "https://www.instagram.com/moonbae.stores"
+          }
+        },
+        "column-3": {
+          "type": "column",
+          "settings": {
+            "heading": "Get in touch",
+            "link_1_label": "moonstorepod@gmail.com",
+            "link_1_url": "mailto:moonstorepod@gmail.com?subject=moonbae%20-%20Customer%20Support",
+            "link_2_label": "",
+            "link_2_url": ""
+          }
+        },
+        "column-4": {
+          "type": "column",
+          "settings": {
+            "heading": "Legal",
+            "link_1_label": "Privacy Policy",
+            "link_1_url": "/policies/privacy-policy",
+            "link_2_label": "Refunds",
+            "link_2_url": "/policies/refund-policy",
+            "link_3_label": "Shipping",
+            "link_3_url": "/policies/shipping-policy",
+            "link_4_label": "Terms of service",
+            "link_4_url": "/policies/terms-of-service"
+          }
+        },
+        "hover_image-1": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-2": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-3": {
+          "type": "hover_image",
+          "settings": {}
+        },
+        "hover_image-4": {
+          "type": "hover_image",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "column-1",
+        "column-2",
+        "column-3",
+        "column-4",
+        "hover_image-1",
+        "hover_image-2",
+        "hover_image-3",
+        "hover_image-4"
+      ],
+      "settings": {
+        "tagline": "<p>moonbae<br/>wearable art, curated by Moon</p>",
+        "copyright": "© 2026 moonbae. All rights reserved."
+      }
+    }
+  },
+  "order": [
+    "main",
+    "footer"
+  ]
+}

@@ -1,13 +1,32 @@
 {% render 'section-class', classes: 'page-single u-container', attrs: 'nav-dark', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
 
-{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- capture product_audience -%}{% render 'product-audience' %}{%- endcapture -%}
+{%- liquid
+  assign product_audience = product_audience | strip
+  assign current_variant = product.selected_or_first_available_variant
+  assign featured_media = product.featured_media
+  assign audience_media = nil
+  if product_audience == 'women'
+    assign audience_media = product.metafields.moonbae.model_image_women.value
+  elsif product_audience == 'men'
+    assign audience_media = product.metafields.moonbae.model_image_men.value
+  endif
+  if audience_media != blank and audience_media.media_type == 'image'
+    assign featured_media = audience_media
+  else
+    assign audience_media = nil
+  endif
+  assign featured_image = featured_media.preview_image | default: featured_media
+  assign featured_src = featured_image.src
+  assign audience_collection_url = routes.all_products_collection_url | append: '?view=' | append: product_audience
+-%}
 
 <div class="single-layout">
   <div class="single-grid u-grid-desktop">
     <div class="single-img_col u-column-7">
       <div class="single-featured_img">
-        {%- if product.featured_media -%}
-          {%- capture featured_alt -%}{% render 'media-alt', product: product, media: product.featured_media %}{%- endcapture -%}
+        {%- if featured_media -%}
+          {%- capture featured_alt -%}{% render 'media-alt', product: product, media: featured_media %}{%- endcapture -%}
           {%- comment -%}
             width/height matter here beyond tidiness: with no intrinsic size the
             browser reserves nothing, so until the file arrives the alt text
@@ -16,18 +35,18 @@
           {%- endcomment -%}
           <img
             alt="{{ featured_alt | strip | escape }}"
-            src="{{ product.featured_media | image_url: width: 1920 }}"
-            width="{{ product.featured_media.width }}"
-            height="{{ product.featured_media.height }}"
+            src="{{ featured_media | image_url: width: 1920 }}"
+            width="{{ featured_image.width }}"
+            height="{{ featured_image.height }}"
             loading="eager"
             fetchpriority="high"
             decoding="async"
             class="img-contain product-zoomable"
-            data-lightbox-src="{{ product.featured_media | image_url: width: 2400 }}"
+            data-lightbox-src="{{ featured_media | image_url: width: 2400 }}"
             data-lightbox-alt="{{ featured_alt | strip | escape }}"
             role="button" tabindex="0"
             data-commerce-type="variation-image"
-            srcset="{{ product.featured_media | image_url: width: 500 }} 500w, {{ product.featured_media | image_url: width: 800 }} 800w, {{ product.featured_media | image_url: width: 1200 }} 1200w, {{ product.featured_media | image_url: width: 1600 }} 1600w, {{ product.featured_media | image_url: width: 1920 }} 1920w"
+            srcset="{{ featured_media | image_url: width: 500 }} 500w, {{ featured_media | image_url: width: 800 }} 800w, {{ featured_media | image_url: width: 1200 }} 1200w, {{ featured_media | image_url: width: 1600 }} 1600w, {{ featured_media | image_url: width: 1920 }} 1920w"
             sizes="(max-width: 991px) 100vw, 58vw">
         {%- else -%}
           {{ 'product-1' | placeholder_svg_tag: 'img-contain' }}
@@ -43,7 +62,9 @@
         {%- endcomment -%}
         <div class="single-more_imgs w-dyn-list">
           <div role="list" class="split-grid u-grid-desktop is-product_slider w-dyn-items">
-            {%- for media in product.media offset: 1 -%}
+            {%- for media in product.media -%}
+              {%- assign media_src = media.preview_image.src | default: media.src -%}
+              {%- if media.id == featured_media.id or media_src == featured_src -%}{%- continue -%}{%- endif -%}
               <div role="listitem" class="split-col u-column-6 w-dyn-item">
                 {%- capture more_alt -%}{% render 'media-alt', product: product, media: media %}{%- endcapture -%}
                 <div class="product-img_wrap">
@@ -72,7 +93,10 @@
           <nav class="product-breadcrumb body-upper" aria-label="Breadcrumb">
             <a href="{{ routes.root_url }}">{{ 'general.breadcrumb.home' | t | default: 'Home' }}</a>
             <span aria-hidden="true">/</span>
-            {%- if parent -%}
+            {%- if product_audience == 'men' or product_audience == 'women' -%}
+              <a href="{{ audience_collection_url }}">{{ product_audience | capitalize }}</a>
+              <span aria-hidden="true">/</span>
+            {%- elsif parent -%}
               <a href="{{ parent.url }}">{{ parent.title }}</a>
               <span aria-hidden="true">/</span>
             {%- endif -%}
@@ -230,7 +254,7 @@
                   "option1": {{ o1 | downcase | json }},
                   "option2": {{ o2 | downcase | json }},
                   "option3": {{ o3 | downcase | json }},
-                  "featured_image": {% if v.image %}{{ v.image | image_url: width: 1920 | json }}{% else %}""{% endif %},
+                  "featured_image": {% if audience_media %}{{ featured_media | image_url: width: 1920 | json }}{% elsif v.image %}{{ v.image | image_url: width: 1920 | json }}{% else %}""{% endif %},
                   "more_images": null
                 }{% unless forloop.last %},{% endunless %}
               {%- endfor -%}
@@ -523,6 +547,12 @@
   endcomment
   assign available = 0
   for item in related
+    assign related_title = item.title | downcase
+    if product_audience == 'men'
+      if related_title contains 'baby tee' or related_title contains 'baby-tee' or related_title contains 'baby t-shirt'
+        continue
+      endif
+    endif
     if item.id != product.id
       assign available = available | plus: 1
     endif
@@ -534,6 +564,12 @@
   if available == 0
     assign related = collections.all.products
     for item in related
+      assign related_title = item.title | downcase
+      if product_audience == 'men'
+        if related_title contains 'baby tee' or related_title contains 'baby-tee' or related_title contains 'baby t-shirt'
+          continue
+        endif
+      endif
       if item.id != product.id
         assign available = available | plus: 1
       endif
@@ -550,9 +586,17 @@
     <div role="list" class="single-product-col_list u-grid-desktop w-dyn-items">
       {%- assign shown = 0 -%}
       {%- for item in related -%}
+        {%- liquid
+          assign related_title = item.title | downcase
+          if product_audience == 'men'
+            if related_title contains 'baby tee' or related_title contains 'baby-tee' or related_title contains 'baby t-shirt'
+              continue
+            endif
+          endif
+        -%}
         {%- if item.id != product.id and shown < section.settings.related_count -%}
           {%- assign shown = shown | plus: 1 -%}
-          {% render 'product-card-grid', product: item, item_class: 'single-product-col_item u-column-4' %}
+          {% render 'product-card-grid', product: item, item_class: 'single-product-col_item u-column-4', audience: product_audience %}
         {%- endif -%}
       {%- endfor -%}
     </div>

@@ -4,23 +4,51 @@
 
   Params: product, item_class (wrapper column classes)
 {%- endcomment -%}
+{%- capture card_audience -%}{% render 'product-audience', audience: audience %}{%- endcapture -%}
+{%- liquid
+  assign card_audience = card_audience | strip
+  assign card_media = product.featured_media
+  assign audience_media = nil
+  if card_audience == 'women'
+    assign audience_media = product.metafields.moonbae.model_image_women.value
+  elsif card_audience == 'men'
+    assign audience_media = product.metafields.moonbae.model_image_men.value
+  endif
+  assign hover_media = product.media[1]
+  if audience_media != blank and audience_media.media_type == 'image'
+    assign card_media = audience_media
+    comment
+      A second global photo may show the other audience. Keep the chosen
+      model on hover until an audience-specific alternate is provided.
+    endcomment
+    assign hover_media = nil
+  endif
+  assign card_url = product.url
+  if card_audience == 'men' or card_audience == 'women'
+    if card_url contains '?'
+      assign card_url = card_url | append: '&view=' | append: card_audience
+    else
+      assign card_url = card_url | append: '?view=' | append: card_audience
+    endif
+  endif
+-%}
+
 {%- assign item_class = item_class | default: 'product-col_item u-column-4' -%}
 <div role="listitem" class="{{ item_class }} w-dyn-item">
-  <a count-items="item" overlay="trigger" href="{{ product.url }}" class="cta-block w-inline-block">
+  <a count-items="item" overlay="trigger" href="{{ card_url }}" class="cta-block w-inline-block">
     <div cta-cursor_wrap="" class="product-img_wrap">
-      {%- if product.featured_media -%}
-        {%- capture card_alt -%}{% render 'media-alt', product: product, media: product.featured_media %}{%- endcapture -%}
-        <img src="{{ product.featured_media | image_url: width: 1200 }}"
+      {%- if card_media -%}
+        {%- capture card_alt -%}{% render 'media-alt', product: product, media: card_media %}{%- endcapture -%}
+        <img src="{{ card_media | image_url: width: 1200 }}"
              alt="{{ card_alt | strip | escape }}"
              class="product-img"
              data-commerce-type="variation-image"
-             srcset="{{ product.featured_media | image_url: width: 500 }} 500w, {{ product.featured_media | image_url: width: 800 }} 800w, {{ product.featured_media | image_url: width: 1200 }} 1200w"
+             srcset="{{ card_media | image_url: width: 500 }} 500w, {{ card_media | image_url: width: 800 }} 800w, {{ card_media | image_url: width: 1200 }} 1200w"
              sizes="(max-width: 767px) 50vw, 32vw"
              loading="lazy" decoding="async">
       {%- else -%}
         {{ 'product-1' | placeholder_svg_tag: 'product-img' }}
       {%- endif -%}
-      {%- assign hover_media = product.media[1] -%}
       {%- if hover_media -%}
         <img src="{{ hover_media | image_url: width: 1200 }}" alt="" class="product-hover_img">
       {%- endif -%}

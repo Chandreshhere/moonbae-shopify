@@ -10,19 +10,48 @@
 
   Params: product, show_alt (second photo on hover), quick_add
 {%- endcomment -%}
+{%- capture card_audience -%}{% render 'product-audience', audience: audience %}{%- endcapture -%}
 {%- liquid
-  assign alt_media = product.media[1]
+  assign card_audience = card_audience | strip
+  assign card_media = product.featured_media
+  assign audience_media = nil
+  if card_audience == 'women'
+    assign audience_media = product.metafields.moonbae.model_image_women.value
+  elsif card_audience == 'men'
+    assign audience_media = product.metafields.moonbae.model_image_men.value
+  endif
+  assign hover_media = product.media[1]
+  if audience_media != blank and audience_media.media_type == 'image'
+    assign card_media = audience_media
+    comment
+      A second global photo may show the other audience. Keep the chosen
+      model on hover until an audience-specific alternate is provided.
+    endcomment
+    assign hover_media = nil
+  endif
+  assign card_url = product.url
+  if card_audience == 'men' or card_audience == 'women'
+    if card_url contains '?'
+      assign card_url = card_url | append: '&view=' | append: card_audience
+    else
+      assign card_url = card_url | append: '?view=' | append: card_audience
+    endif
+  endif
+-%}
+
+{%- liquid
+  assign alt_media = hover_media
   assign img_sizes = '(max-width: 767px) 62vw, (max-width: 1023px) 40vw, 25vw'
   capture img_alt
-    render 'media-alt', product: product, media: product.featured_media
+    render 'media-alt', product: product, media: card_media
   endcapture
   assign img_alt = img_alt | strip
 -%}
 <li class="new-in_card">
   <div class="new-in_media">
-    <a href="{{ product.url }}" class="new-in_media-link" tabindex="-1" aria-hidden="true">
-      {%- if product.featured_media -%}
-        {{ product.featured_media | image_url: width: 1200 | image_tag: class: 'new-in_img', loading: 'lazy', widths: '400, 600, 800, 1000, 1200', sizes: img_sizes, alt: img_alt }}
+    <a href="{{ card_url }}" class="new-in_media-link" tabindex="-1" aria-hidden="true">
+      {%- if card_media -%}
+        {{ card_media | image_url: width: 1200 | image_tag: class: 'new-in_img', loading: 'lazy', widths: '400, 600, 800, 1000, 1200', sizes: img_sizes, alt: img_alt }}
       {%- else -%}
         {{ 'product-1' | placeholder_svg_tag: 'new-in_img' }}
       {%- endif -%}
@@ -45,14 +74,14 @@
             {%- endfor -%}
           </div>
         {%- else -%}
-          <a href="{{ product.url }}" class="new-in_bar-btn">Choose options</a>
+          <a href="{{ card_url }}" class="new-in_bar-btn">Choose options</a>
         {%- endif -%}
         <span class="new-in_bar-msg" role="status" aria-live="polite"></span>
       </div>
     {%- endif -%}
   </div>
 
-  <a href="{{ product.url }}" class="new-in_info">
+  <a href="{{ card_url }}" class="new-in_info">
     <h3 class="new-in_title">{{ product.title }}</h3>
     <div class="new-in_price">{% render 'price', product: product %}</div>
   </a>
