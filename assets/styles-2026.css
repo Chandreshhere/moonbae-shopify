@@ -61,6 +61,8 @@
 }
 .explore-section .explore .explore_tile {
   display: block;
+  width: 100%;
+  justify-self: stretch;
   grid-column: auto;
   grid-row: auto;
   aspect-ratio: 4 / 5;
