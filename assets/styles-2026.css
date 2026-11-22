@@ -1,4 +1,4 @@
-/* Campaign artwork stays complete, including on short or wide screens. */
+/* Full-bleed campaign framing stays within the viewport. */
 .responsive-picture { display: contents; }
 #home-hero {
   height: calc(56.25vw + 68px);
@@ -14,8 +14,8 @@
 #home-hero .hero-slider_item:nth-child(2) .hero-slide_visual { background: #d8cfc3; }
 #home-hero .hero-slider_item:nth-child(3) .hero-slide_visual { background: #c2c8c4; }
 #home-hero .hero-visual_el.u-cover-absolute {
-  object-fit: contain;
-  object-position: center center;
+  object-fit: cover;
+  object-position: center top;
   transform: none !important;
 }
 .hero-slider.is-large {
@@ -32,8 +32,8 @@
 .hero-slider.is-large .hero-slide_visual .hero-visual_el.u-cover-absolute {
   height: 100%;
   top: 0;
-  object-fit: contain;
-  object-position: center center;
+  object-fit: cover;
+  object-position: center top;
   transform: none !important;
 }
 .img-section {
@@ -42,7 +42,7 @@
   min-height: 0;
   background: #c2c8c4;
 }
-.img-section .img-fill { object-fit: contain; object-position: center center; }
+.img-section .img-fill { object-fit: cover; object-position: center top; }
 .explore-section .explore_tile,
 .shop-tiles-section .shop-tile { max-height: calc(100svh - 34px); background: #d8cfc3; }
 .explore-section .explore_tile:nth-child(2) { background: #c2c8c4; }
@@ -54,14 +54,33 @@
 .explore-section .explore_visual[data-parallax] .explore_img {
   height: 100%;
   top: 0;
-  object-fit: contain;
-  object-position: center center;
+  object-fit: cover;
+  object-position: center top;
   transform: none !important;
 }
-.shop-tiles-section .shop-tile_img { object-fit: contain; object-position: center center !important; }
+.shop-tiles-section .shop-tile_img { object-fit: cover; object-position: center top !important; }
 .page-cart .collection-hero { max-height: calc(100svh - 34px); min-height: 0; }
 .page-cart .collection-hero_visual { background: #d7c9b4; }
-.page-cart .collection-hero_img { object-fit: contain; object-position: center center; }
+.page-cart .collection-hero_img { object-fit: cover; object-position: center top; }
+/* The basics is a normal image/text list, without scroll or hover reveals. */
+.community-section .community-item,
+.community-section .community-img-wrap,
+.community-section .small-img_wrap,
+.community-section img {
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
+  will-change: auto !important;
+}
+.community-section .community-item { position: relative; top: auto; }
+.community-section img { opacity: 1 !important; clip-path: none !important; }
+.community-section .community-img-wrap img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
 @media only screen and (max-width: 767px) {
   #home-hero { height: calc(125vw + 68px); }
   .hero-slider.is-large,
