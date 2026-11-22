@@ -21,10 +21,10 @@
     <h2 class="shop-tiles_heading u-container">{{ section.settings.heading }}</h2>
   {%- endif -%}
   <div class="shop-tiles_grid">
-    {%- assign tile_fallbacks = 'moonbae-roadside-tees-desktop-20261122.jpg,moonbae-grocery-babytee-desktop-20261122.jpg,moonbae-hoodie-studio-desktop-20261122.jpg,moonbae-street-crew-desktop-20261122.jpg' | split: ',' -%}
+    {%- assign tile_fallbacks = 'moonbae-street-crew-mobile-20261122.jpg,moonbae-grocery-babytee-desktop-20261122.jpg,moonbae-hoodie-studio-desktop-20261122.jpg,moonbae-street-crew-desktop-20261122.jpg' | split: ',' -%}
     {%- for block in section.blocks -%}
       {%- liquid
-        assign fb = tile_fallbacks[forloop.index0] | default: 'moonbae-roadside-tees-desktop-20261122.jpg'
+        assign fb = tile_fallbacks[forloop.index0] | default: 'moonbae-street-crew-mobile-20261122.jpg'
         comment
           Pick the stand-in photo by where the tile goes, so swapping the
           order of Men and Women does not swap their pictures.
@@ -33,7 +33,7 @@
         if link contains 'women'
           assign fb = 'moonbae-grocery-babytee-desktop-20261122.jpg'
         elsif link contains '/men' or link contains '=men'
-          assign fb = 'moonbae-roadside-tees-desktop-20261122.jpg'
+          assign fb = 'moonbae-street-crew-mobile-20261122.jpg'
         endif
         assign span = block.settings.width | default: '6'
         capture img_attrs

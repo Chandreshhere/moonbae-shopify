@@ -119,7 +119,7 @@
         {%- comment -%}
           One image per link, in link order — the hover script pairs them by index.
         {%- endcomment -%}
-        {%- assign menu_fallbacks = 'moonbae-roadside-tees-mobile-20261122.jpg,moonbae-grocery-babytee-mobile-20261122.jpg,moonbae-hoodie-studio-mobile-20261122.jpg,moonbae-sofa-babytee-mobile-20261122.jpg' | split: ',' -%}
+        {%- assign menu_fallbacks = 'moonbae-street-crew-mobile-20261122.jpg,moonbae-grocery-babytee-mobile-20261122.jpg,moonbae-hoodie-studio-mobile-20261122.jpg,moonbae-sofa-babytee-mobile-20261122.jpg' | split: ',' -%}
         {%- if section.blocks.size > 0 -%}
           {%- for block in section.blocks -%}
             {%- assign fb_index = forloop.index0 | modulo: 4 -%}
