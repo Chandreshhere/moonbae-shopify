@@ -8,14 +8,14 @@
   <h1 class="u-visually-hidden">{{ settings.brand_name | default: shop.name | escape }} — {{ settings.seo_tagline | default: 'wearable art, curated by Moon' | escape }}</h1>
 {%- endif -%}
 
-{%- assign hero_fallbacks = 'hero-1.jpg,hero-2.jpg,hero-3.jpg' | split: ',' -%}
-{%- assign hero_nav_fallbacks = 'hero-1.jpg,hero-2.jpg,hero-3.jpg' | split: ',' -%}
+{%- assign hero_fallbacks = 'moonbae-hero-grocery-previous-desktop-20261122.jpg,moonbae-hoodie-studio-desktop-20261122.jpg,moonbae-street-crew-desktop-20261122.jpg' | split: ',' -%}
+{%- assign hero_nav_fallbacks = 'moonbae-hero-grocery-previous-desktop-20261122.jpg,moonbae-hoodie-studio-desktop-20261122.jpg,moonbae-street-crew-desktop-20261122.jpg' | split: ',' -%}
 
 <div class="hero-center is-desktop">
   <div class="hero-slider_nav-wrap u-container">
     <div class="hero-slider_nav-list">
       {%- for block in section.blocks -%}
-        {%- assign nav_fb = hero_nav_fallbacks[forloop.index0] | default: 'hero-1.jpg' -%}
+        {%- assign nav_fb = hero_nav_fallbacks[forloop.index0] | default: 'moonbae-hero-grocery-previous-desktop-20261122.jpg' -%}
         <div class="hero-slider_nav-item{% if forloop.first %} active{% endif %}" data-slide-nav="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
           <div solo-img_hov="" class="slide-nav_layout">
             <h2 italics="" class="hero-slider_num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</h2>
@@ -37,15 +37,15 @@
 <div class="hero-slider_wrap" nav-light="" data-hero-autoplay="{{ section.settings.autoplay_seconds | default: 5 }}">
   <div class="hero-slider_list">
     {%- for block in section.blocks -%}
-      {%- assign fb = hero_fallbacks[forloop.index0] | default: 'hero-1.jpg' -%}
+      {%- assign fb = hero_fallbacks[forloop.index0] | default: 'moonbae-hero-grocery-previous-desktop-20261122.jpg' -%}
       <div class="hero-slider_item" style="display: {% if forloop.first %}flex{% else %}none{% endif %};">
         <div class="hero-slide_visual u-cover-absolute">
           <div class="g_visual_background"></div>
           {%- comment -%} The first slide is the LCP element, so it must not be deferred. {%- endcomment -%}
           {%- if forloop.first -%}
-            {% render 'img', image: block.settings.image, fallback: fb, class: 'hero-visual_el u-cover-absolute', loading: 'eager', attrs: 'fetchpriority="high"' %}
+            {% render 'img', image: block.settings.image, image_mobile: block.settings.image_mobile, fallback: fb, class: 'hero-visual_el u-cover-absolute', loading: 'eager', attrs: 'fetchpriority="high"' %}
           {%- else -%}
-            {% render 'img', image: block.settings.image, fallback: fb, class: 'hero-visual_el u-cover-absolute', attrs: 'fetchpriority="low"' %}
+            {% render 'img', image: block.settings.image, image_mobile: block.settings.image_mobile, fallback: fb, class: 'hero-visual_el u-cover-absolute', attrs: 'fetchpriority="low"' %}
           {%- endif -%}
           <div class="hero-visual_el-vid u-cover-absolute">
             {%- if block.settings.video != blank -%}
@@ -148,7 +148,13 @@
         {
           "type": "image_picker",
           "id": "image",
-          "label": "Image"
+          "label": "Desktop image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Mobile image",
+          "info": "Portrait composition for phones. Empty uses the desktop image."
         },
         {
           "type": "video",

@@ -1927,3 +1927,152 @@ body:has(.announcement-bar) .page_wrap {
    holds (collection description or the template's Intro text). */
 .collection-intro { max-width: 40rem; margin-top: 1.5rem; opacity: .75; }
 .collection-intro p { margin: 0; }
+
+/* Shared card layout: use the tallest card in each row/rail as the available
+   height. Full titles get their own width; flexible info space keeps the
+   price and purchase area below them without fixed title heights or clamps. */
+.product-col_list.u-grid-desktop,
+.product-col_list.u-grid-desktop.v-align_bot,
+.single-product-col_list.u-grid-desktop,
+.single-product-col_list.u-grid-desktop.v-align_bot,
+.product-slider_list,
+.product-slider_list.u-grid-desktop,
+.product-slider_list.u-grid-desktop.v-align_bot,
+.new-in_track {
+  align-items: stretch;
+}
+.product-col_item,
+.single-product-col_item,
+.product-card,
+.new-in_card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-self: stretch;
+  min-width: 0;
+  white-space: normal;
+}
+.product-slider_list > .product-card { flex: 0 0 auto; }
+.product-col_item > .cta-block,
+.single-product-col_item > .cta-block,
+.product-card > .product-block {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.product-col_item .product-img_wrap,
+.single-product-col_item .product-img_wrap,
+.product-card .product-img_wrap,
+.new-in_card .new-in_media {
+  flex: none;
+}
+.product-col_item .product-block_info.is-alt,
+.single-product-col_item .product-block_info.is-alt {
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: stretch;
+  gap: .5rem;
+  min-width: 0;
+}
+.product-col_item .product-info,
+.single-product-col_item .product-info,
+.product-card .product-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.product-col_item .product-info > .body-upper,
+.single-product-col_item .product-info > .body-upper,
+.product-card .product-info > .body-upper,
+.new-in_title {
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+  line-height: 1.3;
+}
+.product-col_item .product-block_info.is-alt > p,
+.single-product-col_item .product-block_info.is-alt > p {
+  flex: none;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  text-align: left;
+}
+.product-col_item .price-group,
+.single-product-col_item .price-group,
+.product-card .price-group,
+.new-in_card .price-group {
+  justify-content: flex-start;
+  max-width: 100%;
+  line-height: 1.3;
+}
+.product-col_item .price-was,
+.product-col_item .price-now,
+.single-product-col_item .price-was,
+.single-product-col_item .price-now,
+.product-card .price-was,
+.product-card .price-now,
+.new-in_card .price-was,
+.new-in_card .price-now {
+  white-space: nowrap;
+}
+.product-card .product-block_info {
+  flex-direction: column;
+  gap: .5rem;
+  min-width: 0;
+}
+.product-card .product-btn_flex { gap: .75rem; min-width: 0; }
+.product-card .product-btn_flex > .price { min-width: 0; }
+.new-in_card .new-in_info {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: .5rem;
+  min-width: 0;
+}
+.new-in_card .new-in_title { flex: 1 1 auto; }
+.new-in_card .new-in_price { margin-top: 0; }
+.product-col_item > .stock-note,
+.single-product-col_item > .stock-note,
+.product-card > .stock-note,
+.new-in_card > .stock-note {
+  flex: none;
+}
+.product-col_item > .card-buy,
+.single-product-col_item > .card-buy,
+.product-card > .card-buy,
+.new-in_card > .card-buy {
+  flex: none;
+  margin-top: auto;
+  padding-top: .75rem;
+}
+@media only screen and (max-width: 767px) {
+  .product-col_item > .card-buy,
+  .single-product-col_item > .card-buy,
+  .product-card > .card-buy,
+  .new-in_card > .card-buy { padding-top: .5rem; }
+}
+
+/* Product primaries keep their own image ratio. A square cover frame cut the
+   heads off portrait model photos; natural height shows the complete source
+   without letterboxing and leaves the mobile horizontal gallery intact. */
+.single-featured_img {
+  aspect-ratio: auto;
+  height: auto;
+  align-self: flex-start;
+}
+.single-featured_img > .img-contain {
+  position: static;
+  inset: auto;
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center top;
+}
+.single-more_imgs .img-contain,
+.product-col_item .product-img,
+.single-product-col_item .product-img,
+.product-img_wrap .product-hover_img,
+.product-card .img-contain,
+.new-in_img {
+  object-position: center top;
+}

@@ -2,7 +2,8 @@
   Renders an <img> from a section/block image setting, falling back to a bundled
   placeholder asset so the theme looks complete on a brand-new store.
 
-  Params: image, fallback (asset filename), alt, class, sizes, loading, attrs,
+  Params: image, image_mobile (optional portrait), fallback (asset filename),
+          alt, class, sizes, sizes_mobile, loading, attrs,
           fallback_width ('900x' etc.) to serve the bundled file CDN-resized
   attrs takes raw attributes (e.g. block.shopify_attributes) so blocks stay
   selectable in the editor without a wrapper element disturbing the CSS.
@@ -16,6 +17,15 @@
   lazy; pass loading: 'eager' for anything above the fold.
 {%- endcomment -%}
 {%- assign img_loading = loading | default: 'lazy' -%}
+{%- if image_mobile != blank -%}
+  <picture class="responsive-picture">
+    <source
+      media="(max-width: 767px) and (orientation: portrait)"
+      srcset="{{ image_mobile | image_url: width: 480 }} 480w, {{ image_mobile | image_url: width: 750 }} 750w, {{ image_mobile | image_url: width: 1000 }} 1000w"
+      sizes="{{ sizes_mobile | default: '100vw' }}"
+      width="{{ image_mobile.width }}"
+      height="{{ image_mobile.height }}">
+{%- endif -%}
 {%- if image != blank -%}
   <img
     src="{{ image | image_url: width: 1920 }}"
@@ -55,3 +65,4 @@
     <img src="{{ fb_src }}" alt="{{ img_alt | escape }}" class="{{ img_class }}" loading="{{ img_loading }}" decoding="async" {{ attrs }}>
   {%- endif -%}
 {%- endif -%}
+{%- if image_mobile != blank -%}</picture>{%- endif -%}

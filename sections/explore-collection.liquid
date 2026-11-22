@@ -1,24 +1,6 @@
 {%- comment -%}
-  Explore the collection. Each tile links to its category: a real Shopify
-  collection when one exists with the expected handle (hoodies, t-shirts,
-  baby-tees), otherwise the theme's own category view of all products
-  (/collections/all?view=hoodies), which sorts products by title with the same
-  rule as main-collection: "hoodie" in the title is a hoodie, "baby tee" is a
-  baby tee, everything else is a t-shirt.
-
-  Every tile has a desktop picture and a phone picture. A tile can also share
-  the one before it on desktop ("Show inside the tile before it"): it is then
-  hidden there, and the tile before it carries both links, one on each half of
-  its picture (the T-shirts picture shows a tee and a baby tee). On phones
-  every tile stands on its own.
-
-  Desktop: the first tile on the left, the rest on the right; "Fit the
-  pictures" sizes the tiles to the desktop picture's shape instead of the
-  screen. Phones: one tile per row at the phone picture's shape, or the old
-  two-column grid. Images drift with scroll through the shared
-  [data-parallax] handler, gently (6%) so little of the picture is cropped.
-  Keep select option labels short: Shopify refused this file, and kept serving
-  the old one, while two of them ran to about 50 characters.
+  Independent category cards: each photo, label and link stays in its own tile.
+  Three edge-to-edge columns on desktop; portrait cards stack on phones.
 {%- endcomment -%}
 {%- liquid
   assign n_hoodies = 0
@@ -43,14 +25,12 @@
   endfor
 
   comment
-    First pass: every tile's link and count, so a tile can carry the next
-    tile's link on desktop. A collection that does not exist answers
+    Resolve each tile's category link and count. A collection that does not exist answers
     products_count with an empty string, and comparing that with 0 is a
     Liquid error printed into the grid, so coerce to a number first.
   endcomment
   assign t_urls = ''
   assign t_counts = ''
-  assign desk_tiles = 0
   for block in section.blocks
     assign cat = block.settings.category
     assign count = n_tshirts
@@ -82,20 +62,9 @@
     endif
     assign t_urls = t_urls | append: url | append: '||'
     assign t_counts = t_counts | append: count | append: '||'
-    if forloop.first or block.settings.merge_desktop != true
-      assign desk_tiles = desk_tiles | plus: 1
-    endif
   endfor
   assign t_urls = t_urls | split: '||'
   assign t_counts = t_counts | split: '||'
-
-  comment
-    The lead tile spans the rows of the tiles beside it on desktop.
-  endcomment
-  assign rest = desk_tiles | minus: 1
-  if rest < 1
-    assign rest = 1
-  endif
 
   comment
     Tile shapes come from the pictures: the first tile's desktop picture and
@@ -138,47 +107,19 @@
             assign fb_mob = 'explore-babytee-mob.jpg'
         endcase
 
-        assign merged = false
-        if forloop.first == false and block.settings.merge_desktop
-          assign merged = true
-        endif
-        assign hosts = false
-        assign next = section.blocks[forloop.index]
-        if next and next.settings.merge_desktop
-          assign hosts = true
-          assign next_url = t_urls[forloop.index]
-          assign next_count = t_counts[forloop.index] | plus: 0
-        endif
-
-        assign tile_class = 'explore_tile'
-        if forloop.first and desk_tiles > 1
-          assign tile_class = tile_class | append: ' is-lead'
-          if rest > 1
-            assign tile_class = tile_class | append: ' spans'
-          endif
-        elsif desk_tiles == 1 and merged == false
-          assign tile_class = tile_class | append: ' is-only'
-        endif
-        if merged
-          assign tile_class = tile_class | append: ' is-merged'
-        endif
-        if hosts
-          assign tile_class = tile_class | append: ' is-host'
-        endif
-
         capture img_attrs
           echo 'style="object-position: ' | append: block.settings.focus | append: '"'
         endcapture
       -%}
       {%- capture visual -%}
-        <div class="explore_visual" data-parallax="6">
+        <div class="explore_visual">
           <picture>
             {%- if block.settings.image_mobile != blank -%}
               <source media="(max-width: 767px)" srcset="{{ block.settings.image_mobile | image_url: width: 600 }} 600w, {{ block.settings.image_mobile | image_url: width: 1000 }} 1000w" sizes="100vw">
             {%- elsif block.settings.image == blank -%}
               <source media="(max-width: 767px)" srcset="{{ fb_mob | asset_img_url: '1000x' }}">
             {%- endif -%}
-            {% render 'img', image: block.settings.image, fallback: fb_desk, fallback_width: '1800x', alt: block.settings.title, class: 'explore_img', sizes: '(max-width: 767px) 100vw, 50vw', attrs: img_attrs %}
+            {% render 'img', image: block.settings.image, fallback: fb_desk, fallback_width: '1800x', alt: block.settings.title, class: 'explore_img', sizes: '(max-width: 767px) 100vw, 33vw', attrs: img_attrs %}
           </picture>
         </div>
         <div class="explore_scrim" aria-hidden="true"></div>
@@ -194,28 +135,10 @@
           {%- endif -%}
         </div>
       {%- endcapture -%}
-      {%- if hosts -%}
-        <div class="{{ tile_class }}"{% if forloop.first and rest > 1 %} style="grid-row: span {{ rest }};"{% endif %} {{ block.shopify_attributes }}>
-          {{ visual }}
-          <a href="{{ url }}" class="explore_half is-first">{{ label }}</a>
-          <a href="{{ next_url }}" class="explore_half is-second" tabindex="-1">
-            <div class="explore_label">
-              {%- if section.settings.show_count and next_count > 0 -%}
-                <span class="explore_count body-upper">(&nbsp;{{ next_count }}&nbsp;)</span>
-              {%- endif -%}
-              <h3 class="explore_title">{{ next.settings.title }}</h3>
-              {%- if next.settings.cta != blank -%}
-                <span class="explore_cta body-upper">{{ next.settings.cta }} <span aria-hidden="true">&rarr;</span></span>
-              {%- endif -%}
-            </div>
-          </a>
-        </div>
-      {%- else -%}
-        <a href="{{ url }}" class="{{ tile_class }}"{% if forloop.first and rest > 1 %} style="grid-row: span {{ rest }};"{% endif %} {{ block.shopify_attributes }}>
-          {{ visual }}
-          {{ label }}
-        </a>
-      {%- endif -%}
+      <a href="{{ url }}" class="explore_tile" {{ block.shopify_attributes }}>
+        {{ visual }}
+        {{ label }}
+      </a>
     {%- endfor -%}
   </div>
 </div>
@@ -260,8 +183,6 @@
         {"type": "select", "id": "focus", "label": "Desktop picture focus", "default": "center center",
          "options": [{"value": "left center", "label": "Left"}, {"value": "center center", "label": "Centre"}, {"value": "right center", "label": "Right"}, {"value": "center top", "label": "Top"}],
          "info": "Which part of the picture stays in view when the tile crops it."},
-        {"type": "checkbox", "id": "merge_desktop", "label": "On desktop, show inside the tile before it", "default": false,
-         "info": "This tile is hidden on desktop and its link moves to the right half of the tile before it. On phones it stays its own tile."},
         {"type": "text", "id": "cta", "label": "Link text", "default": "Explore"}
       ]
     }
@@ -273,7 +194,7 @@
       "blocks": [
         {"type": "tile", "settings": {"title": "Hoodies", "category": "hoodies"}},
         {"type": "tile", "settings": {"title": "T-shirts", "category": "tshirts"}},
-        {"type": "tile", "settings": {"title": "Baby tees", "category": "babytees", "merge_desktop": true}}
+        {"type": "tile", "settings": {"title": "Baby tees", "category": "babytees"}}
       ]
     }
   ]

@@ -7,12 +7,12 @@
 
   <div class="split-grid u-grid-desktop is-giving">
     <div class="split-col u-column-6">
-      <div solo-img="" class="small-img_wrap">
+      <div class="small-img_wrap">
         {% render 'img', image: section.settings.giving_image, fallback: 'moonbae-09.jpg', class: 'img-fill' %}
       </div>
     </div>
     <div class="split-col u-column-5">
-      <div solo-trig="" class="community-col">
+      <div class="community-col">
         <h4 class="body-upper p-contents">{{ section.settings.giving_title }}</h4>
         <div class="u-text-style-small f-4">{{ section.settings.giving_text }}</div>
       </div>
@@ -25,7 +25,7 @@
   <div class="community-items_section">
     {%- for block in section.blocks -%}
       {%- assign i = forloop.index0 | modulo: 4 -%}
-      <div data-scroll-overlap="" class="community-item" {{ block.shopify_attributes }}>
+      <div class="community-item" {{ block.shopify_attributes }}>
         <div class="community-h_line{% unless forloop.first %} is-hidden{% endunless %}"></div>
         <div class="split-grid u-grid-desktop">
           <div class="split-col u-column-6">

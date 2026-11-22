@@ -1,0 +1,85 @@
+{
+  "campaign": "Moonbae 2026-11-22",
+  "status": "applied",
+  "responsive_pairs": 5,
+  "generator": "built-in imagegen",
+  "desktop_framing": "natural full-bleed landscape scenes",
+  "mobile_framing": "separate portraits",
+  "hero_grocery_selection": "previous grocery photo restored at owner request",
+  "hero_grocery_files": [
+    "moonbae-hero-grocery-previous-desktop-20261122.jpg",
+    "moonbae-hero-grocery-previous-mobile-20261122.jpg"
+  ],
+  "image_slots": [
+    {
+      "filename": "moonbae-grocery-babytee-desktop-20261122.jpg",
+      "file_id": "gid://shopify/MediaImage/47001612714046",
+      "image": null,
+      "status": "applied",
+      "scene": "grocery-desktop"
+    },
+    {
+      "filename": "moonbae-grocery-babytee-mobile-20261122.jpg",
+      "file_id": "gid://shopify/MediaImage/47001612746814",
+      "image": null,
+      "status": "applied",
+      "scene": "grocery-mobile"
+    },
+    {
+      "filename": "moonbae-hoodie-studio-desktop-20261122.jpg",
+      "file_id": "gid://shopify/MediaImage/47001612779582",
+      "image": null,
+      "status": "applied",
+      "scene": "hoodie-desktop"
+    },
+    {
+      "filename": "moonbae-sofa-babytee-desktop-20261122.jpg",
+      "file_id": "gid://shopify/MediaImage/47001790939198",
+      "image": null,
+      "status": "applied",
+      "scene": "artist-desktop"
+    },
+    {
+      "filename": "moonbae-roadside-tees-desktop-20261122.jpg",
+      "file_id": "gid://shopify/MediaImage/47001612812350",
+      "image": null,
+      "status": "applied",
+      "scene": "desert-desktop"
+    },
+    {
+      "filename": "moonbae-street-crew-mobile-20261122.jpg",
+      "file_id": "gid://shopify/MediaImage/47001612910654",
+      "image": null,
+      "status": "applied",
+      "scene": "denim-mobile"
+    },
+    {
+      "filename": "moonbae-street-crew-desktop-20261122.jpg",
+      "file_id": "gid://shopify/MediaImage/47001612877886",
+      "image": null,
+      "status": "applied",
+      "scene": "denim-desktop"
+    },
+    {
+      "filename": "moonbae-hoodie-studio-mobile-20261122.jpg",
+      "file_id": "gid://shopify/MediaImage/47001625034814",
+      "image": null,
+      "status": "applied",
+      "scene": "hoodie-mobile"
+    },
+    {
+      "filename": "moonbae-sofa-babytee-mobile-20261122.jpg",
+      "file_id": "gid://shopify/MediaImage/47001612845118",
+      "image": null,
+      "status": "applied",
+      "scene": "artist-mobile"
+    },
+    {
+      "filename": "moonbae-roadside-tees-mobile-20261122.jpg",
+      "file_id": "gid://shopify/MediaImage/47001717243966",
+      "image": null,
+      "status": "applied",
+      "scene": "desert-mobile"
+    }
+  ]
+}

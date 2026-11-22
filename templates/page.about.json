@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "intro": {
@@ -16,14 +25,16 @@
         "center": "Wearable art, curated by Moon",
         "right": "India",
         "padding_top": 160,
-        "padding_bottom": 0
+        "padding_bottom": 0,
+        "image": "shopify://shop_images/moonbae-hoodie-studio-desktop-20261122.jpg",
+        "image_mobile": "shopify://shop_images/moonbae-hoodie-studio-mobile-20261122.jpg"
       }
     },
     "craft": {
       "type": "or-text-section",
       "settings": {
         "mark_size": 0,
-        "eyebrow": "<p>moonbae ©2026<br/>Curated by Moon, printed in India</p>",
+        "eyebrow": "<p>moonbae \u00a92026<br/>Curated by Moon, printed in India</p>",
         "left_label": "moonbae",
         "right_label": "India",
         "text": "<p>Moon works on each design for how it will look on a body rather than a screen: where it sits, how big it is, which garment colour it needs. Once it is right it goes on sale, and every order is printed in India and shipped straight to you.</p>",
@@ -36,31 +47,38 @@
       "blocks": {
         "slide-1": {
           "type": "slide",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-roadside-tees-desktop-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-roadside-tees-mobile-20261122.jpg"
+          }
         },
         "slide-2": {
           "type": "slide",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-grocery-babytee-desktop-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-grocery-babytee-mobile-20261122.jpg"
+          }
         },
         "slide-3": {
           "type": "slide",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-hoodie-studio-desktop-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-hoodie-studio-mobile-20261122.jpg"
+          }
         },
         "slide-4": {
           "type": "slide",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-street-crew-desktop-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-street-crew-mobile-20261122.jpg"
+          }
         },
         "slide-5": {
           "type": "slide",
-          "settings": {}
-        },
-        "slide-6": {
-          "type": "slide",
-          "settings": {}
-        },
-        "slide-7": {
-          "type": "slide",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-sofa-babytee-desktop-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-sofa-babytee-mobile-20261122.jpg"
+          }
         }
       },
       "block_order": [
@@ -68,9 +86,7 @@
         "slide-2",
         "slide-3",
         "slide-4",
-        "slide-5",
-        "slide-6",
-        "slide-7"
+        "slide-5"
       ],
       "settings": {
         "label": "MOONBAE_26",
@@ -131,19 +147,27 @@
         },
         "hover_image-1": {
           "type": "hover_image",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-roadside-tees-mobile-20261122.jpg"
+          }
         },
         "hover_image-2": {
           "type": "hover_image",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-grocery-babytee-mobile-20261122.jpg"
+          }
         },
         "hover_image-3": {
           "type": "hover_image",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-hoodie-studio-mobile-20261122.jpg"
+          }
         },
         "hover_image-4": {
           "type": "hover_image",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-sofa-babytee-mobile-20261122.jpg"
+          }
         }
       },
       "block_order": [
@@ -159,7 +183,7 @@
       "settings": {
         "logo_size": 0,
         "tagline": "<p>moonbae<br/>wearable art, curated by Moon</p>",
-        "copyright": "© 2026 moonbae. All rights reserved.",
+        "copyright": "\u00a9 2026 moonbae. All rights reserved.",
         "credit_label": "",
         "credit_url": ""
       }
@@ -173,7 +197,8 @@
             "title": "Curated by Moon",
             "text": "<p>Every design is chosen and adjusted by hand before it is added to the shop.</p>",
             "url": "",
-            "link_label": ""
+            "link_label": "",
+            "image": "shopify://shop_images/moonbae-roadside-tees-desktop-20261122.jpg"
           }
         },
         "pillar-2": {
@@ -182,16 +207,18 @@
             "title": "Made to order",
             "text": "<p>Each piece is printed in India after you order it. We don't hold stock.</p>",
             "url": "",
-            "link_label": ""
+            "link_label": "",
+            "image": "shopify://shop_images/moonbae-sofa-babytee-desktop-20261122.jpg"
           }
         },
         "pillar-3": {
           "type": "partner",
           "settings": {
             "title": "Shipped across India",
-            "text": "<p>Dispatched in 2–4 business days and delivered in 5–11 business days.</p>",
+            "text": "<p>Dispatched in 2\u20134 business days and delivered in 5\u201311 business days.</p>",
             "url": "",
-            "link_label": ""
+            "link_label": "",
+            "image": "shopify://shop_images/moonbae-street-crew-desktop-20261122.jpg"
           }
         },
         "pillar-4": {
@@ -200,7 +227,8 @@
             "title": "If it arrives wrong",
             "text": "<p>Damaged, misprinted or incorrect items are replaced or refunded. Details are in the FAQ.</p>",
             "url": "",
-            "link_label": ""
+            "link_label": "",
+            "image": "shopify://shop_images/moonbae-grocery-babytee-desktop-20261122.jpg"
           }
         }
       },
@@ -215,7 +243,8 @@
         "giving_text": "<p>Every piece is curated by Moon and printed to order in India. Nothing is mass-produced.</p>",
         "list_heading": "The basics",
         "padding_top": 160,
-        "padding_bottom": 0
+        "padding_bottom": 0,
+        "giving_image": "shopify://shop_images/moonbae-hoodie-studio-mobile-20261122.jpg"
       }
     },
     "faq": {
@@ -225,35 +254,35 @@
           "type": "question",
           "settings": {
             "question": "How long does delivery take?",
-            "answer": "<p>Every piece is printed after you order, which takes 2–4 business days. Delivery inside India is then 3–7 business days to metro cities and up to 12 for other pin codes — usually 5–11 business days door to door. You get a tracking link by email the moment it ships.</p>"
+            "answer": "<p>Every piece is printed after you order, which takes 2\u20134 business days. Delivery inside India is then 3\u20137 business days to metro cities and up to 12 for other pin codes \u2014 usually 5\u201311 business days door to door. You get a tracking link by email the moment it ships.</p>"
           }
         },
         "q-2": {
           "type": "question",
           "settings": {
             "question": "Can I return or exchange it?",
-            "answer": "<p>Each piece is made for you individually, so we can't take returns for change of mind or fit — please check the size guide before ordering, and ask us if you're between sizes. If it arrives damaged, misprinted or wrong, we replace or refund it free. Write to us within 5 days of delivery.</p>"
+            "answer": "<p>Each piece is made for you individually, so we can't take returns for change of mind or fit \u2014 please check the size guide before ordering, and ask us if you're between sizes. If it arrives damaged, misprinted or wrong, we replace or refund it free. Write to us within 5 days of delivery.</p>"
           }
         },
         "q-3": {
           "type": "question",
           "settings": {
             "question": "Why do you ask for an unboxing video?",
-            "answer": "<p>One continuous, unedited recording from the sealed parcel to the item coming out. It takes ten seconds and it's the only proof that a fault didn't happen after delivery — without it our printers won't accept a claim, so neither can we.</p>"
+            "answer": "<p>One continuous, unedited recording from the sealed parcel to the item coming out. It takes ten seconds and it's the only proof that a fault didn't happen after delivery \u2014 without it our printers won't accept a claim, so neither can we.</p>"
           }
         },
         "q-4": {
           "type": "question",
           "settings": {
             "question": "Can I cancel an order?",
-            "answer": "<p>Yes, within 1 hour of placing it. Our printers begin production almost immediately, so the window is short — email us the moment you know. After that the piece exists only for you and can't be cancelled.</p>"
+            "answer": "<p>Yes, within 1 hour of placing it. Our printers begin production almost immediately, so the window is short \u2014 email us the moment you know. After that the piece exists only for you and can't be cancelled.</p>"
           }
         },
         "q-5": {
           "type": "question",
           "settings": {
             "question": "How do the sizes run?",
-            "answer": "<p>Our tees are cut oversized — size down if you want a closer fit. Garments are hand-cut and can vary by up to ±0.5 inch from the size guide, which is standard for apparel and not a fault.</p>"
+            "answer": "<p>Our tees are cut oversized \u2014 size down if you want a closer fit. Garments are hand-cut and can vary by up to \u00b10.5 inch from the size guide, which is standard for apparel and not a fault.</p>"
           }
         },
         "q-6": {
@@ -267,7 +296,7 @@
           "type": "question",
           "settings": {
             "question": "Where is it made?",
-            "answer": "<p>India. Cut, printed and finished in small runs, close to the people who make it. Nothing is made in bulk or warehoused — each piece is made once someone asks for it.</p>"
+            "answer": "<p>India. Cut, printed and finished in small runs, close to the people who make it. Nothing is made in bulk or warehoused \u2014 each piece is made once someone asks for it.</p>"
           }
         }
       },

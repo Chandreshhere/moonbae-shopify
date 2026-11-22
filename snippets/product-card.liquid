@@ -2,15 +2,44 @@
   Product card used by the draggable home slider and the collection grid.
   Params: product, class (extra classes on .product-img_wrap)
 {%- endcomment -%}
+{%- capture card_audience -%}{% render 'product-audience', audience: audience %}{%- endcapture -%}
+{%- liquid
+  assign card_audience = card_audience | strip
+  assign card_media = product.featured_media
+  assign audience_media = nil
+  if card_audience == 'women'
+    assign audience_media = product.metafields.moonbae.model_image_women.value
+  elsif card_audience == 'men'
+    assign audience_media = product.metafields.moonbae.model_image_men.value
+  endif
+  assign hover_media = product.media[1]
+  if audience_media != blank and audience_media.media_type == 'image'
+    assign card_media = audience_media
+    comment
+      A second global photo may show the other audience. Keep the chosen
+      model on hover until an audience-specific alternate is provided.
+    endcomment
+    assign hover_media = nil
+  endif
+  assign card_url = product.url
+  if card_audience == 'men' or card_audience == 'women'
+    if card_url contains '?'
+      assign card_url = card_url | append: '&view=' | append: card_audience
+    else
+      assign card_url = card_url | append: '?view=' | append: card_audience
+    endif
+  endif
+-%}
+
 {%- assign wrap_class = class | default: 'is-slider' -%}
 <div role="listitem" class="product-card w-dyn-item">
   <div class="product-block">
     <div class="product-img_wrap {{ wrap_class }}">
-      {%- if product.featured_media -%}
-        {%- capture card_alt -%}{% render 'media-alt', product: product, media: product.featured_media %}{%- endcapture -%}
+      {%- if card_media -%}
+        {%- capture card_alt -%}{% render 'media-alt', product: product, media: card_media %}{%- endcapture -%}
         <img
-          src="{{ product.featured_media | image_url: width: 1200 }}"
-          srcset="{{ product.featured_media | image_url: width: 500 }} 500w, {{ product.featured_media | image_url: width: 800 }} 800w, {{ product.featured_media | image_url: width: 1200 }} 1200w, {{ product.featured_media | image_url: width: 1600 }} 1600w, {{ product.featured_media | image_url: width: 1920 }} 1920w"
+          src="{{ card_media | image_url: width: 1200 }}"
+          srcset="{{ card_media | image_url: width: 500 }} 500w, {{ card_media | image_url: width: 800 }} 800w, {{ card_media | image_url: width: 1200 }} 1200w, {{ card_media | image_url: width: 1600 }} 1600w, {{ card_media | image_url: width: 1920 }} 1920w"
           sizes="(max-width: 767px) 60vw, 25vw"
           alt="{{ card_alt | strip | escape }}"
           class="img-contain {{ wrap_class }}"
@@ -20,7 +49,6 @@
         {%- assign ph_class = 'img-contain ' | append: wrap_class -%}{{ 'product-1' | placeholder_svg_tag: ph_class }}
       {%- endif -%}
 
-      {%- assign hover_media = product.media[1] -%}
       {%- if hover_media -%}
         <img src="{{ hover_media | image_url: width: 1200 }}" alt="" class="product-hover_img" loading="lazy">
       {%- endif -%}
@@ -32,9 +60,9 @@
         assistive tech and the tab order, because the link below it already
         carries the product name.
       {%- endcomment -%}
-      <a class="product-card_overlay" href="{{ product.url }}" aria-hidden="true" tabindex="-1"></a>
+      <a class="product-card_overlay" href="{{ card_url }}" aria-hidden="true" tabindex="-1"></a>
 
-      <a arrow-trigger="" href="{{ product.url }}" class="slider-link w-inline-block">
+      <a arrow-trigger="" href="{{ card_url }}" class="slider-link w-inline-block">
         <div class="product-block_info">
           <div class="product-info">
             <div class="body-upper">{{ product.title }}</div>

@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "intro": {
@@ -16,7 +25,9 @@
         "center": "moonbae",
         "right": "India",
         "padding_top": 160,
-        "padding_bottom": 0
+        "padding_bottom": 0,
+        "image": "shopify://shop_images/moonbae-grocery-babytee-desktop-20261122.jpg",
+        "image_mobile": "shopify://shop_images/moonbae-grocery-babytee-mobile-20261122.jpg"
       }
     },
     "contact": {
@@ -24,19 +35,27 @@
       "blocks": {
         "image-1": {
           "type": "image",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-grocery-babytee-mobile-20261122.jpg"
+          }
         },
         "image-2": {
           "type": "image",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-roadside-tees-mobile-20261122.jpg"
+          }
         },
         "image-3": {
           "type": "image",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-sofa-babytee-mobile-20261122.jpg"
+          }
         },
         "image-4": {
           "type": "image",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-hoodie-studio-mobile-20261122.jpg"
+          }
         }
       },
       "block_order": [
@@ -51,7 +70,7 @@
         "email": "moonstorepod@gmail.com",
         "social_label": "Instagram",
         "social_url": "https://www.instagram.com/moonbae.stores",
-        "footnote": "moonbae ©2026",
+        "footnote": "moonbae \u00a92026",
         "show_form": false,
         "padding_top": 160,
         "padding_bottom": 0
@@ -109,19 +128,27 @@
         },
         "hover_image-1": {
           "type": "hover_image",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-roadside-tees-mobile-20261122.jpg"
+          }
         },
         "hover_image-2": {
           "type": "hover_image",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-grocery-babytee-mobile-20261122.jpg"
+          }
         },
         "hover_image-3": {
           "type": "hover_image",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-hoodie-studio-mobile-20261122.jpg"
+          }
         },
         "hover_image-4": {
           "type": "hover_image",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-sofa-babytee-mobile-20261122.jpg"
+          }
         }
       },
       "block_order": [
@@ -137,7 +164,7 @@
       "settings": {
         "logo_size": 0,
         "tagline": "<p>moonbae<br/>wearable art, curated by Moon</p>",
-        "copyright": "© 2026 moonbae. All rights reserved.",
+        "copyright": "\u00a9 2026 moonbae. All rights reserved.",
         "credit_label": "",
         "credit_url": ""
       }

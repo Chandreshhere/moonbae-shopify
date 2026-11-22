@@ -2,8 +2,8 @@
   Shop tiles: full-bleed image tiles side by side, edge to edge, split by a
   thin line, each with a large title in its bottom-left corner. Desktop widths
   come from each tile's Width setting on a 12-column row (two Halves make the
-  split screen). On phones the tiles sit two to a row; with an odd number the
-  first one spans the row.
+  split screen). On phones the tiles stack so each portrait composition has
+  enough room to show the model and garment.
 {%- endcomment -%}
 {% render 'section-class', classes: 'page-contain is-section shop-tiles-section', attrs: 'nav-light', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
 {%- if section.settings.title_style == 'condensed' -%}
@@ -21,19 +21,19 @@
     <h2 class="shop-tiles_heading u-container">{{ section.settings.heading }}</h2>
   {%- endif -%}
   <div class="shop-tiles_grid">
-    {%- assign tile_fallbacks = 'moonbae-07.jpg,moonbae-04.jpg,hero-men.jpg,moonbae-05.jpg' | split: ',' -%}
+    {%- assign tile_fallbacks = 'moonbae-street-crew-mobile-20261122.jpg,moonbae-grocery-babytee-desktop-20261122.jpg,moonbae-hoodie-studio-desktop-20261122.jpg,moonbae-street-crew-desktop-20261122.jpg' | split: ',' -%}
     {%- for block in section.blocks -%}
       {%- liquid
-        assign fb = tile_fallbacks[forloop.index0] | default: 'moonbae-07.jpg'
+        assign fb = tile_fallbacks[forloop.index0] | default: 'moonbae-street-crew-mobile-20261122.jpg'
         comment
           Pick the stand-in photo by where the tile goes, so swapping the
           order of Men and Women does not swap their pictures.
         endcomment
         assign link = block.settings.link_url | downcase
         if link contains 'women'
-          assign fb = 'moonbae-04.jpg'
+          assign fb = 'moonbae-grocery-babytee-desktop-20261122.jpg'
         elsif link contains '/men' or link contains '=men'
-          assign fb = 'hero-men.jpg'
+          assign fb = 'moonbae-street-crew-mobile-20261122.jpg'
         endif
         assign span = block.settings.width | default: '6'
         capture img_attrs
@@ -43,7 +43,7 @@
       <a href="{{ block.settings.link_url | default: '/collections/all' }}"{% if block.settings.new_tab %} target="_blank" rel="noopener"{% endif %}
          class="shop-tile{% if span == '6' %} is-wide{% endif %}" style="--span: {{ span }};" {{ block.shopify_attributes }}>
         <div class="shop-tile_visual">
-          {% render 'img', image: block.settings.image, fallback: fb, fallback_width: '1800x', alt: block.settings.eyebrow, class: 'shop-tile_img', sizes: '(max-width: 767px) 50vw, 50vw', attrs: img_attrs %}
+          {% render 'img', image: block.settings.image, image_mobile: block.settings.image_mobile, fallback: fb, fallback_width: '1800x', alt: block.settings.eyebrow, class: 'shop-tile_img', sizes: '(max-width: 767px) 100vw, 50vw', attrs: img_attrs %}
         </div>
         <div class="shop-tile_scrim" aria-hidden="true"></div>
         <div class="shop-tile_label">
@@ -74,7 +74,13 @@
         {
           "type": "image_picker",
           "id": "image",
-          "label": "Image"
+          "label": "Desktop image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Mobile image",
+          "info": "Portrait composition for phones. Empty uses the desktop image."
         },
         {
           "type": "select",
@@ -130,7 +136,7 @@
             { "value": "4", "label": "Third" },
             { "value": "6", "label": "Half" }
           ],
-          "info": "Two Halves make a split screen. On phones tiles sit two to a row."
+          "info": "Two Halves make a split screen. On phones tiles stack."
         },
         {
           "type": "checkbox",
