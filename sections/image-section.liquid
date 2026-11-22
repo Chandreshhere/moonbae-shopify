@@ -1,10 +1,6 @@
 {% render 'section-class', classes: 'img-section', attrs: 'nav-light', pt: section.settings.padding_top, pb: section.settings.padding_bottom %}
 
-{%- if section.settings.image != blank -%}
-  <img src="{{ section.settings.image | image_url: width: 2400 }}" alt="" h-fadeout="" class="img-fill">
-{%- else -%}
-  <img src="{{ 'moonbae-04.jpg' | asset_url }}" alt="" h-fadeout="" class="img-fill">
-{%- endif -%}
+{% render 'img', image: section.settings.image, image_mobile: section.settings.image_mobile, fallback: 'moonbae-street-crew-desktop-20261122.jpg', class: 'img-fill', attrs: 'h-fadeout=""' %}
 <div h-fadeout="" class="img-section_eyebrow">
   <div class="eyebrow-side">
     <p class="text-style_alt-med">{{ section.settings.left }}</p>
@@ -26,7 +22,13 @@
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Image"
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image",
+      "info": "Portrait composition for phones. Empty uses the desktop image."
     },
     {
       "type": "text",

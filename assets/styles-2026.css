@@ -1,3 +1,44 @@
+/* Art-directed campaign pictures keep the existing image animation hooks. */
+.responsive-picture { display: contents; }
+.hero-slide_visual[data-parallax] .responsive-picture > .hero-visual_el.u-cover-absolute {
+  height: 120%;
+  top: -10%;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+@media only screen and (max-width: 767px) {
+  /* Keep the complete portrait campaign below the fixed navigation. */
+  #home-hero {
+    height: calc(125vw + 68px);
+    min-height: 0;
+    background: #171a16;
+  }
+  #home-hero .hero-slide_visual.u-cover-absolute {
+    top: 68px;
+    height: calc(100% - 68px);
+  }
+  .hero-slider.is-large { height: 125vw; min-height: 0; }
+  .img-section { height: 125vw; min-height: 0; }
+  .hero-slider.is-large .hero-slide_visual.u-cover-absolute { height: 100%; }
+  .hero-slider.is-large .hero-slide_visual[data-parallax] .responsive-picture > .hero-visual_el.u-cover-absolute {
+    height: 100%;
+    top: 0;
+    transform: none !important;
+  }
+  .hero-slide_visual[data-parallax] .responsive-picture > .hero-visual_el.u-cover-absolute {
+    height: 140%;
+    top: -20%;
+  }
+  .shop-tiles-section .shop-tiles_grid { grid-template-columns: minmax(0, 1fr); }
+  .shop-tiles-section .shop-tile { grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide_visual[data-parallax] .responsive-picture > .hero-visual_el.u-cover-absolute {
+    height: 100%;
+    top: 0;
+  }
+}
+
 .show-preloader .preloader_wrap {
   display: flex;
 }

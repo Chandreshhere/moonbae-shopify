@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "home-hero": {
@@ -9,7 +18,10 @@
             "title": "<p>Wearable art, curated by Moon</p>",
             "link_label": "Shop now",
             "link_url": "/collections/all",
-            "new_tab": false
+            "new_tab": false,
+            "image": "shopify://shop_images/moonbae-grocery-babytee-desktop-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-grocery-babytee-mobile-20261122.jpg",
+            "nav_image": "shopify://shop_images/moonbae-grocery-babytee-mobile-20261122.jpg"
           }
         },
         "slide-2": {
@@ -18,7 +30,10 @@
             "title": "<p>Made for artists and creative people</p>",
             "link_label": "About us",
             "link_url": "/pages/about",
-            "new_tab": false
+            "new_tab": false,
+            "image": "shopify://shop_images/moonbae-hoodie-studio-desktop-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-hoodie-studio-mobile-20261122.jpg",
+            "nav_image": "shopify://shop_images/moonbae-hoodie-studio-mobile-20261122.jpg"
           }
         },
         "slide-3": {
@@ -27,7 +42,10 @@
             "title": "<p>Follow us on Instagram</p>",
             "link_label": "Instagram",
             "link_url": "https://www.instagram.com/moonbae.stores",
-            "new_tab": true
+            "new_tab": true,
+            "image": "shopify://shop_images/moonbae-street-crew-desktop-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-street-crew-mobile-20261122.jpg",
+            "nav_image": "shopify://shop_images/moonbae-street-crew-mobile-20261122.jpg"
           }
         }
       },
@@ -77,7 +95,9 @@
             "new_tab": false,
             "width": "6",
             "focus": "center center",
-            "full_height": true
+            "full_height": true,
+            "image": "shopify://shop_images/moonbae-roadside-tees-mobile-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-roadside-tees-mobile-20261122.jpg"
           }
         },
         "cta-2": {
@@ -90,7 +110,9 @@
             "new_tab": false,
             "width": "6",
             "focus": "center center",
-            "full_height": true
+            "full_height": true,
+            "image": "shopify://shop_images/moonbae-sofa-babytee-mobile-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-sofa-babytee-mobile-20261122.jpg"
           }
         }
       },
@@ -102,7 +124,7 @@
         "title_style": "condensed",
         "title_font": "oswald_n4",
         "tile_height": 100,
-        "mobile_height": 60,
+        "mobile_height": 70,
         "padding_top": 32,
         "padding_bottom": 0
       }
@@ -111,7 +133,7 @@
       "type": "or-text-section",
       "settings": {
         "mark_size": 0,
-        "eyebrow": "<p>moonbae ©2026<br/>Curated by Moon, printed in India</p>",
+        "eyebrow": "<p>moonbae \u00a92026<br/>Curated by Moon, printed in India</p>",
         "left_label": "moonbae",
         "right_label": "India",
         "text": "<p>Every design is customised by Moon before it goes on sale. Each piece is then printed in India after you order it and shipped straight to you. We don't hold stock or print in bulk.</p>",
@@ -124,31 +146,38 @@
       "blocks": {
         "slide-1": {
           "type": "slide",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-roadside-tees-desktop-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-roadside-tees-mobile-20261122.jpg"
+          }
         },
         "slide-2": {
           "type": "slide",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-grocery-babytee-desktop-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-grocery-babytee-mobile-20261122.jpg"
+          }
         },
         "slide-3": {
           "type": "slide",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-hoodie-studio-desktop-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-hoodie-studio-mobile-20261122.jpg"
+          }
         },
         "slide-4": {
           "type": "slide",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-street-crew-desktop-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-street-crew-mobile-20261122.jpg"
+          }
         },
         "slide-5": {
           "type": "slide",
-          "settings": {}
-        },
-        "slide-6": {
-          "type": "slide",
-          "settings": {}
-        },
-        "slide-7": {
-          "type": "slide",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/moonbae-sofa-babytee-desktop-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-sofa-babytee-mobile-20261122.jpg"
+          }
         }
       },
       "block_order": [
@@ -156,9 +185,7 @@
         "slide-2",
         "slide-3",
         "slide-4",
-        "slide-5",
-        "slide-6",
-        "slide-7"
+        "slide-5"
       ],
       "settings": {
         "label": "MOONBAE_26",
@@ -176,7 +203,8 @@
             "title": "Curated by Moon",
             "text": "<p>Every design is chosen and adjusted by hand before it is added to the shop.</p>",
             "url": "",
-            "link_label": ""
+            "link_label": "",
+            "image": "shopify://shop_images/moonbae-roadside-tees-desktop-20261122.jpg"
           }
         },
         "partner-2": {
@@ -185,16 +213,18 @@
             "title": "Made to order",
             "text": "<p>Each piece is printed in India after you order it. We don't hold stock.</p>",
             "url": "",
-            "link_label": ""
+            "link_label": "",
+            "image": "shopify://shop_images/moonbae-sofa-babytee-desktop-20261122.jpg"
           }
         },
         "partner-3": {
           "type": "partner",
           "settings": {
             "title": "Shipped across India",
-            "text": "<p>Dispatched in 2–4 business days and delivered in 5–11 business days.</p>",
+            "text": "<p>Dispatched in 2\u20134 business days and delivered in 5\u201311 business days.</p>",
             "url": "",
-            "link_label": ""
+            "link_label": "",
+            "image": "shopify://shop_images/moonbae-street-crew-desktop-20261122.jpg"
           }
         },
         "partner-4": {
@@ -203,7 +233,8 @@
             "title": "If it arrives wrong",
             "text": "<p>Damaged, misprinted or incorrect items are replaced or refunded. Details are in the FAQ.</p>",
             "url": "",
-            "link_label": ""
+            "link_label": "",
+            "image": "shopify://shop_images/moonbae-grocery-babytee-desktop-20261122.jpg"
           }
         }
       },
@@ -218,7 +249,8 @@
         "giving_text": "<p>Moon finds or draws the art, then reworks it for the garment it goes on. Only then is it added to the shop, and nothing is printed until someone orders it.</p>",
         "list_heading": "The basics",
         "padding_top": 0,
-        "padding_bottom": 0
+        "padding_bottom": 0,
+        "giving_image": "shopify://shop_images/moonbae-hoodie-studio-mobile-20261122.jpg"
       }
     },
     "footer": {
@@ -298,7 +330,7 @@
       "settings": {
         "logo_size": 0,
         "tagline": "<p>moonbae<br/>wearable art, curated by Moon</p>",
-        "copyright": "© 2026 moonbae. All rights reserved.",
+        "copyright": "\u00a9 2026 moonbae. All rights reserved.",
         "credit_label": "Website by malvah",
         "credit_url": ""
       }
@@ -312,7 +344,9 @@
             "title": "Hoodies",
             "category": "hoodies",
             "focus": "center center",
-            "cta": "Explore"
+            "cta": "Explore",
+            "image": "shopify://shop_images/moonbae-hoodie-studio-mobile-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-hoodie-studio-mobile-20261122.jpg"
           }
         },
         "tile-2": {
@@ -321,7 +355,9 @@
             "title": "T-shirts",
             "category": "tshirts",
             "focus": "center center",
-            "cta": "Explore"
+            "cta": "Explore",
+            "image": "shopify://shop_images/moonbae-street-crew-mobile-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-roadside-tees-mobile-20261122.jpg"
           }
         },
         "tile-3": {
@@ -331,7 +367,9 @@
             "category": "babytees",
             "merge_desktop": true,
             "focus": "center center",
-            "cta": "Explore"
+            "cta": "Explore",
+            "image": "shopify://shop_images/moonbae-grocery-babytee-mobile-20261122.jpg",
+            "image_mobile": "shopify://shop_images/moonbae-grocery-babytee-mobile-20261122.jpg"
           }
         }
       },

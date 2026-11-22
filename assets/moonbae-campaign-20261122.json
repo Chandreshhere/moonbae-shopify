@@ -1,1 +1,27 @@
-{"campaign": "Moonbae November 2026", "status": "preparing", "purpose": "Original campaign photos based on live product garments; responsive hero and editorial imagery."}
+{
+  "campaign": "Moonbae 2026-11-22",
+  "status": "applied",
+  "images": [
+    "moonbae-grocery-babytee-desktop-20261122.jpg",
+    "moonbae-grocery-babytee-mobile-20261122.jpg",
+    "moonbae-hoodie-studio-desktop-20261122.jpg",
+    "moonbae-hoodie-studio-mobile-20261122.jpg",
+    "moonbae-roadside-tees-desktop-20261122.jpg",
+    "moonbae-roadside-tees-mobile-20261122.jpg",
+    "moonbae-sofa-babytee-desktop-20261122.jpg",
+    "moonbae-sofa-babytee-mobile-20261122.jpg",
+    "moonbae-street-crew-desktop-20261122.jpg",
+    "moonbae-street-crew-mobile-20261122.jpg"
+  ],
+  "responsive_pairs": 5,
+  "product_sources": [
+    "Yapper Baby Tee",
+    "Butterfly Effect Baby Tee",
+    "Artist Baby Tee Red",
+    "Mind Over Noise Boxy-Fit Oversize Tee",
+    "Denim Washed T-Shirt",
+    "Eyes Of Life Boxy Hoodie",
+    "Dogmatic Boxy Fit Hoodie",
+    "Hustler Boxy Hoodie Black"
+  ]
+}
